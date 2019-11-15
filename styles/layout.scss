@@ -1,12 +1,16 @@
 // See: https://sass-lang.com/
-$background-color: #F7B538;
+$background-color: #474747;
 $navbar-color: #C32F27;
+$logo-color: #F2AF29;
 $text-light: #ede9e6;
-$text-darkL: #2e2d2c;
+$text-dark: #2e2d2c;
 
 body {
   background-color: $background-color;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Muli', 'Arial', sans-serif;
 
   h1 {
     color: #244751;
@@ -15,16 +19,42 @@ body {
 
 header {
   display: flex;
+  width: 100%;
+  flex-direction: column;
+
+  .header-img {
+    width: 100%;
+    height: 15em;
+    object-fit: cover;
+  }
 }
 
 .navbar {
   background-color: $navbar-color;
+  width: 100%;
+
+  .logo {
+    font-family: 'Bebas Neue', 'Arial', sans-serif;
+    color: $logo-color;
+    font-size: 3rem;
+  }
 }
 
 .listing-container {
   display: flex;
 }
 
-.restaurant-info {
-  color:$text-darkL;
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: $text-light;
+  width: 50%;
+
+  .profile-name {
+    font-family: 'Bebas Neue', 'Arial', sans-serif;
+    font-size: 1.5rem;
+    color: $logo-color;
+  }
+
 }
