@@ -1,4 +1,4 @@
-CREATE TYPE progress AS ENUM ('Pending', 'Confirmed', 'In Progress', 'Completed', 'Declined');
+CREATE TYPE order_progress AS ENUM ('Pending', 'Confirmed', 'In Progress', 'Completed', 'Declined');
 
 CREATE TABLE orders (
   id SERIAL PRIMARY KEY NOT NULL,
@@ -6,5 +6,5 @@ CREATE TABLE orders (
   created_at TIMESTAMP NOT NULL,
   fulfilled_at TIMESTAMP NOT NULL,
   total_cents INTEGER NOT NULL,
-  status progress 
+  status order_progress DEFAULT 'Pending'
 )
