@@ -1,9 +1,109 @@
 // See: https://sass-lang.com/
+$background-color: #474747;
+$navbar-color: #C32F27;
+$logo-color: #F2AF29;
+$logo-font: 'Bebas Neue', 'Arial', sans-serif;
+$container-color: #BFBDC1;
+$text-light: #ede9e6;
+$text-dark: #2e2d2c;
+$standard-font: 'Muli', 'Arial', sans-serif;
 
 body {
-  background-color: #EEE;
+  background-color: $background-color;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: $standard-font;
 
   h1 {
     color: #244751;
   }
+}
+
+header {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+
+  .header-img {
+    width: 100%;
+    height: 15em;
+    object-fit: cover;
+  }
+}
+
+.navbar {
+  background-color: $navbar-color;
+  width: 100%;
+
+  .logo {
+    font-family: $logo-font;
+    color: $logo-color;
+    font-size: 3rem;
+  }
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  color: $text-light;
+  width: 80%;
+
+  .profile-name {
+    width: 80%;
+    text-align: center;
+    font-family: $logo-font;
+    font-size: 1.5rem;
+    color: $logo-color;
+  }
+}
+
+.restaurant-info {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  .restaurant-hours {
+    text-align: center;
+    padding: 0 1em;
+  }
+
+  .restaurant-ratings {
+    text-align: center;
+    padding: 0 1em;
+  }
+
+  .restaurant-info {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.listing-container {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: $logo-color;
+  color: $text-dark;
+}
+
+.listing {
+  width: 90%;
+  background-color: $container-color;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+}
+
+.menu-title {
+  font-family: $logo-font;
+  font-size: 24px;
 }
