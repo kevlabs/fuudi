@@ -57,15 +57,36 @@ header {
 
 .profile-info {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
   color: $text-light;
-  width: 50%;
+  width: 30%;
 
   .profile-name {
+    width: 100%;
+    text-align: center;
     font-family: 'Bebas Neue', 'Arial', sans-serif;
     font-size: 1.5rem;
     color: $logo-color;
   }
+}
 
+.restaurant-info {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  .restaurant-hours {
+    width: 50%;
+    text-align: center;
+  }
+
+  .restaurant-ratings {
+    width: 100%;
+    text-align: center;
+
+  }
 }
