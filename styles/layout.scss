@@ -41,30 +41,17 @@ header {
   }
 }
 
-.listing-container {
-  width: 80%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: $container-color;
-  color: $text-dark;
-}
-
-.listing {
-  width: 90%;
-  border: 2px solid $text-dark;
-}
-
 .profile-info {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
   color: $text-light;
-  width: 30%;
+  width: 80%;
 
   .profile-name {
-    width: 100%;
+    width: 80%;
     text-align: center;
     font-family: 'Bebas Neue', 'Arial', sans-serif;
     font-size: 1.5rem;
@@ -73,20 +60,55 @@ header {
 }
 
 .restaurant-info {
-  width: 100%;
+  width: 80%;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
 
   .restaurant-hours {
-    width: 50%;
     text-align: center;
+    padding: 0 1em;
   }
 
   .restaurant-ratings {
+    text-align: center;
+    padding: 0 1em;
+  }
+
+  .restaurant-info {
     width: 100%;
     text-align: center;
-
   }
+}
+
+.listing-container {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: $logo-color;
+  color: $text-dark;
+}
+
+.listing {
+  width: 90%;
+  background-color: $container-color;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+.menu-title {
+  width: 20%;
+}
+
+.menu-description {
+  width: 70%;
+}
+
+.menu-price {
+  width: 10%;
 }
