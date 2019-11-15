@@ -2,16 +2,18 @@
 $background-color: #474747;
 $navbar-color: #C32F27;
 $logo-color: #F2AF29;
+$logo-font: 'Bebas Neue', 'Arial', sans-serif;
 $container-color: #BFBDC1;
 $text-light: #ede9e6;
 $text-dark: #2e2d2c;
+$standard-font: 'Muli', 'Arial', sans-serif;
 
 body {
   background-color: $background-color;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: 'Muli', 'Arial', sans-serif;
+  font-family: $standard-font;
 
   h1 {
     color: #244751;
@@ -35,7 +37,7 @@ header {
   width: 100%;
 
   .logo {
-    font-family: 'Bebas Neue', 'Arial', sans-serif;
+    font-family: $logo-font;
     color: $logo-color;
     font-size: 3rem;
   }
@@ -53,7 +55,7 @@ header {
   .profile-name {
     width: 80%;
     text-align: center;
-    font-family: 'Bebas Neue', 'Arial', sans-serif;
+    font-family: $logo-font;
     font-size: 1.5rem;
     color: $logo-color;
   }
@@ -96,19 +98,12 @@ header {
   background-color: $container-color;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   text-align: center;
 }
 
 .menu-title {
-  width: 20%;
-}
-
-.menu-description {
-  width: 70%;
-}
-
-.menu-price {
-  width: 10%;
+  font-family: $logo-font;
+  font-size: 24px;
 }
