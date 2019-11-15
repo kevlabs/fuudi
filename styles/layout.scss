@@ -1,9 +1,30 @@
 // See: https://sass-lang.com/
+$background-color: #F7B538;
+$navbar-color: #C32F27;
+$text-light: #ede9e6;
+$text-darkL: #2e2d2c;
 
 body {
-  background-color: #EEE;
+  background-color: $background-color;
+  display: flex;
 
   h1 {
     color: #244751;
   }
+}
+
+header {
+  display: flex;
+}
+
+.navbar {
+  background-color: $navbar-color;
+}
+
+.listing-container {
+  display: flex;
+}
+
+.restaurant-info {
+  color:$text-darkL;
 }
