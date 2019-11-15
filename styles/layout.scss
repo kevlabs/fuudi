@@ -2,6 +2,7 @@
 $background-color: #474747;
 $navbar-color: #C32F27;
 $logo-color: #F2AF29;
+$container-color: #BFBDC1;
 $text-light: #ede9e6;
 $text-dark: #2e2d2c;
 
@@ -41,7 +42,17 @@ header {
 }
 
 .listing-container {
+  width: 80%;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: $container-color;
+  color: $text-dark;
+}
+
+.listing {
+  width: 90%;
+  border: 2px solid $text-dark;
 }
 
 .profile-info {
