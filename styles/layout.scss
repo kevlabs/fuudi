@@ -10,7 +10,7 @@ $container-color: rgb(191, 189, 193);
 $container-color-thin: rgba(191, 189, 193, .8);
 $text-light: #ede9e6;
 $text-dark: #2e2d2c;
-$standard-font: 'Muli', 'Arial', sans-serif;
+$standard-font: 'Playfair Display', 'Times New Roman', sans-serif;
 $enable-gradients: 'true';
 
 body {
@@ -49,7 +49,7 @@ header {
 }
 
 .profile-info {
-  background: $navbar-color-thin;
+  // background: $navbar-color-thin;
   border-radius: 25px;
   display: flex;
   flex-direction: row;
@@ -61,16 +61,13 @@ header {
   margin: 2rem 0;
 
   .profile-name {
-    width: 80%;
+    width: 100%;
     text-align: center;
-    font-family: $logo-font;
+    font-family: $standard-font;
     font-size: 1.5rem;
+    font-weight: bold;
     color: $logo-color;
   }
-}
-
-.profile-info:hover {
-  background-color: $navbar-color;
 }
 
 .listing-container {
@@ -85,24 +82,26 @@ header {
 
 .listing {
   width: 100%;
-  background-color: $container-color-thin;
+  background-color: $navbar-color-thin;
   border-radius: 25px;
+  padding: 0 2em;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .listing:hover {
-  background-color: $container-color;
+  background-color: $navbar-color;
 }
 
 // Menu page
 
 .restaurant-info {
-  width: 80%;
+  width: 100%;
   display: flex;
+  padding: 0 2em;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
@@ -116,17 +115,13 @@ header {
     text-align: center;
     padding: 0 1em;
   }
-
-  .restaurant-info {
-    width: 100%;
-    text-align: center;
-  }
 }
 
 .menu-title {
-  font-family: $logo-font;
+  font-family: $standard-font;
+  font-weight: bold;
   color: $logo-color;
-  font-size: 24px;
+  font-size: 20px;
 }
 
 // Profile Page
