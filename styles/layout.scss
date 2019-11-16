@@ -1,12 +1,17 @@
 // See: https://sass-lang.com/
-$background-color: #474747;
-$navbar-color: #C32F27;
-$logo-color: #F2AF29;
+$background-color: rgb(219, 219, 219);
+$background-color-thin: rgba(219, 219, 219, .8);
+$logo-color: rgb(42, 44, 114);
+$logo-color-thin: rgba(42, 44, 114, 0.8);
+$navbar-color: rgb(233, 146, 88);
+$navbar-color-thin: rgba(233, 146, 88, 0.6);
 $logo-font: 'Bebas Neue', 'Arial', sans-serif;
-$container-color: #BFBDC1;
+$container-color: rgb(191, 189, 193);
+$container-color-thin: rgba(191, 189, 193, .8);
 $text-light: #ede9e6;
 $text-dark: #2e2d2c;
 $standard-font: 'Muli', 'Arial', sans-serif;
+$enable-gradients: 'true';
 
 body {
   background-color: $background-color;
@@ -44,13 +49,16 @@ header {
 }
 
 .profile-info {
+  background: $navbar-color-thin;
+  border-radius: 25px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  color: $text-light;
-  width: 80%;
+  color: $text-dark;
+  width: 95%;
+  margin: 2rem 0;
 
   .profile-name {
     width: 80%;
@@ -60,6 +68,37 @@ header {
     color: $logo-color;
   }
 }
+
+.profile-info:hover {
+  background-color: $navbar-color;
+}
+
+.listing-container {
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  // background-color: $logo-color-thin;
+  border-radius: 25px;
+  color: $text-dark;
+}
+
+.listing {
+  width: 100%;
+  background-color: $container-color-thin;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+}
+
+.listing:hover {
+  background-color: $container-color;
+}
+
+// Menu page
 
 .restaurant-info {
   width: 80%;
@@ -84,26 +123,20 @@ header {
   }
 }
 
-.listing-container {
-  width: 80%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: $logo-color;
-  color: $text-dark;
-}
-
-.listing {
-  width: 90%;
-  background-color: $container-color;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  text-align: center;
-}
-
 .menu-title {
   font-family: $logo-font;
+  color: $logo-color;
   font-size: 24px;
+}
+
+// Profile Page
+
+.user-img {
+  display: flex;
+  justify-content: center;
+}
+
+.user-details {
+  width: 100%;
+  text-align: center;
 }
