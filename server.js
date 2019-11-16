@@ -19,6 +19,10 @@ const db = require('./db/index.js')(dbParams);
 // The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
 app.use(morgan('dev'));
 
+// Middleware for PUT requests - all 'POST' to 'url/edit/' to PUT 'url'
+const editAsPut = require('./lib/edit-middleware');
+app.use(editAsPut);
+
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/styles', sass({

@@ -1,3 +1,7 @@
+/*
+ * DB interface defined here
+ */
+
 const { Pool } = require('pg');
 
 class DB {
