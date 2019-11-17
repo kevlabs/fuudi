@@ -39,10 +39,38 @@ class DB {
   /**
    * Perfoms SQL transactions
    * All queries are executed on the same client
-   * @param {Array<[string, Function | any[]]>} queryPairs - Array of SQL string/parameters pairs. Parameters are optional. If supplied they should be in the form of an array or alternatively a callback function which shall return an array. If passed a callback, it will be called with one argument: the return value of the previous SQL query.
-   * @return Promise resolving to an array of the entries matching the last SQL query.
+   * @param {Function} callback - Async callback function taking one parameter: a function with signature and behaviour identical to DB.prototype.query().
+   * @return Promise resolving to the return value of the callback function.
    */
+  transaction(callback) {
+    return (async () => {
+      const client = await this.pool.connect();
+      try {
+        // start transaction
+        await client.query('BEGIN');
 
+        // query function to be passed to the callback
+        const query = (text, params = []) => client.query(text, params).then(data => data.rows);
+        const output = await callback(query);
+
+        // commit if no errors
+        await client.query('COMMIT');
+
+        return output;
+
+      } catch (err) {
+        // if error, rollback all changes to db
+        await client.query('ROLLBACK');
+        throw err;
+
+      } finally {
+        // in all instances, return the client to the pool
+        client.release();
+      }
+    })();
+  }
+
+  /*
   transaction(queryPairs) {
     return (async () => {
       const client = await this.pool.connect();
@@ -72,6 +100,7 @@ class DB {
       }
     })();
   }
+  */
 
 }
 

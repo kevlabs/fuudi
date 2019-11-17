@@ -21,7 +21,7 @@ const db = require('./db/index.js')(dbParams);
 app.use(morgan('dev'));
 
 // Middleware for PUT requests - all 'POST' to 'url/edit/' to PUT 'url'
-const editAsPut = require('./lib/edit-middleware');
+const { editAsPut } = require('./lib/middlewares');
 app.use(editAsPut);
 
 // Register cookie session middleware

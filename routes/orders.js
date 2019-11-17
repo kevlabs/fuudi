@@ -7,10 +7,14 @@
 
 const express = require('express');
 const router  = express.Router();
-const { create: createOrder, updateStatus: updateOrderStatus, complete: completeOrder } = require('../services/orders');
-const { isLoggedIn } = require('../services/users');
+const { get: getOrder, create: createOrder, updateStatus: updateOrderStatus, complete: completeOrder } = require('../services/orders');
+const { resEnum, createResponse } = require('../lib/utils');
+const { isAuthenticated, getCurrentUser } = require('../services/users');
 
 module.exports = (db) => {
+  // users should be authenticated to access this route
+  router.use(isAuthenticated);
+
   router.route('/')
     // get all orders for a given client or restaurant
     .get(async (req, res) => {
@@ -26,14 +30,14 @@ module.exports = (db) => {
     // create order
     .post(async (req, res) => {
       try {
-        const userId = isLoggedIn(req);
-        if (!userId) throw Error('User not logged in.');
+        const userId = getCurrentUser(req);
 
         console.log('Logged in as:', userId);
         console.log('Input data', req.body);
 
-        const order = await createOrder(db, userId, req.body);
-        console.log('Order successfully added', order);
+        const orderId = await createOrder(db, userId, req.body);
+        console.log('Order successfully added', orderId);
+        res.json(createResponse(resEnum.success, { orderId }));
 
 
       } catch (err) {
@@ -46,8 +50,20 @@ module.exports = (db) => {
     // get order details by id
     .get(async (req, res) => {
       try {
-        const orders = await db.query(`SELECT * FROM orders WHERE id = $1;`, [Number(req.params.id)]);
-        res.json({ orders });
+        const userId = getCurrentUser(req);
+
+        console.log('Logged in as:', userId);
+
+        // const order = await getOrder(db, {
+        //   'user_id': userId,
+        //   'order_id': req.params.id
+        // });
+        const order = await getOrder(db);
+
+        console.log(order);
+
+
+        res.json(createResponse(resEnum.success, order));
 
       } catch (err) {
         res.status(500).json({ error: err.message });
