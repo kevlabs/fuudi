@@ -20,10 +20,12 @@
     "ejs": "^2.6.2",
     "express": "^4.17.1",
     "morgan": "^1.9.1",
+    "nexmo": "^2.5.1",
     "ngrok": "^3.2.5",
     "node-sass-middleware": "^0.11.0",
     "pg": "^6.4.2",
     "pg-native": "^3.0.0",
+    "socket.io": "^2.3.0",
     "twilio": "^3.37.1"
   },
   "devDependencies": {
