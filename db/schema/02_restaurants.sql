@@ -18,7 +18,7 @@ CREATE TABLE restaurants (
   longitude VARCHAR(255) NOT NULL,
   wait_minutes SMALLINT NOT NULL,
   rating SMALLINT DEFAULT 0,
-  rating_expires_at TIMESTAMP DEFAULT now(),
+  rating_expires_at TIMESTAMP DEFAULT NOW(),
   is_active BOOLEAN DEFAULT TRUE,
   is_deleted BOOLEAN DEFAULT FALSE
 );
