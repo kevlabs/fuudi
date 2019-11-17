@@ -51,17 +51,9 @@ module.exports = (db) => {
     .get(async (req, res) => {
       try {
         const userId = getCurrentUser(req);
-
-        console.log('Logged in as:', userId);
-
-        // const order = await getOrder(db, {
-        //   'user_id': userId,
-        //   'order_id': req.params.id
-        // });
-        const order = await getOrder(db);
-
-        console.log(order);
-
+        const order = await getOrder(db, userId, {
+          'id': req.params.id
+        });
 
         res.json(createResponse(resEnum.success, order));
 

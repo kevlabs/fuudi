@@ -1,26 +1,75 @@
-const { stringToInteger } = require('../lib/utils');
+const { stringToInteger, stringToDate } = require('../lib/utils');
 
 /*
 Should be able to get orders by:
 - restaurant_id
-- user_id
-- date
+- user_id -> will be passed to function from back-end as sensitive info
+- maxDate/minDate -> will need to do between date and date+1
 
 Sort by date
 
+Mapping
+  id => o.id
+  restaurantId => r.id
+  userId => o.user_id
+  date => o.created_at
+
 */
-const get = (db, options = {}) => {
-  const filters = Object.keys(options);
-  let filterString = filters.map((filter, i) => `$${i * 2 + 1} = $${i * 2 + 2}`).join(' AND ');
-  filterString && (filterString = 'WHERE ' + filterString);
-  const params = filters.reduce((params, filter) => params.concat([filter, options[filter]]), []);
+
+/**
+ * Set where filters for get order request
+ * @param {any} options - Object with keys set to filters and values to filter by.
+ * @return Tuple [where string, params[]].
+ */
+const setGetFilters = (options) => {
+  const filters = [];
+  const params = [];
+
+  if (options.id) {
+    const id = stringToInteger(options.id, (int) => int > 0, true);
+    params.push(id);
+    filters.push(`o.id = $${params.length}`);
+  }
+
+  if (options.userId) {
+    params.push(options.userId);
+    filters.push(`o.user_id = $${params.length}`);
+  }
+
+  if (options.restaurantId) {
+    const id = stringToInteger(options.restaurantId, (int) => int > 0, true);
+    params.push(id);
+    filters.push(`r.id = $${params.length}`);
+  }
+
+  if (options.minDate || options.maxDate) {
+    const minDate = minDate && stringToDate(options.minDate) || stringToDate(options.maxDate);
+    const maxDate = (maxDate && stringToDate(options.maxDate) || minDate).setHours(23, 59, 59, 999);
+    params.push(minDate, maxDate);
+    filters.push(`o.created_at BETWEEN $${params.length - 1} AND $${params.length}`);
+  }
+
+  const whereFilter = filters.length && `WHERE ${filters.join(' AND ')}` || '';
+  return [whereFilter, params];
+};
+
+/**
+ * Get order details
+ * @param {DB} db - Instance of the DB interface.
+ * @param {number} userId - Valid user id.
+ * @param {any} options - Object with keys set to filters and values to filter by.
+ * @return Promise resolving to the query resuls.
+ */
+const get = (db, userId = 0, options = {}) => {
+
+  const [whereFilter, params] = setGetFilters(Object.assign({}, options, { userId }));
 
   return db.query(`
     SELECT * FROM orders o
     JOIN order_menu_items o_m_i ON o.id = o_m_i.order_id
     JOIN menu_items m_i ON o_m_i.menu_item_id = m_i.id
     JOIN restaurants r ON m_i.restaurant_id = r.id
-    ${filterString}
+    ${whereFilter}
     ORDER BY o.created_at
   `, params);
 
@@ -180,5 +229,13 @@ const updateStatus = (db, id, status) => {
 const complete = (db, id) => {
   return db.query(`UPDATE orders SET fulfilled_at = NOW(), status = 'Completed' WHERE id = $1`, [id]);
 };
+
+/*
+parse order query data into a JS object
+public flag should be set to true if meant to be sent to front-end
+
+Format:
+
+*/
 
 module.exports = { get, create, updateStatus, complete };
