@@ -29,8 +29,12 @@ module.exports = (db) => {
         const userId = isLoggedIn(req);
         if (!userId) throw Error('User not logged in.');
 
-        const order = createOrder(db, userId, req.body);
-        console.log(order);
+        console.log('Logged in as:', userId);
+        console.log('Input data', req.body);
+
+        const order = await createOrder(db, userId, req.body);
+        console.log('Order successfully added', order);
+
 
       } catch (err) {
         console.error(err.message);

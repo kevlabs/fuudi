@@ -52,7 +52,7 @@ class DB {
 
         // loop through queries
         for (let [text, params = []] of queryPairs) {
-          params = params instanceof Function && params(lastQuery) || params || [];
+          params = params instanceof Function && (params(lastQuery) || []) || params;
           lastQuery = (await client.query(text, params)).rows;
         }
 

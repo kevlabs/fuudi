@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS orders CASCADE;
+DROP TYPE IF EXISTS order_progress CASCADE;
+
 CREATE TYPE order_progress AS ENUM ('Pending', 'Confirmed', 'In Progress', 'Completed', 'Declined');
 
 CREATE TABLE orders (
