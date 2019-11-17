@@ -6,9 +6,17 @@ const PORT = process.env.PORT || 8080;
 const ENV = process.env.ENV || 'development';
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieSession = require('cookie-session');
 const sass = require('node-sass-middleware');
+const Nexmo = require('nexmo');
+const socketio = require('socket.io');
 const app = express();
 const morgan = require('morgan');
+// Init Nexmo
+const nexmo = new Nexmo({
+  apiKey: '7226847a',
+  apiSecret: '1A2Ynv7u2Y0vyRa4'
+}, { debug: true });
 
 // PG database client/connection setup
 const dbParams = require('./lib/db.js');
@@ -19,7 +27,19 @@ const db = require('./db/index.js')(dbParams);
 // The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
 app.use(morgan('dev'));
 
+// Middleware for PUT requests - all 'POST' to 'url/edit/' to PUT 'url'
+const editAsPut = require('./lib/edit-middleware');
+app.use(editAsPut);
+
+// Register cookie session middleware
+app.use(cookieSession({
+  name: 'session',
+  keys: ['Coolstuffgoesonhere'],
+  maxAge: 365 * 24 * 60 * 60 * 1000 // 1 year
+}));
+
 app.set('view engine', 'ejs');
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/styles', sass({
   src: __dirname + '/styles',
@@ -45,6 +65,50 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
-app.listen(PORT, () => {
+// Index route
+app.get('/smstext', (req, res) => {
+  res.render('smsForm');
+});
+
+// Catch form submit
+app.post('/smstext', (req, res) => {
+  // res.send(req.body);
+  // console.log(req.body);
+  const { number, text } = req.body;
+
+  nexmo.message.sendSms(
+    '12506638721', number, text, { type: 'unicode' },
+    (err, responseData) => {
+      if(err) {
+        console.log(err);
+      } else {
+        const { messages } = responseData;
+        const { ['message-id']: id, ['to']: number, ['error-text']: error  } = messages[0];
+        console.dir(responseData);
+        // Get data from response
+        const data = {
+          id,
+          number,
+          error
+        };
+
+        // Emit to the client
+        io.emit('smsStatus', data);
+      }
+    }
+  );
+});
+
+
+const server = app.listen(PORT, () => {
   console.log(`Fuudi app listening on port ${PORT}`);
+});
+
+// Connect to socket.io
+const io = socketio(server);
+io.on('connection', (socket) => {
+  console.log('Connected');
+  io.on('disconnect', () => {
+    console.log('Disconnected');
+  })
 });
