@@ -22,7 +22,7 @@ NEW ORDERS - JSON input format:
  * Validate order input
  * @param {DB} db - Instance of the DB interface.
  * @param {any} order - Parsed order object to validate.
- * @return never (throws error) if invalid or a valid order object otherwise.
+ * @return Valid order object. Raises an exception otherwise.
  */
 const validateInput = (db, order) => {
   const output = {
@@ -59,13 +59,13 @@ const validateInput = (db, order) => {
  * Create order
  * @param {DB} db - Instance of the DB interface.
  * @param {any} order - Order object parsed from JSON - front-end input.
- * @return never (throws error) if invalid or the db record created otherwise.
+ * @return Promise resolving to the new order's id.
  */
-const create = async (db, order, userId) => {
+const create = async (db, userId, order) => {
   try {
     const safeOrder = validateInput(order);
     const menuItems = safeOrder.items.map(item => item.id);
-    db.transaction([
+    return db.transaction([
 
       // #1 - validate menu items and get price
       [
@@ -102,7 +102,8 @@ const create = async (db, order, userId) => {
       // #3 - insert menu items in order/items bridge table
       [
         `INSERT INTO order_menu_items (order_id, menu_item_id, quantity, price_cents)
-        VALUES ${safeOrder.items.reduce((values, _, i) => values.concat(`($${i * 3 + 1}, $${i * 3 + 2}, $${i * 3 + 3})`), []).join(', ')};`,
+        VALUES ${safeOrder.items.reduce((values, _, i) => values.concat(`($${i * 3 + 1}, $${i * 3 + 2}, $${i * 3 + 3})
+        RETURNING order_id LIMIT 1`), []).join(', ')};`,
         (rows) => {
           // get order id from newly created order
           const orderId = rows[0];
@@ -124,7 +125,7 @@ const create = async (db, order, userId) => {
  * @param {DB} db - Instance of the DB interface.
  * @param {number} id - Order id.
  * @param {string} status - New status. Should be one of 'Pending', 'Confirmed', 'In Progress', 'Declined'.
- * @return updated order record from db.
+ * @return Promise resolving to the updated order record from db.
  */
 const updateStatus = (db, id, status) => {
   if (!['Pending', 'Confirmed', 'In Progress', 'Declined'].includes(status)) throw Error(`Order status ${status} is not valid.`);
@@ -135,10 +136,10 @@ const updateStatus = (db, id, status) => {
  * Mark order as complete
  * @param {DB} db - Instance of the DB interface.
  * @param {number} id - Order id.
- * @return updated order record from db.
+ * @return Promise resolving to the updated order record from db.
  */
 const complete = (db, id) => {
   return db.query(`UPDATE orders SET fulfilled_at = NOW(), status = 'Completed' WHERE id = $1`, [id]);
 };
 
-module.exports = { updateStatus, complete };
+module.exports = { create, updateStatus, complete };

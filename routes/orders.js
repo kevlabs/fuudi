@@ -7,6 +7,8 @@
 
 const express = require('express');
 const router  = express.Router();
+const { create: createOrder, updateStatus: updateOrderStatus, complete: completeOrder } = require('../services/orders');
+const { isLoggedIn } = require('../services/users');
 
 module.exports = (db) => {
   router.route('/')
@@ -22,7 +24,17 @@ module.exports = (db) => {
     })
 
     // create order
-    .post((req, res) => {
+    .post(async (req, res) => {
+      try {
+        const userId = isLoggedIn(req);
+        if (!userId) throw Error('User not logged in.');
+
+        const order = createOrder(db, userId, req.body);
+        console.log(order);
+
+      } catch (err) {
+        console.error(err.message);
+      }
 
     });
 
