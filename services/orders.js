@@ -157,6 +157,7 @@ const create = async (db, userId, order) => {
     const safeOrder = validateInput(order);
     const itemIds = safeOrder.items.map(item => item.id);
 
+    // don't catch errors in transaction or changes won't be rolled back
     return db.transaction(async (query) => {
       // #1 - validate menu items and get price
       const validItems = await query(`
@@ -203,7 +204,6 @@ const create = async (db, userId, order) => {
     });
 
   } catch (err) {
-    // rethrow error so it can be caught in the transaction for all changes to be rolled back
     throw Error(`Order could not be created due to an error. Error: ${err.message}.`);
   }
 };
@@ -261,8 +261,10 @@ Format:
 
 */
 const parse = (data) => {
-  return data.reduce((output, row) => {
-    output[row.id] = output[row.id] || {
+  const [sortedKeys, orders] = data.reduce(([sortedKeys, orders], row) => {
+    sortedKeys[sortedKeys.length && sortedKeys.length - 1 || 0] !== row.id && sortedKeys.push(row.id);
+
+    orders[row.id] = orders[row.id] || {
       id: row.id,
       status: row.status,
       created: new Date(row.created_at),
@@ -275,7 +277,7 @@ const parse = (data) => {
       items: []
     };
 
-    output[row.id].items.push({
+    orders[row.id].items.push({
       id: row.item_id,
       name: row.item_name,
       priceCents: row.item_price_cents,
@@ -283,8 +285,20 @@ const parse = (data) => {
       totalCents: row.item_total
     });
 
-    return output;
-  }, {});
+    return [sortedKeys, orders];
+  }, [[], {}]);
+
+  return sortedKeys.map(key => orders[key]);
 };
 
-module.exports = { get, create, updateStatus, complete, parse };
+const getData = async (db, userId = null, options = {}) => {
+  try {
+    const orderData = await get(db, userId, options);
+    return parse(orderData);
+
+  } catch (err) {
+    throw Error('Order data could not be gathered');
+  }
+};
+
+module.exports = { getOrder : get, createOrder: create, updateOrderStatus: updateStatus, completeOrder: complete, parseOrder: parse, getOrderData: getData };

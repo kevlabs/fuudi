@@ -22,7 +22,7 @@ module.exports = (db) => {
 
   router.get('/:id', function(req, res) {
     const userId = isLoggedIn(req);
-    if (!userId) login(req, req.params.id);
+    if (!userId) login(db, req, req.params.id);
     res.send(`Logged in as ${req.session.userId}`);
   });
 
