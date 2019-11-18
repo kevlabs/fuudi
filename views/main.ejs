@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- Bootstrap CSS -->
+  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+    integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+    crossorigin="anonymous"></script>
+  <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+  <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+    integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+    crossorigin="anonymous">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="../public/styles/layout.css">
+
+  <!-- Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Bebas+Neue|Playfair+Display:400,400i,700,700i&display=swap"
+    rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css?ver=5.8.2"
+    rel="stylesheet">
+
+  <title>Fuudi</title>
+</head>
+
+<body>
+  <% include ./partials/_header %>
+
+  <div class="content">
+    <div class="carousel">
+      <div id="img-carousel" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+          <li data-target="#img-carousel" data-slide-to="0" class="active"></li>
+          <li data-target="#img-carousel" data-slide-to="1"></li>
+          <li data-target="#img-carousel" data-slide-to="2"></li>
+          <li data-target="#img-carousel" data-slide-to="3"></li>
+        </ol>
+        <div class="carousel-inner">
+          <% for (let i = 0; i < 4; i++) { %>
+          <div class="carousel-item<%= (i === 0 ? ' active' : '') %>">
+            <img src="<%= restaurants[i].photoUrl %>" class="d-block w-100"
+              alt="<=% restaurants[i].name %>">
+            <div class="carousel-caption">
+              <h5><%= restaurants[i].name %></h5>
+              <p><%= restaurants[i].description %></p>
+            </div>
+          </div>
+          <% } %>
+        </div>
+        <a class="carousel-control-prev" href="#img-carousel" role="button"
+          data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#img-carousel" role="button"
+          data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="map">
+
+    </div>
+
+    <div class="listing-container">
+      <% restaurants.forEach(element => { %>
+      <div class="main listing m-2">
+        <p class="restaurant-title">element.name</p>
+        <p class="restaurant-location">element.streetAddress</p>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+
+
+</body>
+
+</html>
