@@ -1,9 +1,86 @@
-const { stringToInteger } = require('../lib/validate');
+const { stringToInteger, stringToDate } = require('../lib/utils');
+
+/*
+Should be able to get orders by:
+- restaurant_id
+- user_id -> will be passed to function from back-end as sensitive info
+- maxDate/minDate -> will need to do between date and date+1
+
+Sort by date
+
+Mapping
+  id => o.id
+  restaurantId => r.id
+  userId => o.user_id
+  date => o.created_at
+
+*/
+
+/**
+ * Set where filters for get order request
+ * @param {any} options - Object with keys set to filters and values to filter by.
+ * @return Tuple [where string, params[]].
+ */
+const setGetFilters = (options) => {
+  const filters = [];
+  const params = [];
+
+  if (options.id) {
+    const id = stringToInteger(options.id, (int) => int > 0, true);
+    params.push(id);
+    filters.push(`o.id = $${params.length}`);
+  }
+
+  if (options.userId) {
+    params.push(options.userId);
+    filters.push(`o.user_id = $${params.length}`);
+  }
+
+  if (options.restaurantId) {
+    const id = stringToInteger(options.restaurantId, (int) => int > 0, true);
+    params.push(id);
+    filters.push(`r.id = $${params.length}`);
+  }
+
+  if (options.minDate || options.maxDate) {
+    const minDate = minDate && stringToDate(options.minDate) || stringToDate(options.maxDate);
+    const maxDate = (maxDate && stringToDate(options.maxDate) || minDate).setHours(23, 59, 59, 999);
+    params.push(minDate, maxDate);
+    filters.push(`o.created_at BETWEEN $${params.length - 1} AND $${params.length}`);
+  }
+
+  const whereFilter = filters.length && `WHERE ${filters.join(' AND ')}` || '';
+  return [whereFilter, params];
+};
+
+/**
+ * Get order details
+ * @param {DB} db - Instance of the DB interface.
+ * @param {number} userId - Valid user id.
+ * @param {any} options - Object with keys set to filters and values to filter by.
+ * @return Promise resolving to the query resuls.
+ */
+const get = (db, userId = null, options = {}) => {
+
+  const [whereFilter, params] = setGetFilters(Object.assign({}, options, { userId }));
+
+  return db.query(`
+    SELECT o.id, o.status, o.created_at, o.fulfilled_at, o.total_cents, r.id restaurant_id, r.name restaurant_name, m_i.id item_id, m_i.name item_name, o_m_i.price_cents item_price_cents, o_m_i.quantity item_quantity, o_m_i.price_cents * o_m_i.quantity item_total
+    FROM orders o
+    JOIN order_menu_items o_m_i ON o.id = o_m_i.order_id
+    JOIN menu_items m_i ON o_m_i.menu_item_id = m_i.id
+    JOIN restaurants r ON m_i.restaurant_id = r.id
+    ${whereFilter}
+    ORDER BY o.created_at
+  `, params);
+
+};
 
 /*
 NEW ORDERS - JSON input format:
 {
   "restaurantId": "1",
+  "total": "1520",
   "items": [
     {
       "id": "1",
@@ -31,6 +108,7 @@ NEW ORDERS - JSON input format:
 const validateInput = (order) => {
   const output = {
     restaurantId: null,
+    total: 0,
     items: []
   };
 
@@ -39,11 +117,19 @@ const validateInput = (order) => {
   try {
     output.restaurantId = stringToInteger(order.restaurantId, (int) => int > 0, true);
   } catch (err) {
-    throw Error('RestaurantId must be positive integer.');
+    throw Error('RestaurantId must be a positive integer.');
+  }
+
+  // Total
+  if (!order.total) throw Error('Total property is missing.');
+  try {
+    output.total = stringToInteger(order.total, (int) => int > 0, true);
+  } catch (err) {
+    throw Error('Order total must be a positive integer.');
   }
 
   // Menu items
-  if (!order.items || !Array.isArray(order.items) || !order.items.length) throw Error('Order must include items.');
+  if (!order.items || !Array.isArray(order.items) || !order.items.length) throw Error('Order must include one or more items.');
   order.items.forEach(item => {
     if (!item.id || !item.quantity) throw Error('All menu items must reference an id and a quantity.');
     try {
@@ -62,77 +148,63 @@ const validateInput = (order) => {
 /**
  * Create order
  * @param {DB} db - Instance of the DB interface.
+ * @param {number} userId - Valid user id.
  * @param {any} order - Order object parsed from JSON - front-end input.
  * @return Promise resolving to the new order's id.
  */
 const create = async (db, userId, order) => {
   try {
     const safeOrder = validateInput(order);
-    const menuItems = safeOrder.items.map(item => item.id);
+    const itemIds = safeOrder.items.map(item => item.id);
 
-    return db.transaction([
-
+    return db.transaction(async (query) => {
       // #1 - validate menu items and get price
-      [
-        `SELECT m_i.id, m_i.price_cents price
+      const validItems = await query(`
+        SELECT m_i.id, m_i.price_cents price
         FROM restaurants r
         JOIN menu_items m_i ON r.id = m_i.restaurant_id
-        WHERE r.id = $1 AND m_i.id IN (${menuItems.map((_, i) => `$${i + 2}`).join(', ')}) AND m_i.is_active = TRUE;`,
-        [safeOrder.restaurantId, ...menuItems]
-      ],
+        WHERE r.id = $1 AND r.is_deleted = FALSE AND r.is_active = TRUE AND m_i.id IN (${itemIds.map((_, i) => `$${i + 2}`).join(', ')}) AND m_i.is_active = TRUE
+        FOR UPDATE;
+      `, [safeOrder.restaurantId, ...itemIds]);
+
+      if (validItems.length !== itemIds.length) throw Error('Mismatch between items ordered and items available for restaurant');
+
+      // calculate order total
+      // add price to items in safeOrder.items
+      const orderTotal = validItems.reduce((total, { id, price }) => {
+        const item = safeOrder.items.find(item => item.id === id);
+        item.priceCents = price;
+        return total + item.quantity * price;
+      }, 0);
+      // confirm that total matches total agreed to by customer
+      if (orderTotal !== safeOrder.total) throw Error('Order total is inconsistent with item prices.');
 
       // #2 - create order record
-      [
-        `INSERT INTO orders (user_id, total_cents)
+      const bookedOrder = await query(`
+        INSERT INTO orders (user_id, total_cents)
         VALUES ($1, $2)
-        RETURNING id;`,
-        (rows) => {
-          // log previous query results
-          console.log('Result - trans 1:', rows);
+        RETURNING id;
+      `, [userId, orderTotal]);
 
-          // check result from prior query
-          if (rows.length !== menuItems.length) throw Error('Mismatch between items ordered and items available for restaurant');
-
-          // if no error return array of params for current query
-
-          // calculate order total
-          // add price to items in safeOrder.items
-          const total = rows.reduce((total, { id, price }) => {
-            const item = safeOrder.items.find(item => item.id === id);
-            item.priceCents = price;
-            return total + item.quantity * price;
-          }, 0);
-
-          return [userId, total];
-        }
-      ],
+      // get order id from newly created order
+      const [{ id: orderId }] = bookedOrder;
+      // params for menu items
+      const itemParams = safeOrder.items.reduce((params, { id, quantity, priceCents }) => params.concat(orderId, id, quantity, priceCents), []);
 
       // #3 - insert menu items in order/items bridge table
-      [
-        `INSERT INTO order_menu_items (order_id, menu_item_id, quantity, price_cents)
+      const bookedItems = await query(`
+        INSERT INTO order_menu_items (order_id, menu_item_id, quantity, price_cents)
         VALUES ${safeOrder.items.map((_, i) => `($${i * 4 + 1}, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4})`).join(', ')}
-        RETURNING order_id;`,
-        (rows) => {
-          // log previous query results
-          console.log('Result - trans 2:', rows);
+        RETURNING order_id;
+      `, itemParams);
 
-          // get order id from newly created order
-          const orderId = rows[0].id;
-          // params for menu items
-          return safeOrder.items.reduce((params, { id, quantity, priceCents }) => params.concat(orderId, id, quantity, priceCents), []);
-        }
-      ],
-
-      // #4 - return new order
-      [
-        `SELECT * FROM orders WHERE id = $1;`,
-        (rows) => [rows[0].order_id]
-      ]
-
-    ]);
+      // return new order id
+      return bookedItems[0].order_id;
+    });
 
   } catch (err) {
-    throw Error(`Order could not be created due to an error. Error: ${err.message}`);
+    // rethrow error so it can be caught in the transaction for all changes to be rolled back
+    throw Error(`Order could not be created due to an error. Error: ${err.message}.`);
   }
 };
 
@@ -141,11 +213,11 @@ const create = async (db, userId, order) => {
  * Use complete() to mark order as complete
  * @param {DB} db - Instance of the DB interface.
  * @param {number} id - Order id.
- * @param {string} status - New status. Should be one of 'Pending', 'Confirmed', 'In Progress', 'Declined'.
+ * @param {string} status - New status. Should be one of 'Pending', 'In Progress', 'Declined'.
  * @return Promise resolving to the updated order record from db.
  */
 const updateStatus = (db, id, status) => {
-  if (!['Pending', 'Confirmed', 'In Progress', 'Declined'].includes(status)) throw Error(`Order status ${status} is not valid.`);
+  if (!['Pending', 'In Progress', 'Declined'].includes(status)) throw Error(`Order status ${status} is not valid.`);
   return db.query('UPDATE orders SET status = $1 WHERE id = $2', [status, id]);
 };
 
@@ -159,4 +231,60 @@ const complete = (db, id) => {
   return db.query(`UPDATE orders SET fulfilled_at = NOW(), status = 'Completed' WHERE id = $1`, [id]);
 };
 
-module.exports = { create, updateStatus, complete };
+/*
+parse order query data into a JS object
+public flag should be set to true if meant to be sent to front-end
+
+Format:
+[
+  '1': {
+    id: 1,
+    status: 'pending',
+    created_at: 123123123,
+    fulfilled_at: 324465476,
+    totalCents: 1200
+    restaurant: {
+      id: 1,
+      name: 'wewewe'
+    }
+    items: [
+      {
+        id: 12,
+        name: 'dwdsd',
+        priceCents: 120,
+        quantity: 10,
+        totalCents: 1200
+      }
+    ]
+  }
+]
+
+*/
+const parse = (data) => {
+  return data.reduce((output, row) => {
+    output[row.id] = output[row.id] || {
+      id: row.id,
+      status: row.status,
+      created: new Date(row.created_at),
+      fulfilled: row.fulfilled_at && new Date(row.fulfilled_at) || null,
+      totalCents: row.total_cents,
+      restaurant: {
+        id: row.restaurant_id,
+        name: row.restaurant_name
+      },
+      items: []
+    };
+
+    output[row.id].items.push({
+      id: row.item_id,
+      name: row.item_name,
+      priceCents: row.item_price_cents,
+      quantity: row.item_quantity,
+      totalCents: row.item_total
+    });
+
+    return output;
+  }, {});
+};
+
+module.exports = { get, create, updateStatus, complete, parse };
