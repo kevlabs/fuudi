@@ -26,8 +26,4 @@ class profileOrders extends ViewComponent {
     }
     return $(list);
   }
-
-  componentDidMount() {
-    this.$element.on('click', '#profile', (evt) => alert(this.state.username));
-  }
 }
