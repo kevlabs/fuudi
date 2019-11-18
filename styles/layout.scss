@@ -1,15 +1,20 @@
 // See: https://sass-lang.com/
-$background-color: #474747;
-$navbar-color: #C32F27;
-$logo-color: #F2AF29;
+$background-color: rgb(178, 210, 251);
+$background-color-thin: rgba(178, 210, 251, .4);
+$logo-color: rgb(42, 44, 114);
+$logo-color-thin: rgba(42, 44, 114, 0.8);
+$navbar-color: rgb(233, 146, 88);
+$navbar-color-thin: rgba(233, 146, 88, 0.6);
 $logo-font: 'Bebas Neue', 'Arial', sans-serif;
-$container-color: #BFBDC1;
+$container-color: rgb(191, 189, 193);
+$container-color-thin: rgba(191, 189, 193, .8);
 $text-light: #ede9e6;
 $text-dark: #2e2d2c;
-$standard-font: 'Muli', 'Arial', sans-serif;
+$standard-font: 'Playfair Display', 'Times New Roman', sans-serif;
+$enable-gradients: 'true';
 
 body {
-  background-color: $background-color;
+  background-color: $background-color-thin;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,16 +30,19 @@ header {
   width: 100%;
   flex-direction: column;
 
-  .header-img {
-    width: 100%;
-    height: 15em;
-    object-fit: cover;
-  }
+}
+
+.header-img {
+  width: 100%;
+  height: 15em;
+  object-fit: cover;
 }
 
 .navbar {
   background-color: $navbar-color;
   width: 100%;
+  position: fixed;
+  top: 0;
 
   .logo {
     font-family: $logo-font;
@@ -44,26 +52,79 @@ header {
 }
 
 .profile-info {
+  // background: $navbar-color-thin;
+  border-radius: 25px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  color: $text-light;
-  width: 80%;
+  color: $text-dark;
+  width: 95%;
+  margin-bottom: 2rem;
+  margin-top: 100px;
 
   .profile-name {
-    width: 80%;
+    width: 100%;
+    margin: 16px 0;
     text-align: center;
-    font-family: $logo-font;
+    font-family: $standard-font;
     font-size: 1.5rem;
+    font-weight: bold;
     color: $logo-color;
   }
 }
 
-.restaurant-info {
-  width: 80%;
+.listing-container {
+  width: 95%;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  // background-color: $logo-color-thin;
+  border-radius: 25px;
+  color: $text-dark;
+}
+
+.listing {
+  width: 100%;
+  background-color: $navbar-color-thin;
+  border-radius: 25px;
+  padding: 1em 2em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.listing:hover {
+  background-color: $navbar-color;
+}
+
+// Main Page
+
+  #img-carousel {
+    margin-top: 100px;
+    padding: 2em 0;
+    height: 20vh;
+    width: 80%;
+
+    .carousel-item {
+      max-width: 100%;
+      max-height: auto;
+    }
+
+    .carousel-item img {
+      height: 12em;
+      object-fit: cover;
+    }
+  }
+// Menu page
+
+.restaurant-info {
+  width: 100%;
+  display: flex;
+  padding: 0 2em;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
@@ -77,37 +138,90 @@ header {
     text-align: center;
     padding: 0 1em;
   }
-
-  .restaurant-info {
-    width: 100%;
-    text-align: center;
-  }
-}
-
-.listing-container {
-  width: 80%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: $logo-color;
-  color: $text-dark;
-}
-
-.listing {
-  width: 90%;
-  background-color: $container-color;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  text-align: center;
 }
 
 .menu-title {
-  font-family: $logo-font;
-  font-size: 24px;
+  font-family: $standard-font;
+  font-weight: bold;
+  color: $logo-color;
+  font-size: 20px;
+}
+
+// Profile Page
+
+.user-img {
+  display: flex;
+  justify-content: center;
+}
+
+.user-details {
+  width: 100%;
+  text-align: center;
 }
 
 #profile {
   margin-right: 30px;
+}
+
+.order {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  .order-date, .order-restaurant {
+    width: 30%;
+    font-family: $standard-font;
+    font-size: 1rem;
+    font-weight: bold;
+    color: $logo-color;
+  }
+
+  .order-restaurant {
+    text-align: right;
+  }
+
+  .order-contents {
+    width: 80%;
+  }
+
+  .order-price {
+    width: 20%;
+    text-align: right;
+  }
+}
+
+// Responsive Designs
+
+@media only screen and (min-width: 1024px) {
+  body {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+
+  .header-img {
+    border-radius: 10px;
+  }
+
+  .profile-info {
+    width: 40%;
+  }
+
+  .listing-container {
+    width: 55%;
+    margin: 2em 0;
+    height: 80vh;
+    margin-top: 100px;
+    overflow-y: auto;
+    /* hides container scrollbar */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE 10+ */
+  }
+
+  .listing-container::-webkit-scrollbar { /* WebKit */
+    width: 0;
+    height: 0;
+  }
+
+
 }
