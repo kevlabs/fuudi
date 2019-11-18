@@ -7,10 +7,10 @@
 
 const express = require('express');
 const router  = express.Router();
-const { get: getOrder, create: createOrder, updateStatus: updateOrderStatus, complete: completeOrder, parse: parseOrder } = require('../services/orders');
+const { createOrder, updateOrderStatus, completeOrder, getOrderData } = require('../services/orders');
 const { stringToInteger, resEnum, createResponse } = require('../lib/utils');
 const { isAuthenticated, getCurrentUser } = require('../services/users');
-const { isRestaurantOwner, getRestaurantsByOwner} = require('../services/restaurants');
+const { isRestaurantOwner } = require('../services/restaurants');
 
 module.exports = (db) => {
   // users should be authenticated to access this route
@@ -21,20 +21,8 @@ module.exports = (db) => {
     .get(async (req, res) => {
       try {
         const userId = getCurrentUser(req);
-        let orderData;
-
-        // if ownerRestaurantId field has a value pull all order for that restaurant
-        const restaurantId = req.body.ownerRestaurantId && stringToInteger(req.body.ownerRestaurantId, (int) => int > 0, true) || null;
-        if (restaurantId && isRestaurantOwner(db, restaurantId, userId)) {
-          orderData = await getOrder(db, null, { restaurantId });
-
-        } else {
-          orderData = await getOrder(db, userId);
-        }
-
-        const orders = parseOrder(orderData);
-
-        res.json(createResponse(resEnum.success, orders));
+        const orders = await getOrderData(db, userId);
+        res.json(orders);
 
       } catch (err) {
         res.status(500).json({ error: err.message });
@@ -45,32 +33,26 @@ module.exports = (db) => {
     .post(async (req, res) => {
       try {
         const userId = getCurrentUser(req);
-
-        console.log('Logged in as:', userId);
-        console.log('Input data', req.body);
-
         const orderId = await createOrder(db, userId, req.body);
-        console.log('Order successfully added', orderId);
-        res.json(createResponse(resEnum.success, { orderId }));
-
+        const order = await getOrderData(db, userId, {
+          'id': orderId
+        });
+        res.json(order);
 
       } catch (err) {
-        console.error(err.message);
+        res.status(500).json({ error: err.message });
       }
-
     });
 
   router.route('/:id')
-    // get order details by id
+    // get order details by order id
     .get(async (req, res) => {
       try {
         const userId = getCurrentUser(req);
-        const orderData = await getOrder(db, userId, {
+        const order = await getOrderData(db, userId, {
           'id': req.params.id
         });
-        const order = parseOrder(orderData);
-
-        res.json(createResponse(resEnum.success, order));
+        res.json(order);
 
       } catch (err) {
         res.status(500).json({ error: err.message });
@@ -80,6 +62,20 @@ module.exports = (db) => {
     .put((req, res) => {
 
     });
+
+  // get order by restaurant id - for restaurant owners only
+  router.get('/restaurants/:id', async (req, res) => {
+    try {
+      const restaurantId = req.params.id;
+      if (!isRestaurantOwner(req, restaurantId)) return res.status(403).json({ error: 'unauthorized access' });
+
+      const orders = await getOrderData(db, null, { restaurantId });
+      res.json(orders);
+
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
 
   return router;
 };
