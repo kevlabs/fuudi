@@ -38,68 +38,23 @@
     </div>
 
     <div class="listing-container">
+      <% for (let order of orders) { %>
       <div class="order listing m-2">
-        <p class="order-date">November 15, 2019</p>
-        <p class="order-restaurant">Burger Restaurant</p>
-        <p class="order-contents">Bacon Cheeseburger, Fries, Chocolate Shake</p>
-        <p class="order-price">$22.99</p>
+        <p class="order-date"><%= order.createdAt %></p>
+        <p class="order-restaurant"><%= order.restaurant.name %></p>
+        <p class="order-contents">
+          <% order.items.forEach((item, index) => {} %>
+          <span><%= item.quantity %>x
+            <%= item.name %><%= index === items.length - 1 ? '.' : ', ') %></span>
+          <% }) %>
+        </p>
+        <p class="order-price">
+          <%= order.priceCents.toLocaleString("en-US", {style:"currency", currency:"USD"}) %>
+        </p>
       </div>
+      <% } %>
 
-      <div class="order listing m-2">
-        <p class="order-date">November 15, 2019</p>
-        <p class="order-restaurant">Burger Restaurant</p>
-        <p class="order-contents">Bacon Cheeseburger, Fries, Chocolate Shake</p>
-        <p class="order-price">$22.99</p>
-      </div>
 
-      <div class="order listing m-2">
-        <p class="order-date">November 15, 2019</p>
-        <p class="order-restaurant">Burger Restaurant</p>
-        <p class="order-contents">Bacon Cheeseburger, Fries, Chocolate Shake</p>
-        <p class="order-price">$22.99</p>
-      </div>
-
-      <div class="order listing m-2">
-        <p class="order-date">November 15, 2019</p>
-        <p class="order-restaurant">Burger Restaurant</p>
-        <p class="order-contents">Bacon Cheeseburger, Fries, Chocolate Shake</p>
-        <p class="order-price">$22.99</p>
-      </div>
-
-      <div class="order listing m-2">
-        <p class="order-date">November 15, 2019</p>
-        <p class="order-restaurant">Burger Restaurant</p>
-        <p class="order-contents">Bacon Cheeseburger, Fries, Chocolate Shake</p>
-        <p class="order-price">$22.99</p>
-      </div>
-
-      <div class="order listing m-2">
-        <p class="order-date">November 15, 2019</p>
-        <p class="order-restaurant">Burger Restaurant</p>
-        <p class="order-contents">Bacon Cheeseburger, Fries, Chocolate Shake</p>
-        <p class="order-price">$22.99</p>
-      </div>
-
-      <div class="order listing m-2">
-        <p class="order-date">November 15, 2019</p>
-        <p class="order-restaurant">Burger Restaurant</p>
-        <p class="order-contents">Bacon Cheeseburger, Fries, Chocolate Shake</p>
-        <p class="order-price">$22.99</p>
-      </div>
-
-      <div class="order listing m-2">
-        <p class="order-date">November 15, 2019</p>
-        <p class="order-restaurant">Burger Restaurant</p>
-        <p class="order-contents">Bacon Cheeseburger, Fries, Chocolate Shake</p>
-        <p class="order-price">$22.99</p>
-      </div>
-
-      <div class="order listing m-2">
-        <p class="order-date">November 15, 2019</p>
-        <p class="order-restaurant">Burger Restaurant</p>
-        <p class="order-contents">Bacon Cheeseburger, Fries, Chocolate Shake</p>
-        <p class="order-price">$22.99</p>
-      </div>
     </div>
 
 
