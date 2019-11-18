@@ -7,16 +7,21 @@
 
 const express = require('express');
 const router  = express.Router();
+const { getRestaurantData } = require('../services/restaurants');
+
 
 module.exports = (db) => {
-  router.get('/', async function(req, res) {
-    try {
-      const restaurants = await db.query(`SELECT * FROM restaurants;`);
-      res.json({ restaurants });
+  router.route('/')
+    // get all restaurants
+    .get(async (req, res) => {
+      try {
+        const restaurants = await getRestaurantData(db);
+        res.json(restaurants);
 
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  });
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    });
+
   return router;
 };
