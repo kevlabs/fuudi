@@ -24,8 +24,8 @@ module.exports = (db) => {
         let orderData;
 
         // if ownerRestaurantId field has a value pull all order for that restaurant
-        const restaurantId = stringToInteger(req.body.ownerRestaurantId, (int) => int > 0, true);
-        if (isRestaurantOwner(db, restaurantId, userId)) {
+        const restaurantId = req.body.ownerRestaurantId && stringToInteger(req.body.ownerRestaurantId, (int) => int > 0, true) || null;
+        if (restaurantId && isRestaurantOwner(db, restaurantId, userId)) {
           orderData = await getOrder(db, null, { restaurantId });
 
         } else {
