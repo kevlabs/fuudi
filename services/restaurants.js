@@ -1,4 +1,4 @@
-const { stringToInteger, stringToDate } = require('../lib/utils');
+const { stringToInteger, stringToDate, isTimestamp, isEmail, isUrl } = require('../lib/utils');
 
 // check if user is owner of given restaurant by Id
 const isRestaurantOwner = (req, restaurantId) => {
@@ -145,7 +145,6 @@ const get = (db, options = {}) => {
 
 };
 
-
 const parse = (data) => {
   const [sortedKeys, restaurants] = data.reduce(([sortedKeys, restaurants], row) => {
     sortedKeys[sortedKeys.length && sortedKeys.length - 1 || 0] !== row.id && sortedKeys.push(row.id);
@@ -192,6 +191,146 @@ const getData = async (db, options = {}) => {
   }
 };
 
+/*
+NEW ORDERS - JSON input format:
+{
+  "restaurantId": "1",
+  "total": "1520",
+  "items": [
+    {
+      "id": "1",
+      "quantity": "4"
+    },
+    {
+      "id": "7",
+      "quantity": "1"
+    },
+    {
+      "id": "27",
+      "quantity": "1"
+    }
+  ]
+}
+
+*/
+
+/**
+ * Validate order input
+ * @param {DB} db - Instance of the DB interface.
+ * @param {any} restaurant - Parsed order object to validate.
+ * @return Valid order object. Raises an exception otherwise.
+ */
+const validateInput = (restaurant) => {
+  const output = {
+    ownerId: restaurant.userId,
+    items: []
+  };
+
+  // string fields
+  ['name', 'description', 'tags', 'phone', 'streetAddress', 'city', 'postCode'].forEach(key => {
+    const value = restaurant[key];
+    if (!value || typeof value !== 'string') throw Error(`${key} is missing or not of type string.`);
+    output[key] = value;
+  });
+
+  // timestamp fields
+  ['openTime', 'closeTime'].forEach(key => {
+    const value = restaurant[key];
+    if (!value || !isTimestamp(value)) throw Error(`${key} is missing or not of type timestamp.`);
+    output[key] = value;
+  });
+
+  // photoUrl
+  if (!restaurant.photoUrl || !isUrl(restaurant.photoUrl)) throw Error('photoUrl is missing or not of type URL.');
+  output.photoUrl = restaurant.photoUrl;
+
+  // email
+  if (!restaurant.email || !isEmail(restaurant.email)) throw Error('email is missing or not of type email.');
+  output.email = restaurant.email;
+
+  // WaitMinutes
+  try {
+    output.waitMinutes = stringToInteger(restaurant.waitMinutes, (int) => int > 0, true);
+  } catch (err) {
+    throw Error('waitMinutes must be a positive integer.');
+  }
+
+  // number fields
+  ['latitude', 'longitude'].forEach(key => {
+    const value = Number(restaurant[key]);
+    if (!value) throw Error(`${key} is missing or not of type number.`);
+    output[key] = value;
+  });
+
+  // Menu items
+  if (!restaurant.items || !Array.isArray(restaurant.items) || !restaurant.items.length) throw Error('Restaurant must include one or more menu items.');
+  restaurant.items.forEach(item => {
+    if (!item.name || !item.description || !item.photoUrl || !item.priceCents) throw Error('Menu items must have properties name, description, photoURL and priceCents.');
+    try {
+      let isErr = '';
+      output.items.push({
+        name: typeof item.name === 'string' && item.name || (isErr = 'name'),
+        description: typeof item.description === 'string' && item.description || (isErr = 'description'),
+        photoUrl: typeof item.photoUrl === 'string' && item.photoUrl || (isErr = 'photoUrl'),
+        priceCents: stringToInteger(item.priceCents, (int) => int > 0, true)
+      });
+      if (isErr) throw Error(isErr);
+    } catch (err) {
+      throw Error(`Menu item: ${item.name} ${err.message ? `(${err.message}) ` : ''}failed validation.`);
+    }
+  });
+
+  return output;
+};
+
+/**
+ * Create restaurant
+ * @param {DB} db - Instance of the DB interface.
+ * @param {number} userId - Valid user id (owner_id).
+ * @param {any} restaurant - Order object parsed from JSON - front-end input.
+ * @return Promise resolving to the new restaurant's id.
+ */
+const create = async (db, userId, restaurant) => {
+  try {
+
+    // temporarily add dummy latitude, longitude and rating
+    restaurant.latitude = 43.6441789;
+    restaurant.longitude = -79.4043927;
+    restaurant.rating = 300;
+
+    const safeOrder = validateInput({ userId, ...restaurant });
+    const restaurantFields = ['ownerId', 'name', 'description', 'tags', 'photoUrl', 'openTime', 'closeTime', 'phone', 'email', 'streetAddress', 'city', 'postCode', 'latitude', 'longitude', 'waitMinutes', 'rating'].map(field => safeOrder[field]);
+
+    // don't catch errors in transaction or changes won't be rolled back
+    return db.transaction(async (query) => {
+      // #1 - create restaurant record
+      const bookedRestaurant = await query(`
+        INSERT INTO restaurants (owner_id, name, description, tags, photo_url, open_time, close_time, phone, email, street_address, city, post_code, latitude, longitude, wait_minutes, rating)
+        VALUES (${restaurantFields.map((_, i) => `$${i + 1}`).join(', ')})
+        RETURNING id;
+      `, restaurantFields);
+
+      // get restaurant id from newly created order
+      const [{ id: restaurantId }] = bookedRestaurant;
+      // params for menu items
+      const itemParams = safeOrder.items.reduce((params, { name, description, photoUrl, priceCents }) => params.concat(restaurantId, name, description, photoUrl, priceCents), []);
+
+      // #2 - insert menu items in menu_items table
+      const bookedItems = await query(`
+        INSERT INTO menu_items (restaurant_id, name, description, photo_url, price_cents)
+        VALUES ${safeOrder.items.map((_, i) => `($${i * 5 + 1}, $${i * 5 + 2}, $${i * 5 + 3}, $${i * 5 + 4}, $${i * 5 + 5})`).join(', ')}
+        RETURNING restaurant_id;
+      `, itemParams);
+
+      // return new restaurant id
+      return bookedItems[0].restaurant_id;
+    });
+
+  } catch (err) {
+    throw Error(`Restaurant could not be created due to an error. Error: ${err.message}.`);
+  }
+};
+
 
 
 
@@ -212,4 +351,4 @@ const getData = async (db, options = {}) => {
 //   `)
 // }
 
-module.exports = { isRestaurantOwner, getRestaurantsByOwner, restaurantLogin, getOwnedRestaurants, getRestaurant : get, parseRestaurant: parse, getRestaurantData: getData };
+module.exports = { isRestaurantOwner, getRestaurantsByOwner, restaurantLogin, getOwnedRestaurants, getRestaurant : get, parseRestaurant: parse, getRestaurantData: getData, createRestaurant: create };
