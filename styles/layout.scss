@@ -191,6 +191,14 @@ header {
   color: $logo-color;
   font-size: 20px;
 }
+.menu{
+  flex-direction: row;
+  flex-wrap:wrap;
+  justify-content: space-between;
+}
+.checkout{
+  display:none;
+}
 
 // Profile Page
 
@@ -262,8 +270,8 @@ header {
   .listing-container {
     width: 55%;
     margin: 2em 1em;
-    height: 80vh;
-    margin-top: 100px;
+    height: 90vh;
+    margin-top: 4rem;
     overflow-y: auto;
     /* hides container scrollbar */
     scrollbar-width: none; /* Firefox */

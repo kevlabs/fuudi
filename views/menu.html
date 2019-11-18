@@ -5,22 +5,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+  <script>
+  $( document ).ready(function() {
+      console.log( "document loaded" );
+  });
+
+  $( window ).on( "load", function() {
+      console.log( "window loaded" );
+  });
+  </script>
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet"
-    href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
-    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
   <!-- Main CSS -->
   <link rel="stylesheet" href="../public/styles/layout.css">
 
   <!-- Fonts -->
-  <link
-    href="https://fonts.googleapis.com/css?family=Bebas+Neue|Playfair+Display:400,400i,700,700i&display=swap"
+  <link href="https://fonts.googleapis.com/css?family=Bebas+Neue|Playfair+Display:400,400i,700,700i&display=swap"
     rel="stylesheet">
 
-  <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css?ver=5.8.2"
-    rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css?ver=5.8.2" rel="stylesheet">
 
   <title>Fuudi - Menu</title>
 </head>
@@ -74,6 +80,12 @@
           Topped
           with all the fixins.</p>
         <p class="menu-price">$16.99</p>
+        <span id='plusminus'>
+          <button> -</button>
+          <span>0</span>
+          <button> +</button>
+        </span>
+
       </div>
 
       <div class="menu listing m-2">
@@ -149,6 +161,7 @@
       </div>
     </div>
   </div class="content">
+  <div class='checkout'></div>
 
 </body>
 
