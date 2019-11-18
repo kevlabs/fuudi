@@ -52,6 +52,12 @@ header {
 
   .settings-profile {
     color: $logo-color;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  i {
+    font-size: 2em;
   }
 }
 
