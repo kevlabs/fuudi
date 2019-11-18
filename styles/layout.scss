@@ -7,7 +7,7 @@ $navbar-color: rgb(233, 146, 88);
 $navbar-color-thin: rgba(233, 146, 88, 0.6);
 $logo-font: 'Bebas Neue', 'Arial', sans-serif;
 $container-color: rgb(191, 189, 193);
-$container-color-thin: rgba(191, 189, 193, .8);
+$container-color-thin: rgba(251, 249, 249, 0.75);
 $text-light: #ede9e6;
 $text-dark: #2e2d2c;
 $standard-font: 'Playfair Display', 'Times New Roman', sans-serif;
@@ -45,10 +45,26 @@ header {
   top: 0;
 
   .logo {
-    font-family: $logo-font;
     color: $logo-color;
+    font-family: $logo-font;
     font-size: 3rem;
   }
+
+  .settings-profile {
+    color: $logo-color;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  i {
+    font-size: 2em;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .profile-info {
@@ -103,21 +119,33 @@ header {
 
 // Main Page
 
-  #img-carousel {
-    margin-top: 100px;
-    padding: 2em 0;
-    height: 20vh;
-    width: 80%;
-
-    .carousel-item {
-      max-width: 100%;
-      max-height: auto;
+#img-carousel {
+  padding: 2em 0;
+  width: 80%;
+  margin: 100px auto;
+  .carousel-item {
+    max-width: 100%;
+    max-height: auto;
+  }
+  .carousel-item img {
+    height: 25em;
+    object-fit: cover;
+  }
+  .carousel-caption {
+    background-color: $container-color-thin;
+    border-radius: 25px;
+    color: $text-dark;
+    h5 {
+      color: $logo-color;
+      font-weight: bold;
     }
+  }
+}
 
-    .carousel-item img {
-      height: 12em;
-      object-fit: cover;
-    }
+  .restaurant-title {
+  font-weight: bold;
+  color: $logo-color;
+  font-size: 20px;
   }
 // Menu page
 
@@ -193,10 +221,11 @@ header {
 // Responsive Designs
 
 @media only screen and (min-width: 1024px) {
-  body {
+  .content {
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: space-between;
+    width: 100%;
   }
 
   .header-img {
@@ -209,7 +238,7 @@ header {
 
   .listing-container {
     width: 55%;
-    margin: 2em 0;
+    margin: 2em 1em;
     height: 80vh;
     margin-top: 100px;
     overflow-y: auto;
@@ -223,5 +252,11 @@ header {
     height: 0;
   }
 
+  .carousel {
+    width: 40%;
+  }
 
+  #img-carousel {
+    width: 100%;
+  }
 }
