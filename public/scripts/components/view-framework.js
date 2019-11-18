@@ -50,7 +50,7 @@ class ViewManager {
   // detach current component and call mount method on new component (should call render (which should return a $ element), mount the $ returned from that fn, then call componentDidMount). component should be able to opt out from rerendering if $ already exists ($element property on class instance)
   // should trickle down to all viewsets
   // might want to set props default to '{}'
-  view(name, props = null) {
+  view(name, props = {}) {
     // fetch component to display
     const viewHandler = this._views[name];
 
@@ -64,9 +64,10 @@ class ViewManager {
     // may have to remove props
     viewHandler && viewHandler.component.mount(this._$element, props);
 
-    // trickle view down if component is attached
+    // trickle view down
+    // components managed by viewSets may not be children of component in view
     // pass props to viewSets
-    viewHandler && this._viewSets.forEach(viewSet => viewSet.view(name, props));
+    this._viewSets.forEach(viewSet => viewSet.view(name, props));
 
     return this;
   }
@@ -74,7 +75,7 @@ class ViewManager {
 
 class ViewComponent {
   // $element is an optional parameter
-  constructor($element, reRender = true) {
+  constructor($element = null, reRender = true) {
     // don't rerender if instance of ViewComponent - this are meant to be simple one time render components
     // extend ViewComponent if need to rerender
     this.reRender = Object.getPrototypeOf(this) !== ViewComponent && reRender;
@@ -99,7 +100,7 @@ class ViewComponent {
     return !this._$element || this.reRender;
   }
 
-  render(props = null) {
+  render(props = {}) {
     // should be implemented locally
     return;
   }
