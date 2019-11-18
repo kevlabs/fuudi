@@ -30,6 +30,7 @@ header {
   display: flex;
   width: 100%;
   flex-direction: column;
+  z-index: 99;
 
 }
 
@@ -70,6 +71,11 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.left-side {
+  display: flex;
+  flex-direction: column;
 }
 
 .profile-info {
@@ -153,6 +159,10 @@ header {
   }
 }
 
+  #map {
+    margin-bottom: 1em;
+  }
+
   .restaurant-title {
   font-weight: bold;
   color: $logo-color;
@@ -230,6 +240,11 @@ header {
   }
 }
 
+#map{
+  height:400px;
+  width:100%;
+}
+
 // Responsive Designs
 
 @media only screen and (min-width: 1024px) {
@@ -266,11 +281,28 @@ header {
   }
 
   .carousel {
-    width: 40%;
+    flex-direction: column;
+    top: 2rem;
+    width: 100%;
   }
 
   #img-carousel {
     width: 100%;
+    margin-left: 1em;
+    margin-top: 0;
+
+    .carousel-item img {
+      height: 30vh;
+      top: 100px;
+    }
+  }
+  .left-side{
+    width:40%;
+  }
+  #map{
+    width: 100%;
+    height: 40vh;
+    margin-top: 3em;
     margin-left: 1em;
   }
 }
