@@ -60,12 +60,13 @@ const setGetFilters = (options) => {
  * @param {any} options - Object with keys set to filters and values to filter by.
  * @return Promise resolving to the query resuls.
  */
-const get = (db, userId = 0, options = {}) => {
+const get = (db, userId = null, options = {}) => {
 
   const [whereFilter, params] = setGetFilters(Object.assign({}, options, { userId }));
 
   return db.query(`
-    SELECT * FROM orders o
+    SELECT o.id, o.status, o.created_at, o.fulfilled_at, o.total_cents, r.id restaurant_id, r.name restaurant_name, m_i.id item_id, m_i.name item_name, o_m_i.price_cents item_price_cents, o_m_i.quantity item_quantity, o_m_i.price_cents * o_m_i.quantity item_total
+    FROM orders o
     JOIN order_menu_items o_m_i ON o.id = o_m_i.order_id
     JOIN menu_items m_i ON o_m_i.menu_item_id = m_i.id
     JOIN restaurants r ON m_i.restaurant_id = r.id
@@ -235,7 +236,55 @@ parse order query data into a JS object
 public flag should be set to true if meant to be sent to front-end
 
 Format:
+[
+  '1': {
+    id: 1,
+    status: 'pending',
+    created_at: 123123123,
+    fulfilled_at: 324465476,
+    totalCents: 1200
+    restaurant: {
+      id: 1,
+      name: 'wewewe'
+    }
+    items: [
+      {
+        id: 12,
+        name: 'dwdsd',
+        priceCents: 120,
+        quantity: 10,
+        totalCents: 1200
+      }
+    ]
+  }
+]
 
 */
+const parse = (data) => {
+  return data.reduce((output, row) => {
+    output[row.id] = output[row.id] || {
+      id: row.id,
+      status: row.status,
+      created: new Date(row.created_at),
+      fulfilled: row.fulfilled_at && new Date(row.fulfilled_at) || null,
+      totalCents: row.total_cents,
+      restaurant: {
+        id: row.restaurant_id,
+        name: row.restaurant_name
+      },
+      items: []
+    };
 
-module.exports = { get, create, updateStatus, complete };
+    output[row.id].items.push({
+      id: row.item_id,
+      name: row.item_name,
+      priceCents: row.item_price_cents,
+      quantity: row.item_quantity,
+      totalCents: row.item_total
+    });
+
+    return output;
+  }, {});
+};
+
+module.exports = { get, create, updateStatus, complete, parse };
