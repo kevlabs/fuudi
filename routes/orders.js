@@ -7,9 +7,10 @@
 
 const express = require('express');
 const router  = express.Router();
-const { get: getOrder, create: createOrder, updateStatus: updateOrderStatus, complete: completeOrder } = require('../services/orders');
-const { resEnum, createResponse } = require('../lib/utils');
+const { get: getOrder, create: createOrder, updateStatus: updateOrderStatus, complete: completeOrder, parse: parseOrder } = require('../services/orders');
+const { stringToInteger, resEnum, createResponse } = require('../lib/utils');
 const { isAuthenticated, getCurrentUser } = require('../services/users');
+const { isRestaurantOwner, getRestaurantsByOwner} = require('../services/restaurants');
 
 module.exports = (db) => {
   // users should be authenticated to access this route
@@ -19,8 +20,21 @@ module.exports = (db) => {
     // get all orders for a given client or restaurant
     .get(async (req, res) => {
       try {
-        const orders = await db.query(`SELECT * FROM orders;`);
-        res.json({ orders });
+        const userId = getCurrentUser(req);
+        let orderData;
+
+        // if ownerRestaurantId field has a value pull all order for that restaurant
+        const restaurantId = req.body.ownerRestaurantId && stringToInteger(req.body.ownerRestaurantId, (int) => int > 0, true) || null;
+        if (restaurantId && isRestaurantOwner(db, restaurantId, userId)) {
+          orderData = await getOrder(db, null, { restaurantId });
+
+        } else {
+          orderData = await getOrder(db, userId);
+        }
+
+        const orders = parseOrder(orderData);
+
+        res.json(createResponse(resEnum.success, orders));
 
       } catch (err) {
         res.status(500).json({ error: err.message });
@@ -51,17 +65,10 @@ module.exports = (db) => {
     .get(async (req, res) => {
       try {
         const userId = getCurrentUser(req);
-
-        console.log('Logged in as:', userId);
-
-        // const order = await getOrder(db, {
-        //   'user_id': userId,
-        //   'order_id': req.params.id
-        // });
-        const order = await getOrder(db);
-
-        console.log(order);
-
+        const orderData = await getOrder(db, userId, {
+          'id': req.params.id
+        });
+        const order = parseOrder(orderData);
 
         res.json(createResponse(resEnum.success, order));
 
