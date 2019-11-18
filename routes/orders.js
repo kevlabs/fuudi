@@ -17,7 +17,7 @@ module.exports = (db) => {
   router.use(isAuthenticated);
 
   router.route('/')
-    // get all orders for a given client or restaurant
+    // get all orders for a given client
     .get(async (req, res) => {
       try {
         const userId = getCurrentUser(req);

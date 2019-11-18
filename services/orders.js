@@ -43,8 +43,8 @@ const setGetFilters = (options) => {
   }
 
   if (options.minDate || options.maxDate) {
-    const minDate = minDate && stringToDate(options.minDate) || stringToDate(options.maxDate);
-    const maxDate = (maxDate && stringToDate(options.maxDate) || minDate).setHours(23, 59, 59, 999);
+    const minDate = options.minDate && stringToDate(options.minDate) || stringToDate(options.maxDate);
+    const maxDate = (options.maxDate && stringToDate(options.maxDate) || minDate).setHours(23, 59, 59, 999);
     params.push(minDate, maxDate);
     filters.push(`o.created_at BETWEEN $${params.length - 1} AND $${params.length}`);
   }
