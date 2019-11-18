@@ -42,12 +42,13 @@
           <li data-target="#img-carousel" data-slide-to="0" class="active"></li>
           <li data-target="#img-carousel" data-slide-to="1"></li>
           <li data-target="#img-carousel" data-slide-to="2"></li>
+          <li data-target="#img-carousel" data-slide-to="3"></li>
         </ol>
         <div class="carousel-inner">
           <% for (let i = 0; i < 4; i++) { %>
           <div class="carousel-item<%= (i === 0 ? ' active' : '') %>">
-            <img src="<%= restaurants[i].image %>" class="d-block w-100"
-              alt="<=% restaurants[i].alt %>">
+            <img src="<%= restaurants[i].photoUrl %>" class="d-block w-100"
+              alt="<=% restaurants[i].name %>">
             <div class="carousel-caption">
               <h5><%= restaurants[i].name %></h5>
               <p><%= restaurants[i].description %></p>
@@ -75,8 +76,8 @@
     <div class="listing-container">
       <% restaurants.forEach(element => { %>
       <div class="main listing m-2">
-        <p class="restaurant-title">element.title</p>
-        <p class="restaurant-location">element.address</p>
+        <p class="restaurant-title">element.name</p>
+        <p class="restaurant-location">element.streetAddress</p>
       </div>
       <% }) %>
     </div>
