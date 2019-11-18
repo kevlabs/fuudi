@@ -11,8 +11,9 @@ class ViewManager {
   }
 
   // add/update view
-  addView(name, component) {
-    component instanceof ViewComponent && (this._views[name] = component);
+  // if 'alwaysDetach' flag set to true, component will be detached when another view is called event if no component is registered for that view. Default: false - Component will be detached only if it can be replaced by another component when view called
+  addView(name, component, alwaysDetach = false) {
+    component instanceof ViewComponent && (this._views[name] = { component, alwaysDetach });
     return this;
   }
 
@@ -48,19 +49,36 @@ class ViewManager {
   // switch to view if it exists
   // detach current component and call mount method on new component (should call render (which should return a $ element), mount the $ returned from that fn, then call componentDidMount). component should be able to opt out from rerendering if $ already exists ($element property on class instance)
   // should trickle down to all viewsets
-  view(name) {
-    const component = this._views[name];
-    component && (this._inView && this._inView.$element.detach() || true) && component.mount(this._$element);
-    this._viewSets.forEach(viewSet => viewSet.view(name));
+  // might want to set props default to '{}'
+  view(name, props = {}) {
+    // fetch component to display
+    const viewHandler = this._views[name];
+
+    // detach component if view has changed
+    this._inView && (viewHandler && this._inView.component !== viewHandler.component || this._inView.alwaysDetach) && this._inView.$element.detach() && (this._inView = null);
+
+    // set this._inView
+    !this._inView && viewHandler && (this._inView = viewHandler);
+
+    // mount component
+    // may have to remove props
+    viewHandler && viewHandler.component.mount(this._$element, props);
+
+    // trickle view down
+    // components managed by viewSets may not be children of component in view
+    // pass props to viewSets
+    this._viewSets.forEach(viewSet => viewSet.view(name, props));
+
     return this;
   }
 }
 
 class ViewComponent {
   // $element is an optional parameter
-  constructor($element, reRender = true) {
-    // reRender should be set locally
-    this.reRender = reRender;
+  constructor($element = null, reRender = true) {
+    // don't rerender if instance of ViewComponent - this are meant to be simple one time render components
+    // extend ViewComponent if need to rerender
+    this.reRender = Object.getPrototypeOf(this) !== ViewComponent && reRender;
     this._$element = $element;
   }
 
@@ -68,9 +86,13 @@ class ViewComponent {
     return this._$element;
   }
 
-  mount($container) {
-    this._$element = this.shouldRender && this.render() || this.$element;
-    this.$element && $container.append(this.$element) && this.componentDidMount(this.$element);
+  mount($container, props) {
+    // if render/rerender, detach $element and call render
+    if (this.shouldRender) {
+      this.$element && this.$element.detach();
+      this._$element = this.render(props) || this.$element;
+      this.$element && $container.append(this.$element) && this.componentDidMount();
+    }
     return this;
   }
 
@@ -78,7 +100,7 @@ class ViewComponent {
     return !this._$element || this.reRender;
   }
 
-  render() {
+  render(props = {}) {
     // should be implemented locally
     return;
   }

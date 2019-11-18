@@ -7,7 +7,7 @@
 
 const express = require('express');
 const router  = express.Router();
-const { isLoggedIn, login } = require('../services/users');
+const { getCurrentUser, login } = require('../services/users');
 
 module.exports = (db) => {
   router.get('/', async function(req, res) {
@@ -21,8 +21,8 @@ module.exports = (db) => {
   });
 
   router.get('/:id', function(req, res) {
-    const userId = isLoggedIn(req);
-    if (!userId) login(req, req.params.id);
+    const userId = getCurrentUser(req);
+    if (!userId) login(db, req, req.params.id);
     res.send(`Logged in as ${req.session.userId}`);
   });
 
