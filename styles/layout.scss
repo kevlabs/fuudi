@@ -2,6 +2,7 @@
 $background-color: rgb(178, 210, 251);
 $background-color-thin: rgba(178, 210, 251, .4);
 $logo-color: rgb(42, 44, 114);
+$logo-color-hover: rgb(61, 64, 156);
 $logo-color-thin: rgba(42, 44, 114, 0.8);
 $navbar-color: rgb(233, 146, 88);
 $navbar-color-thin: rgba(233, 146, 88, 0.6);
@@ -51,13 +52,17 @@ header {
   }
 
   .settings-profile {
-    color: $logo-color;
     display: flex;
     justify-content: flex-end;
   }
 
   i {
     font-size: 2em;
+    color: $logo-color;
+  }
+
+  i:hover {
+    color: $logo-color-hover;
   }
 }
 
