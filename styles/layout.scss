@@ -119,10 +119,16 @@ header {
 
 // Main Page
 
+  .carousel {
+    display: flex;
+    justify-content: center;
+  }
+
 #img-carousel {
   padding: 2em 0;
   width: 80%;
-  margin: 100px auto;
+  margin-top: 100px;
+
   .carousel-item {
     max-width: 100%;
     max-height: auto;
@@ -147,6 +153,7 @@ header {
   color: $logo-color;
   font-size: 20px;
   }
+
 // Menu page
 
 .restaurant-info {
@@ -234,6 +241,7 @@ header {
 
   .profile-info {
     width: 40%;
+    margin-left: 1em;
   }
 
   .listing-container {
@@ -258,5 +266,6 @@ header {
 
   #img-carousel {
     width: 100%;
+    margin-left: 1em;
   }
 }
