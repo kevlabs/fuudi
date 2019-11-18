@@ -1,75 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>My Google Map</title>
   <style>
-    #map{
-      height:400px;
-      width:100%;
+    #map {
+      height: 400px;
+      width: 100%;
     }
   </style>
 </head>
+
 <body>
   <h1>My Google Map</h1>
   <div id="map"></div>
   <script>
-    function initMap(){
+    function initMap() {
       // Map options
       var options = {
-        zoom:16,
-        center:{lat:43.644336,lng:-79.402181}
+        zoom: 8,
+        center: { lat: 42.3601, lng: -71.0589 }
       }
 
       // New map
       var map = new google.maps.Map(document.getElementById('map'), options);
 
+      // Listen for click on map
+      google.maps.event.addListener(map, 'click', function (event) {
+        // Add marker
+        addMarker({ coords: event.latLng });
+      });
+
+
       // Array of markers
-      // REPLACE AFTER WE CALL KEVIN'S BACKEND - insert all restuarant latitudes and longitudes.
       var markers = [
         {
-          coords:{lat:43.644367,lng:-79.400774},
-          content:'<h1>Starbucks</h1>'
+          coords: { lat: 43.644367, lng: -79.400774 },
+          content: '<h1>Starbucks</h1>'
         },
         {
-          coords:{lat:43.644284,lng:-79.403030},
-          content:'<h1>Freshii</h1>'
+          coords: { lat: 43.644284, lng: -79.403030 },
+          content: '<h1>Freshii</h1>'
         },
         {
-          coords:{lat:43.644090,lng:-79.403151},  
-          content:'<h1>McDonalds</h1>'
+          coords: { lat: 43.644090, lng: -79.403151 },
+          content: '<h1>McDonalds</h1>'
         }
       ];
 
       // Loop through markers
-      for(var i = 0;i < markers.length;i++){
+      for (var i = 0; i < markers.length; i++) {
         // Add marker
         addMarker(markers[i]);
       }
 
       // Add Marker Function
-      function addMarker(props){
+      function addMarker(props) {
         var marker = new google.maps.Marker({
-          position:props.coords,
-          map:map,
+          position: props.coords,
+          map: map,
           //icon:props.iconImage
         });
 
         // Check for customicon
-        if(props.iconImage){
+        if (props.iconImage) {
           // Set icon image
           marker.setIcon(props.iconImage);
         }
 
         // Check content
-        if(props.content){
+        if (props.content) {
           var infoWindow = new google.maps.InfoWindow({
-            content:props.content
+            content: props.content
           });
 
-          marker.addListener('click', function(){
+          marker.addListener('click', function () {
             infoWindow.open(map, marker);
           });
         }
@@ -77,7 +85,8 @@
     }
   </script>
   <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGFP7YL8zTW8bMDPuP4UnT_RNOIWNGP08&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA372PcuJQKYrKADjhHTLLDVcfsoCzF-4M&callback=initMap">
     </script>
 </body>
+
 </html>
