@@ -11,6 +11,7 @@ const sass = require('node-sass-middleware');
 const Nexmo = require('nexmo');
 const socketio = require('socket.io');
 const app = express();
+
 const morgan = require('morgan');
 // Init Nexmo
 const nexmo = new Nexmo({
@@ -100,12 +101,14 @@ app.post('/smstext', (req, res) => {
 });
 
 
-const server = app.listen(PORT, () => {
-  console.log(`Fuudi app listening on port ${PORT}`);
-});
+const server = app.listen(PORT, () => 
+  console.log(`Fuudi app listening on port ${PORT}`));
 
 // Connect to socket.io
 const io = socketio(server);
+// app.configure(socketio(io, {
+//   timeout: 10000000
+// }));
 io.on('connection', (socket) => {
   console.log('Connected');
   io.on('disconnect', () => {
