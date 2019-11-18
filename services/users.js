@@ -1,11 +1,11 @@
-const { resEnum, createResponse } = require('../lib/utils');
+// const { resEnum, createResponse } = require('../lib/utils');
 const { restaurantLogin } = require('../services/restaurants');
 /**
  * Middleware to check if user if logged in
  * If user is not logged in, respond with error (status 1000 = authentication error)
  */
 const isAuthenticated = (req, res, next) => {
-  if (!req.session.userId) return res.json(createJsonRes(resEnum.notAuthenticated));
+  if (!req.session.userId) return res.status(403).json({ error: 'not authorized' });
   next();
 };
 
