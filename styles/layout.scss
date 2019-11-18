@@ -1,6 +1,6 @@
 // See: https://sass-lang.com/
-$background-color: rgb(219, 219, 219);
-$background-color-thin: rgba(219, 219, 219, .8);
+$background-color: rgb(178, 210, 251);
+$background-color-thin: rgba(178, 210, 251, .4);
 $logo-color: rgb(42, 44, 114);
 $logo-color-thin: rgba(42, 44, 114, 0.8);
 $navbar-color: rgb(233, 146, 88);
@@ -14,7 +14,7 @@ $standard-font: 'Playfair Display', 'Times New Roman', sans-serif;
 $enable-gradients: 'true';
 
 body {
-  background-color: $background-color;
+  background-color: $background-color-thin;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,11 +30,12 @@ header {
   width: 100%;
   flex-direction: column;
 
-  .header-img {
-    width: 100%;
-    height: 15em;
-    object-fit: cover;
-  }
+}
+
+.header-img {
+  width: 100%;
+  height: 15em;
+  object-fit: cover;
 }
 
 .navbar {
@@ -62,6 +63,7 @@ header {
 
   .profile-name {
     width: 100%;
+    margin: 16px 0;
     text-align: center;
     font-family: $standard-font;
     font-size: 1.5rem;
@@ -138,4 +140,66 @@ header {
 
 #profile {
   margin-right: 30px;
+}
+
+.order {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  .order-date, .order-restaurant {
+    width: 30%;
+    font-family: $standard-font;
+    font-size: 1rem;
+    font-weight: bold;
+    color: $logo-color;
+  }
+
+  .order-restaurant {
+    text-align: right;
+  }
+
+  .order-contents {
+    width: 80%;
+  }
+
+  .order-price {
+    width: 20%;
+    text-align: right;
+  }
+}
+
+// Responsive Designs
+
+@media only screen and (min-width: 1024px) {
+  body {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+
+  .header-img {
+    border-radius: 10px;
+  }
+
+  .profile-info {
+    width: 40%;
+  }
+
+  .listing-container {
+    width: 55%;
+    margin: 2em 0;
+    height: 80vh;
+    overflow-y: auto;
+    /* hides container scrollbar */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE 10+ */
+  }
+
+  .listing-container::-webkit-scrollbar { /* WebKit */
+    width: 0;
+    height: 0;
+  }
+
+
 }
