@@ -52,7 +52,7 @@ header {
     font-family: $logo-font;
     font-weight: bold;
     font-size: 3rem;
-    letter-spacing: 1rem;
+    // letter-spacing: 1rem;
     width: 100%;
     text-align: center;
   }
@@ -65,6 +65,7 @@ header {
   i {
     font-size: 2em;
     color: $logo-color;
+    padding: 0 .5rem;
   }
 
   i:hover {
@@ -147,7 +148,6 @@ main form {
 }
 
 #login-error, #signup-error {
-  // font-family: $standard-font;
   font-weight: bold;
   color: $text-dark;
 }
@@ -160,15 +160,14 @@ main form {
 
 .help-block[data-error] {
   margin:10px 22px;
-  font-size:2em;
   vertical-align:middle;
   padding:12px;
   background-color: #FFD2D2;
+  border-radius: 25px;
 
   &::before {
     font-family: 'Font Awesome 5 Free';
     content: '\f057';
-    font-weight: 900;
   }
 }
 
@@ -397,5 +396,6 @@ main form {
 @media only screen and (max-width: 450px) {
 .navbar > .logo {
   text-align: left;
+  letter-spacing: 0;
 }
 }
