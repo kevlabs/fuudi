@@ -148,7 +148,6 @@ main form {
 }
 
 #login-error, #signup-error {
-  // font-family: $standard-font;
   font-weight: bold;
   color: $text-dark;
 }
@@ -161,15 +160,14 @@ main form {
 
 .help-block[data-error] {
   margin:10px 22px;
-  font-size:2em;
   vertical-align:middle;
   padding:12px;
   background-color: #FFD2D2;
+  border-radius: 25px;
 
   &::before {
     font-family: 'Font Awesome 5 Free';
     content: '\f057';
-    font-weight: 900;
   }
 }
 
