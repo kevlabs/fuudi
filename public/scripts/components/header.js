@@ -1,5 +1,6 @@
 class Header extends ViewComponent {
   render(props) {
+    this.state = props;
 
     return $(`
       <nav class="navbar">
@@ -27,6 +28,13 @@ class Header extends ViewComponent {
 
   componentDidMount() {
 
+    // grab user info
+    const { username, email, phone, restaurants, isLoggedIn } = this.state;
+    const user = { username, email, phone, restaurants, isLoggedIn };
+
+    // store user info
+    sessionStorage.setItem('user', JSON.stringify(user));
+
     this.$element.on('click', '.settings-profile a', async (evt) => {
       evt.preventDefault();
 
@@ -49,7 +57,7 @@ class Header extends ViewComponent {
       // handle sign out clicks
       if ($(evt.currentTarget).is(this.$element.find('#header-signout'))) {
 
-        const { data: user } = xhr({
+        const { data: user } = await xhr({
           method: 'GET',
           url: '/api/users/logout'
         });

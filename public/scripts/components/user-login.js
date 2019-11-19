@@ -49,7 +49,7 @@ class Login extends ViewComponent {
         if (!user.isLoggedIn) throw Error('Invalid credentials. Please try again!');
 
         // store user info
-        sessionStorage.setItem('user', JSON.stringify(user));
+        // sessionStorage.setItem('user', JSON.stringify(user));
 
         // bring init view into display
         window.viewManager.view('init', user);

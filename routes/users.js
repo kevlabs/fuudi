@@ -7,18 +7,22 @@
 
 const express = require('express');
 const router  = express.Router();
-const { getCurrentUser, login, logout, resetUserCookies } = require('../services/users');
+const { getCurrentUser, login, logout, resetUserCookies, createUser } = require('../services/users');
 
 module.exports = (db) => {
-  router.get('/', async function(req, res) {
-    try {
-      const users = await db.query(`SELECT * FROM users;`);
-      res.json({ users });
+  router.route('/')
+    .post(async (req, res) => {
+      try {
+        const userId = await createUser(db, req.body);
+        console.log('usr data', userId);
 
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  });
+        const userData = await login(db, req, null, null, userId);
+        res.json({ ...userData, isLoggedIn: true });
+
+      } catch (err) {
+        res.status(404).json({ error: err.message, isLoggedIn: false });
+      }
+    });
 
 
   router.route('/login')
@@ -38,7 +42,7 @@ module.exports = (db) => {
     // login user
     .post(async (req, res) => {
       try {
-        if (!req.body.username || !req.body.password) throw Error('No credentials supplied');
+        if (!req.body.username || !req.body.password) throw Error('No credentials supplied.');
 
         const userData = await login(db, req, req.body.username, req.body.password);
         res.json({ ...userData, isLoggedIn: true });
