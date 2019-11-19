@@ -24,7 +24,7 @@ class profileOrders extends ViewComponent {
           `<button type="button" class="btn btn-success">Accept</button>
             <button type="button" class="btn btn-danger">Reject</button>`
           : ''}
-        <p class="order-price"> ${order.priceCents.toLocaleString("en-US", { style: "currency", currency: "USD" })}</p>
+        <p class="order-price"> ${(order.priceCents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" })}</p>
       </span>
       </div>
       `
