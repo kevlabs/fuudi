@@ -42,7 +42,7 @@ class Login extends ViewComponent {
           data: $form.serialize()
         }, [403]);
 
-        if (!user.isLoggedIn) throw Error('Invalid creddentials. Please try again!');
+        if (!user.isLoggedIn) throw Error('Invalid credentials. Please try again!');
 
         // store user info
         sessionStorage.setItem('user', JSON.stringify(user));

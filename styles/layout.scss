@@ -14,8 +14,9 @@ $text-dark: #2e2d2c;
 $standard-font: 'Playfair Display', 'Times New Roman', sans-serif;
 $enable-gradients: 'true';
 
-body {
+#app {
   background-color: $background-color-thin;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -71,7 +72,8 @@ header {
   }
 }
 
-.content {
+main {
+  margin-top: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
