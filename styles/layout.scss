@@ -129,6 +129,49 @@ main {
   background-color: $navbar-color;
 }
 
+// Login/Signup
+
+main form {
+  padding: 2em;
+  background-color: white;
+  border-radius: 25px;
+}
+
+.title-container {
+  display: flex;
+  justify-content: center;
+  font-family: $standard-font;
+  font-size: 1rem;
+  font-weight: bold;
+  color: $logo-color;
+}
+
+#login-error, #signup-error {
+  // font-family: $standard-font;
+  font-weight: bold;
+  color: $text-dark;
+}
+
+.login-buttons, .signup-buttons {
+  display: flex;
+  justify-content: space-between;
+  color: $navbar-color;
+}
+
+.help-block[data-error] {
+  margin:10px 22px;
+  font-size:2em;
+  vertical-align:middle;
+  padding:12px;
+  background-color: #FFD2D2;
+
+  &::before {
+    font-family: 'Font Awesome 5 Free';
+    content: '\f057';
+    font-weight: 900;
+  }
+}
+
 // Main Page
 
   .carousel {

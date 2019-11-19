@@ -7,6 +7,7 @@ class Signup extends ViewComponent {
     // viewManager.view('init');
 
     return $(`
+      <span class="title-container"><h3>Register</h3></span>
       <div id="signup-error" class="help-block"></div>
       <form action="/api/users/signup" method="POST">
         <div class="form-group">
@@ -25,7 +26,10 @@ class Signup extends ViewComponent {
           <label for="signup-password">Password</label>
           <input id="signup-password" name="password" type="password" class="form-control">
         </div>
-        <input type="submit" value="Sign up" class="btn btn-warning"><input type="reset" value="Clear" class="btn btn-warning">
+        <div class="signup-buttons">
+          <input type="submit" value="Sign up" class="btn btn-outline-dark">
+          <input type="reset" value="Clear" class="btn btn-outline-dark">
+        </div>
       </form>
     `);
   }
