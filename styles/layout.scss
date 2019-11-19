@@ -201,11 +201,32 @@ header {
 }
 .checkout{
   display:none;
-  position:fixed;
-}
-.display{
 
+  margin-top: 88px;
+  z-index: 5;
+  position:fixed;
+  width: 100%;
 }
+.overlay {
+  position:fixed;
+  display:none; 
+
+  /* color with alpha channel */
+  background-color: rgba(248, 241, 241, 0.7); /* 0.7 = 70% opacity */
+
+  /* stretch to screen edges */
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+table{
+  position:absolute;
+  top: 150px;
+}
+
+
 
 // Profile Page
 
