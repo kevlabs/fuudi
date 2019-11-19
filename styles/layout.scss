@@ -166,7 +166,11 @@ header {
   color: $logo-color;
   font-size: 20px;
   }
-
+  #splash{
+    height:100%;
+    width: 100%;
+    background-image: url(../public/imgs/brandless-18lr202tDKY-unsplash.jpg);
+  }
 // Menu page
 
 .restaurant-info {
@@ -224,6 +228,12 @@ header {
 table{
   position:absolute;
   top: 150px;
+  border: 1px solid #CCC;
+  border-collapse: collapse;
+
+}
+td {
+  border: none;
 }
 
 
