@@ -12,7 +12,7 @@ class menuItems extends ViewComponent {
       <p class="menu-title">${item.name}</p>
       <p class="menu-description">${item.description}</p>
       <p class="menu-price">
-        ${item.priceCents.toLocaleString("en-US", { style: "currency", currency: "USD" })}
+        ${(item.priceCents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" })}
       </p>
     </div>
       `

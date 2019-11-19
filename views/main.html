@@ -25,7 +25,7 @@
 
   <!-- Fonts -->
   <link
-    href="https://fonts.googleapis.com/css?family=Bebas+Neue|Playfair+Display:400,400i,700,700i&display=swap"
+    href="https://fonts.googleapis.com/css?family=Bebas+Neue|Righteous|Playfair+Display:400,400i,700,700i&display=swap"
     rel="stylesheet">
   <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css?ver=5.8.2"
     rel="stylesheet">
@@ -47,12 +47,13 @@
       </div>
     </div>
   </header>
-  <div class="content">
-    <div class='left-side'>
+  <div class="content main">
+    <div id='map'></div>
     <div class="carousel">
       <div id="img-carousel" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
-          <li data-target="#img-carousel" data-slide-to="0" class="active"></li>
+          <li data-target="#img-carousel" data-slide-to="0" class="active">
+          </li>
           <li data-target="#img-carousel" data-slide-to="1"></li>
           <li data-target="#img-carousel" data-slide-to="2"></li>
         </ol>
@@ -63,7 +64,8 @@
               class="d-block w-100" alt="Burger">
             <div class="carousel-caption">
               <h5>Burger Restaurant</h5>
-              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.
+              </p>
             </div>
           </div>
           <div class="carousel-item">
@@ -100,12 +102,8 @@
       </div>
 
     </div>
-    <div id='map'></div>
-  </div>
 
-
-
-    <div class="listing-container">
+    <div class="listing-container main-container">
       <div class="main listing m-2">
         <p class="restaurant-title">Burger Restaurant</p>
         <p class="restaurant-location">569 King St. West</p>
@@ -145,11 +143,11 @@
 
   </div>
   <script>
-    function initMap(){
+    function initMap() {
       // Map options
       var options = {
-        zoom:17,
-        center:{lat:43.644272,lng:-79.402242}
+        zoom: 17,
+        center: { lat: 43.644272, lng: -79.402242 }
       }
 
       // New map
@@ -159,49 +157,49 @@
       var markers = [
         {
 
-          coords:{lat:43.644291,lng:-79.403019},
-          content:'<h1>${res}</h1>'
+          coords: { lat: 43.644291, lng: -79.403019 },
+          content: '<h1>${res}</h1>'
         },
         {
-          coords:{lat:43.644097,lng:-79.403175},
-          content:'<h1>Mcdonalds</h1>'
+          coords: { lat: 43.644097, lng: -79.403175 },
+          content: '<h1>Mcdonalds</h1>'
         },
         {
-          coords:{lat:42.7762,lng:-71.0773}
+          coords: { lat: 42.7762, lng: -71.0773 }
         }
       ];
 
       // Loop through markers
-      for(var i = 0;i < markers.length;i++){
+      for (var i = 0; i < markers.length; i++) {
         // Add marker
         addMarker(markers[i]);
       }
-      function addMarker(props){
+      function addMarker(props) {
         var marker = new google.maps.Marker({
-          position:props.coords,
-          map:map,
+          position: props.coords,
+          map: map,
           //icon:props.iconImage
         });
 
         // Check for customicon
-        if(props.iconImage){
+        if (props.iconImage) {
           // Set icon image
           marker.setIcon(props.iconImage);
         }
 
         // Check content
-        if(props.content){
+        if (props.content) {
           var infoWindow = new google.maps.InfoWindow({
-            content:props.content
+            content: props.content
           });
 
-          marker.addListener('click', function(){
+          marker.addListener('click', function () {
             infoWindow.open(map, marker);
           });
         }
       }
 
-      }
+    }
 
   </script>
   <script async defer
