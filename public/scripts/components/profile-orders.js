@@ -4,6 +4,7 @@ class profileOrders extends ViewComponent {
   render(orders) {
     this.state = orders;
     let list = ``;
+    let user = JSON.parse(sessionStorage.getItem('user'))
 
     for (let order of orders) {
       let items = ``;
@@ -19,7 +20,7 @@ class profileOrders extends ViewComponent {
         <ul class="order-contents">${items}</ul>
         <span class="order-status">
         <p>${escape(order.status)}</p>
-        ${this.restaurants[0] ?
+        ${user.restaurants[0] ?
           `<button type="button" class="btn btn-success">Accept</button>
             <button type="button" class="btn btn-danger">Reject</button>`
           : ''}
