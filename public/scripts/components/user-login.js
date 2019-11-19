@@ -1,6 +1,11 @@
 class Login extends ViewComponent {
-  render(props) {
+  render(props, cancel) {
     this.state = props;
+
+    // if user already logged in change view
+    // props.isLoggedIn && cancel();
+    // viewManager.view('init');
+
     return $(`
       <div id="login-error" class="help-block"></div>
       <form action="/api/users/login" method="POST">
@@ -25,19 +30,25 @@ class Login extends ViewComponent {
       try {
         evt.preventDefault();
 
+        // clear error container
+        this.$element.siblings('#login-error').text('');
+
         if (!$form.find('#login-username').val()) throw Error('Username cannot be blank');
         if (!$form.find('#login-password').val()) throw Error('Password cannot be blank');
 
-        const res = await $.ajax({
+        const { data: user } = await xhr({
           method: 'POST',
           url: '/api/users/login',
           data: $form.serialize()
-        });
+        }, [403]);
 
-        if (!res.isLoggedIn) throw Error('Invalid creddentials. Please try again!');
+        if (!user.isLoggedIn) throw Error('Invalid creddentials. Please try again!');
+
+        // store user info
+        sessionStorage.setItem('user', JSON.stringify(user));
 
         // bring init view into display
-        window.viewManager.view('init');
+        window.viewManager.view('init', user);
 
       } catch (err) {
         this.$element.siblings('#login-error').text(err.message);

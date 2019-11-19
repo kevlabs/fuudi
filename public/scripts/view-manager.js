@@ -14,7 +14,7 @@ $(() => {
   // should not register any other views on the viewManager
   // use viewSets instead
   // can call any views from here though - will be dispatched to all viewSets
-  viewManager.addView('app', new App());
+  viewManager.addView('app', new App(null, false));
 
   // set up app
   viewManager.view('app');

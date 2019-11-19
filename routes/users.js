@@ -7,7 +7,7 @@
 
 const express = require('express');
 const router  = express.Router();
-const { getCurrentUser, login, resetUserCookies } = require('../services/users');
+const { getCurrentUser, login, logout, resetUserCookies } = require('../services/users');
 
 module.exports = (db) => {
   router.get('/', async function(req, res) {
@@ -32,7 +32,7 @@ module.exports = (db) => {
         res.json({ ...userData, isLoggedIn: true });
 
       } catch (err) {
-        res.json({ isLoggedIn: false });
+        res.status(403).json({ error: err.message, isLoggedIn: false });
       }
     })
     // login user
@@ -41,13 +41,19 @@ module.exports = (db) => {
         if (!req.body.username || !req.body.password) throw Error('No credentials supplied');
 
         const userData = await login(db, req, req.body.username, req.body.password);
-        res.json(userData);
+        res.json({ ...userData, isLoggedIn: true });
 
       } catch (err) {
-        res.json({ isLoggedIn: false });
+        res.status(403).json({ error: err.message, isLoggedIn: false });
       }
 
     });
+
+  // logout
+  router.get('/logout', (req, res) => {
+    logout(req);
+    res.json({ isLoggedIn: false });
+  });
 
   // temporary login route
   router.get('/:id', function(req, res) {

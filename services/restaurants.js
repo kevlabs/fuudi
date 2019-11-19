@@ -35,12 +35,16 @@ const getRestaurantsByOwner = (db, userId) => {
   }
 };
 
-const restaurantLogin = (db, req, userId) => {
-  const restaurants = getRestaurantsByOwner(db, userId);
-  restaurants && (req.session.restaurantIds = restaurants);
+const restaurantLogin = async (db, req, userId) => {
+  try {
+    const restaurants = await getRestaurantsByOwner(db, userId);
+    restaurants && (req.session.restaurantIds = restaurants.map(data => data.id));
+  } catch (err) {
+    throw Error('Failed to get user\'s restaurants.');
+  }
 };
 
-const getOwnedRestaurants = (req) => req.session.restaurantIds;
+const getOwnedRestaurants = (req) => req.session.restaurantIds || [];
 
 /*
 Should be able to get restaurants by:

@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { restaurantLogin } = require('../services/restaurants');
+const { restaurantLogin, getOwnedRestaurants } = require('./restaurants');
 /**
  * Middleware to check if user if logged in
  * If user is not logged in, respond with error (status 1000 = authentication error)
@@ -11,13 +11,13 @@ const isAuthenticated = (req, res, next) => {
 
 const getCurrentUser = (req) => req.session.userId;
 
-const resetUserCookies = (db, req, userId) => {
+const resetUserCookies = async (db, req, userId) => {
   req.session.userId = userId;
-  restaurantLogin(db, req, userId);
+  await restaurantLogin(db, req, userId);
 };
 
-const parseUser = ([{ username, email, phone }]) => {
-  return { username, email, phone };
+const parseUser = ({ username, email, phone, restaurants }) => {
+  return { username, email, phone, restaurants };
 };
 
 const login = async (db, req, username, password) => {
@@ -33,24 +33,30 @@ const login = async (db, req, username, password) => {
       WHERE username = $1;
       `, [username]);
 
-      if (!user.length || !bcrypt.compareSync(password, user[0].password)) throw Error('Incorrect credentials');
+      if (user.length !== 1 || !bcrypt.compareSync(password, user[0].password)) throw Error('Incorrect credentials');
 
       userId = user[0].id;
 
     } else {
       user = await db.query(`
       SELECT * FROM users
-      WHERE id = $1;
+      WHERE id = $1 LIMIT 1;
       `, [userId]);
     }
 
-    resetUserCookies(db, req, userId);
-    return parseUser(user);
+    await resetUserCookies(db, req, userId);
+
+    return parseUser({ ...user[0], restaurants: getOwnedRestaurants(req) });
 
   } catch (err) {
     throw Error(`Failled to log in. ${err.message}`);
   }
 };
 
+const logout = (req) => {
+  req.session.userId && delete req.session.userId;
+  req.session.restaurantIds && delete req.session.restaurantIds;
+};
 
-module.exports = { isAuthenticated, getCurrentUser, login };
+
+module.exports = { isAuthenticated, getCurrentUser, login, logout };

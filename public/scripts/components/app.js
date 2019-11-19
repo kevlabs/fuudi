@@ -1,6 +1,8 @@
 class App extends ViewComponent {
   render(props) {
+    // store props for use in componentDidMount
     this.state = props;
+
     return $(`
       <header></header>
       <main></main>
@@ -11,11 +13,13 @@ class App extends ViewComponent {
   async componentDidMount() {
     try {
       const { viewManager } = this.state;
+      // remove pointer to props
+      this.state = null;
 
-      const user = await $.ajax({
+      const { data: user } = await xhr({
         method: 'GET',
         url: `/api/users/login`,
-      });
+      }, [403]);
 
       // manager header views
       const header = viewManager.addViewSet($('#app > header'));
@@ -24,7 +28,10 @@ class App extends ViewComponent {
 
       // manager main views
       const main = viewManager.addViewSet($('#app > main'));
-      main.addView('init', new Login());
+      const login = new Login();
+      main.addView('init', login);
+      main.addView('login', login);
+      main.addView('signup', new Signup());
       window.main = main;
 
       // display init
