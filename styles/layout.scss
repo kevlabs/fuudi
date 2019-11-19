@@ -52,7 +52,7 @@ header {
     font-family: $logo-font;
     font-weight: bold;
     font-size: 3rem;
-    letter-spacing: 1rem;
+    // letter-spacing: 1rem;
     width: 100%;
     text-align: center;
   }
@@ -65,6 +65,7 @@ header {
   i {
     font-size: 2em;
     color: $logo-color;
+    padding: 0 .5rem;
   }
 
   i:hover {
@@ -127,6 +128,47 @@ main {
 
 .listing:hover {
   background-color: $navbar-color;
+}
+
+// Login/Signup
+
+main form {
+  padding: 2em;
+  background-color: white;
+  border-radius: 25px;
+}
+
+.title-container {
+  display: flex;
+  justify-content: center;
+  font-family: $standard-font;
+  font-size: 1rem;
+  font-weight: bold;
+  color: $logo-color;
+}
+
+#login-error, #signup-error {
+  font-weight: bold;
+  color: $text-dark;
+}
+
+.login-buttons, .signup-buttons {
+  display: flex;
+  justify-content: space-between;
+  color: $navbar-color;
+}
+
+.help-block[data-error] {
+  margin:10px 22px;
+  vertical-align:middle;
+  padding:12px;
+  background-color: #FFD2D2;
+  border-radius: 25px;
+
+  &::before {
+    font-family: 'Font Awesome 5 Free';
+    content: '\f057';
+  }
 }
 
 // Main Page
@@ -397,5 +439,6 @@ td {
 @media only screen and (max-width: 450px) {
 .navbar > .logo {
   text-align: left;
+  letter-spacing: 0;
 }
 }

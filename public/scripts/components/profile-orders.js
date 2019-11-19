@@ -2,7 +2,6 @@ const escape = require('../utils');
 
 class profileOrders extends ViewComponent {
   render(orders) {
-    this.state = orders;
     let list = ``;
     let user = JSON.parse(sessionStorage.getItem('user'))
 

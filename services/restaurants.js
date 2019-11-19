@@ -324,7 +324,7 @@ const create = async (db, userId, restaurant) => {
         RETURNING id;
       `, restaurantFields);
 
-      // get restaurant id from newly created order
+      // get restaurant id from newly created restaurant
       const [{ id: restaurantId }] = bookedRestaurant;
       // params for menu items
       const itemParams = safeOrder.items.reduce((params, { name, description, photoUrl, priceCents }) => params.concat(restaurantId, name, description, photoUrl, priceCents), []);

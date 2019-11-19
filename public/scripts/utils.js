@@ -16,7 +16,7 @@ const xhr = (ajaxOptions, validStatuses = []) => {
         if (validStatuses.includes(jqXHR.status)) return resolve({ data: jqXHR.responseJSON, jqXHR });
 
         // reject otherwise
-        reject(jqXHR);
+        reject(errorThrown);
       });
   });
 };
@@ -24,3 +24,6 @@ const xhr = (ajaxOptions, validStatuses = []) => {
 
 // function to validate emails
 const isEmail = (str) => /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(str);
+
+// function to validate username
+const isUsername = (str) => /^[\w\d!@#$%^&*\-+[\]{}|\\"':;?/,<.>]*$/.test(str);

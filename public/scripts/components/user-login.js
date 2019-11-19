@@ -7,6 +7,7 @@ class Login extends ViewComponent {
     // viewManager.view('init');
 
     return $(`
+      <span class="title-container"><h3>Log In</h3></span>
       <div id="login-error" class="help-block"></div>
       <form action="/api/users/login" method="POST">
         <div class="form-group">
@@ -17,7 +18,10 @@ class Login extends ViewComponent {
           <label for="login-password">Password</label>
           <input id="login-password" name="password" type="password" class="form-control">
         </div>
-        <input type="submit" value="Sign in" class="btn btn-warning"><input type="reset" value="Clear" class="btn btn-warning">
+        <div class="login-buttons">
+          <input type="submit" value="Sign in" class="btn btn-outline-dark">
+          <input type="reset" value="Clear" class="btn btn-outline-dark">
+        </div>
       </form>
     `);
   }
@@ -45,7 +49,7 @@ class Login extends ViewComponent {
         if (!user.isLoggedIn) throw Error('Invalid credentials. Please try again!');
 
         // store user info
-        sessionStorage.setItem('user', JSON.stringify(user));
+        // sessionStorage.setItem('user', JSON.stringify(user));
 
         // bring init view into display
         window.viewManager.view('init', user);
