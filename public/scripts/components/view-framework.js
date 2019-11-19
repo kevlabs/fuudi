@@ -37,7 +37,7 @@ class ViewManager {
   }
 
   getViewSet($element) {
-    return this._viewSets.find(viewSet => viewSet._$element = $element);
+    return this._viewSets.find(viewSet => viewSet._$element.is($element));
   }
 
   removeViewSet(viewSet) {
@@ -55,19 +55,19 @@ class ViewManager {
     const viewHandler = this._views[name];
 
     // detach component if view has changed
-    this._inView && (viewHandler && this._inView.component !== viewHandler.component || this._inView.alwaysDetach) && this._inView.$element.detach() && (this._inView = null);
+    this._inView && (viewHandler && this._inView.component !== viewHandler.component || this._inView.alwaysDetach) && this._inView.component.$element.detach() && (this._inView = null);
 
     // set this._inView
     !this._inView && viewHandler && (this._inView = viewHandler);
 
     // mount component
-    // may have to remove props
-    viewHandler && viewHandler.component.mount(this._$element, props);
+    // append viewManager to props
+    viewHandler && viewHandler.component.mount(this._$element, { ...props, viewManager: this });
 
     // trickle view down
     // components managed by viewSets may not be children of component in view
     // pass props to viewSets
-    this._viewSets.forEach(viewSet => viewSet.view(name, props));
+    this._viewSets.forEach(viewSet => viewSet.view(name, { ...props, viewManager: this }));
 
     return this;
   }
@@ -89,8 +89,16 @@ class ViewComponent {
   mount($container, props) {
     // if render/rerender, detach $element and call render
     if (this.shouldRender) {
+
+      let isCancelled = false;
+      const cancel = () => isCancelled = true;
+
       this.$element && this.$element.detach();
-      this._$element = this.render(props) || this.$element;
+      const $newElement = this.render(props, cancel);
+
+      if (isCancelled) return this;
+
+      this._$element = $newElement || this.$element;
       this.$element && $container.append(this.$element) && this.componentDidMount();
     }
     return this;

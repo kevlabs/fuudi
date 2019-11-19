@@ -7,11 +7,14 @@
 
 const express = require('express');
 const router  = express.Router();
-const { getCurrentUser} = require('../services/users');
+const { isAuthenticated, getCurrentUser} = require('../services/users');
 const { getRestaurantData, createRestaurant } = require('../services/restaurants');
 
 
 module.exports = (db) => {
+  // users should be authenticated to access this route
+  router.use(isAuthenticated);
+
   router.route('/')
     // get all restaurants
     .get(async (req, res) => {

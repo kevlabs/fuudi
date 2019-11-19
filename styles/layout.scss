@@ -14,8 +14,9 @@ $text-dark: #2e2d2c;
 $standard-font: 'Playfair Display', 'Times New Roman', sans-serif;
 $enable-gradients: 'true';
 
-body {
+#app {
   background-color: $background-color-thin;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -71,7 +72,8 @@ header {
   }
 }
 
-.content {
+main {
+  margin-top: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -254,6 +256,21 @@ td {
   margin-right: 30px;
 }
 
+.order-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+  .listing-container {
+    width: 100%;
+  }
+
+.order-header {
+  font-family: $standard-font;
+    font-weight: bold;
+    color: $logo-color;
+}
+
 .order {
   flex-direction: row;
   flex-wrap: wrap;
@@ -272,12 +289,24 @@ td {
   }
 
   .order-contents {
-    width: 80%;
+    width: 100%;
   }
 
-  .order-price {
-    width: 20%;
-    text-align: right;
+  .order-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 3em;
+    width: 100%;
+    border-top: 1px solid $text-dark;
+
+    p {
+      margin: 0;
+      font-family: $standard-font;
+      font-size: 1rem;
+      font-weight: bold;
+      color: $logo-color;
+    }
   }
 }
 
@@ -325,6 +354,17 @@ td {
   .listing-container::-webkit-scrollbar { /* WebKit */
     width: 0;
     height: 0;
+  }
+
+  .order-container {
+    width: 55%;
+    margin: 2em 1em;
+    height: 80vh;
+
+    .listing-container {
+      width: 100%;
+      height: auto;
+    }
   }
 
   .main-container {
