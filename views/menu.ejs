@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+    crossorigin="anonymous">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="../public/styles/layout.css">
+
+  <!-- Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Bebas+Neue|Playfair+Display:400,400i,700,700i&display=swap"
+    rel="stylesheet">
+
+  <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css?ver=5.8.2"
+    rel="stylesheet">
+
+  <title>Fuudi - Menu</title>
+</head>
+
+<body>
+  <% include ./partials/_header %>
+
+  <div class="content">
+    <div class="profile-info">
+      <div>
+        <img src="<%= restaurant.photoUrl %>" class="img-responsive header-img">
+      </div>
+      <div class="restaurant-info">
+        <p class="profile-name"><%= restaurant.name %></p>
+        <p class="restaurant-description font-italic">
+          <%= restaurant.description %>.</p>
+        <p class="restaurant-hours"><%= restaurant.openTime %></p>
+        <p class="restaurant-hours"><%= restaurant.closeTime %></p>
+        <p class="restaurant-ratings">Rating: <%= restaurant.rating %>/5</p>
+      </div>
+    </div>
+
+    <div class="listing-container">
+      <% for (let item of menuItems) { %>
+      <div class="menu listing m-2">
+        <p class="menu-title"><%= item.name %></p>
+        <p class="menu-description"><%= item.description %></p>
+        <p class="menu-price">
+          <%= item.priceCents.toLocaleString("en-US", {style:"currency", currency:"USD"}) %>
+        </p>
+      </div>
+      <%>
+    </div>
+  </div>
+
+</body>
+
+</html>

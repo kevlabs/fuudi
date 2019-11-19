@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+    crossorigin="anonymous">
+
+  <!-- Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Bebas+Neue|Playfair+Display:400,400i,700,700i&display=swap"
+    rel="stylesheet">
+
+  <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css?ver=5.8.2"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="../public/styles/layout.css">
+  <title>Fuudi - Profile</title>
+</head>
+
+<body>
+  <% include ./partials/_header %>
+
+  <div class="content">
+    <div class="profile-info">
+      <div class="user-img">
+        <img src="<%= user.photoUrl %>"
+          class="profile-picture img-responsive rounded-circle">
+      </div>
+      <p class="profile-name"><%= user.username %></p>
+      <p class="user-details">Email: <%= user.email %></p>
+      <p class="user-details">Phone: <%= user.phone %></p>
+    </div>
+
+    <div class="listing-container">
+      <% for (let order of orders) { %>
+      <div class="order listing m-2">
+        <p class="order-date"><%= order.createdAt %></p>
+        <p class="order-restaurant"><%= order.restaurant.name %></p>
+        <p class="order-contents">
+          <% order.items.forEach((item, index) => {} %>
+          <span><%= item.quantity %>x
+            <%= item.name %><%= index === items.length - 1 ? '.' : ', ') %></span>
+          <% }) %>
+        </p>
+        <p class="order-price">
+          <%= order.priceCents.toLocaleString("en-US", {style:"currency", currency:"USD"}) %>
+        </p>
+      </div>
+      <% } %>
+
+
+    </div>
+
+
+</body>
+
+</html>

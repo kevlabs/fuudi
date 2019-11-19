@@ -62,7 +62,7 @@ const setGetFilters = (options) => {
  */
 const get = (db, userId = null, options = {}) => {
 
-  const [whereFilter, params] = setGetFilters(Object.assign({}, options, { userId }));
+  const [whereFilter, params] = setGetFilters({ userId, ...options });
 
   return db.query(`
     SELECT o.id, o.status, o.created_at, o.fulfilled_at, o.total_cents, r.id restaurant_id, r.name restaurant_name, m_i.id item_id, m_i.name item_name, o_m_i.price_cents item_price_cents, o_m_i.quantity item_quantity, o_m_i.price_cents * o_m_i.quantity item_total
@@ -75,6 +75,77 @@ const get = (db, userId = null, options = {}) => {
   `, params);
 
 };
+
+/*
+parse order query data into a JS object
+public flag should be set to true if meant to be sent to front-end
+
+Format:
+[
+  '1': {
+    id: 1,
+    status: 'pending',
+    created_at: 123123123,
+    fulfilled_at: 324465476,
+    totalCents: 1200
+    restaurant: {
+      id: 1,
+      name: 'wewewe'
+    }
+    items: [
+      {
+        id: 12,
+        name: 'dwdsd',
+        priceCents: 120,
+        quantity: 10,
+        totalCents: 1200
+      }
+    ]
+  }
+]
+
+*/
+const parse = (data) => {
+  const [sortedKeys, orders] = data.reduce(([sortedKeys, orders], row) => {
+    sortedKeys[sortedKeys.length && sortedKeys.length - 1 || 0] !== row.id && sortedKeys.push(row.id);
+
+    orders[row.id] = orders[row.id] || {
+      id: row.id,
+      status: row.status,
+      created: new Date(row.created_at),
+      fulfilled: row.fulfilled_at && new Date(row.fulfilled_at) || null,
+      totalCents: row.total_cents,
+      restaurant: {
+        id: row.restaurant_id,
+        name: row.restaurant_name
+      },
+      items: []
+    };
+
+    orders[row.id].items.push({
+      id: row.item_id,
+      name: row.item_name,
+      priceCents: row.item_price_cents,
+      quantity: row.item_quantity,
+      totalCents: row.item_total
+    });
+
+    return [sortedKeys, orders];
+  }, [[], {}]);
+
+  return sortedKeys.map(key => orders[key]);
+};
+
+const getData = async (db, userId = null, options = {}) => {
+  try {
+    const orderData = await get(db, userId, options);
+    return parse(orderData);
+
+  } catch (err) {
+    throw Error('Order data could not be gathered');
+  }
+};
+
 
 /*
 NEW ORDERS - JSON input format:
@@ -107,8 +178,6 @@ NEW ORDERS - JSON input format:
  */
 const validateInput = (order) => {
   const output = {
-    restaurantId: null,
-    total: 0,
     items: []
   };
 
@@ -231,74 +300,5 @@ const complete = (db, id) => {
   return db.query(`UPDATE orders SET fulfilled_at = NOW(), status = 'Completed' WHERE id = $1`, [id]);
 };
 
-/*
-parse order query data into a JS object
-public flag should be set to true if meant to be sent to front-end
-
-Format:
-[
-  '1': {
-    id: 1,
-    status: 'pending',
-    created_at: 123123123,
-    fulfilled_at: 324465476,
-    totalCents: 1200
-    restaurant: {
-      id: 1,
-      name: 'wewewe'
-    }
-    items: [
-      {
-        id: 12,
-        name: 'dwdsd',
-        priceCents: 120,
-        quantity: 10,
-        totalCents: 1200
-      }
-    ]
-  }
-]
-
-*/
-const parse = (data) => {
-  const [sortedKeys, orders] = data.reduce(([sortedKeys, orders], row) => {
-    sortedKeys[sortedKeys.length && sortedKeys.length - 1 || 0] !== row.id && sortedKeys.push(row.id);
-
-    orders[row.id] = orders[row.id] || {
-      id: row.id,
-      status: row.status,
-      created: new Date(row.created_at),
-      fulfilled: row.fulfilled_at && new Date(row.fulfilled_at) || null,
-      totalCents: row.total_cents,
-      restaurant: {
-        id: row.restaurant_id,
-        name: row.restaurant_name
-      },
-      items: []
-    };
-
-    orders[row.id].items.push({
-      id: row.item_id,
-      name: row.item_name,
-      priceCents: row.item_price_cents,
-      quantity: row.item_quantity,
-      totalCents: row.item_total
-    });
-
-    return [sortedKeys, orders];
-  }, [[], {}]);
-
-  return sortedKeys.map(key => orders[key]);
-};
-
-const getData = async (db, userId = null, options = {}) => {
-  try {
-    const orderData = await get(db, userId, options);
-    return parse(orderData);
-
-  } catch (err) {
-    throw Error('Order data could not be gathered');
-  }
-};
 
 module.exports = { getOrder : get, createOrder: create, updateOrderStatus: updateStatus, completeOrder: complete, parseOrder: parse, getOrderData: getData };

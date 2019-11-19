@@ -7,7 +7,8 @@
 
 const express = require('express');
 const router  = express.Router();
-const { getRestaurantData } = require('../services/restaurants');
+const { getCurrentUser} = require('../services/users');
+const { getRestaurantData, createRestaurant } = require('../services/restaurants');
 
 
 module.exports = (db) => {
@@ -17,6 +18,20 @@ module.exports = (db) => {
       try {
         const restaurants = await getRestaurantData(db);
         res.json(restaurants);
+
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    })
+    // create restaurant
+    .post(async (req, res) => {
+      try {
+        const userId = getCurrentUser(req);
+        const restaurantId = await createRestaurant(db, userId, req.body);
+        const restaurant = await getRestaurantData(db, {
+          'id': restaurantId
+        });
+        res.json(restaurant);
 
       } catch (err) {
         res.status(500).json({ error: err.message });
