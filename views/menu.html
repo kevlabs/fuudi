@@ -5,16 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
-  <script>
-  $( document ).ready(function() {
-      console.log( "document loaded" );
-  });
-
-  $( window ).on( "load", function() {
-      console.log( "window loaded" );
-  });
-  </script>
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>  <script type="text/javascript" src="../public/scripts/checkout.js"></script>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
     integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
@@ -44,8 +38,40 @@
         </a>
       </div>
     </div>
-
+    <div class='checkout'>Checkout
+        <table class="table table-dark">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">First</th>
+                <th scope="col">Last</th>
+                <th scope="col">Handle</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td>Larry</td>
+                <td>the Bird</td>
+                <td>@twitter</td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
   </header>
+
   <div class="content">
     <div class="profile-info">
       <div>
@@ -81,9 +107,9 @@
           with all the fixins.</p>
         <p class="menu-price">$16.99</p>
         <span id='plusminus'>
-          <button> -</button>
+          <button class='minus'> -</button>
           <span>0</span>
-          <button> +</button>
+          <button class='add'> +</button>
         </span>
 
       </div>
@@ -161,7 +187,6 @@
       </div>
     </div>
   </div class="content">
-  <div class='checkout'></div>
 
 </body>
 
