@@ -6,7 +6,7 @@ $logo-color-hover: rgb(61, 64, 156);
 $logo-color-thin: rgba(42, 44, 114, 0.8);
 $navbar-color: rgb(233, 146, 88);
 $navbar-color-thin: rgba(233, 146, 88, 0.6);
-$logo-font: 'Bebas Neue', 'Arial', sans-serif;
+$logo-font: 'Righteous', 'Bebas Neue', 'Arial', sans-serif;
 $container-color: rgb(191, 189, 193);
 $container-color-thin: rgba(251, 249, 249, 0.75);
 $text-light: #ede9e6;
@@ -49,12 +49,16 @@ header {
   .logo {
     color: $logo-color;
     font-family: $logo-font;
+    font-weight: bold;
     font-size: 3rem;
+    letter-spacing: 1rem;
+    width: 100%;
+    text-align: center;
   }
 
   .settings-profile {
-    display: flex;
-    justify-content: flex-end;
+    position: absolute;
+    right: 2em;
   }
 
   i {
@@ -71,11 +75,6 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.left-side {
-  display: flex;
-  flex-direction: column;
 }
 
 .profile-info {
@@ -113,7 +112,7 @@ header {
 }
 
 .listing {
-  width: 100%;
+  width: 95%;
   background-color: $navbar-color-thin;
   border-radius: 25px;
   padding: 1em 2em;
@@ -136,9 +135,8 @@ header {
   }
 
 #img-carousel {
-  padding: 2em 0;
+  padding: 1em 0;
   width: 80%;
-  margin-top: 100px;
 
   .carousel-item {
     max-width: 100%;
@@ -252,7 +250,13 @@ header {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
+    align-items: flex-start;
     width: 100%;
+    margin-top: 5em;
+  }
+
+  .content.main {
+    margin-top: 0;
   }
 
   .header-img {
@@ -268,8 +272,8 @@ header {
     width: 55%;
     margin: 2em 1em;
     height: 80vh;
-    margin-top: 100px;
-    overflow-y: auto;
+    // margin-top: 100px;
+    overflow-x: auto;
     /* hides container scrollbar */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none;  /* IE 10+ */
@@ -280,10 +284,14 @@ header {
     height: 0;
   }
 
+  .main-container {
+    height: 40vh;
+  }
+
   .carousel {
     flex-direction: column;
-    top: 2rem;
-    width: 100%;
+    width: 40%;
+    top: 1.5em;
   }
 
   #img-carousel {
@@ -293,16 +301,18 @@ header {
 
     .carousel-item img {
       height: 30vh;
-      top: 100px;
     }
   }
-  .left-side{
-    width:40%;
-  }
+
   #map{
     width: 100%;
     height: 40vh;
-    margin-top: 3em;
-    margin-left: 1em;
+    margin-top: 5em;
   }
+}
+
+@media only screen and (max-width: 450px) {
+.navbar > .logo {
+  text-align: left;
+}
 }
