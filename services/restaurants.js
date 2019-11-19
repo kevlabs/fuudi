@@ -192,24 +192,34 @@ const getData = async (db, options = {}) => {
 };
 
 /*
-NEW ORDERS - JSON input format:
+NEW RESTAURANT - JSON input format:
 {
-  "restaurantId": "1",
-  "total": "1520",
-  "items": [
-    {
-      "id": "1",
-      "quantity": "4"
-    },
-    {
-      "id": "7",
-      "quantity": "1"
-    },
-    {
-      "id": "27",
-      "quantity": "1"
-    }
-  ]
+    "name": "New super cool restaurant",
+    "description": "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam",
+    "tags": "hey",
+    "photoUrl": "https://",
+    "openTime": "08:13:14.000",
+    "closeTime": "19:14:47.000",
+    "phone": "+14169999999",
+    "email": "john.doe@cool.com",
+    "streetAddress": "90 Atwood Drive",
+    "city": "Toronto",
+    "postCode": "M5V1B7",
+    "waitMinutes": 24,
+    "items": [
+        {
+            "name": "Libri",
+            "description": "Ratufa indica",
+            "photoUrl": "https://",
+            "priceCents": 871
+        },
+        {
+            "name": "Hussey",
+            "description": "Corvus albicollis",
+            "photoUrl": "https://",
+            "priceCents": 423
+        }
+    ]
 }
 
 */
@@ -330,25 +340,5 @@ const create = async (db, userId, restaurant) => {
     throw Error(`Restaurant could not be created due to an error. Error: ${err.message}.`);
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-// const create = async(db, userId, store) => {
-//   let newStore = await query(`
-//   INSERT INTO resturants (owner_id, name, description, tags, photo_url, open_time, close_time, phone,
-//     email, street_address, city, post_code, latitude, longitude, wait_minutes, rating, rating_expires_at,
-//     is_active, is_deleted)
-//   VALUES (userId, req.body)
-//   `)
-// }
 
 module.exports = { isRestaurantOwner, getRestaurantsByOwner, restaurantLogin, getOwnedRestaurants, getRestaurant : get, parseRestaurant: parse, getRestaurantData: getData, createRestaurant: create };

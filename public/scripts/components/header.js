@@ -5,7 +5,7 @@ class Header extends ViewComponent {
       <div class="navbar">
         <span class="logo">Fuudi</span>
         <div class="settings-profile">
-          ${props.userId && `
+          ${props.isLoggedIn && `
             <a href='#' id='profile'>
               ${props.username}
             </a>

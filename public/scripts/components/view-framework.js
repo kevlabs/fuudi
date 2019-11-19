@@ -37,7 +37,7 @@ class ViewManager {
   }
 
   getViewSet($element) {
-    return this._viewSets.find(viewSet => viewSet._$element = $element);
+    return this._viewSets.find(viewSet => viewSet._$element.is($element));
   }
 
   removeViewSet(viewSet) {
@@ -61,13 +61,13 @@ class ViewManager {
     !this._inView && viewHandler && (this._inView = viewHandler);
 
     // mount component
-    // may have to remove props
-    viewHandler && viewHandler.component.mount(this._$element, props);
+    // append viewManager to props
+    viewHandler && viewHandler.component.mount(this._$element, { ...props, viewManager: this });
 
     // trickle view down
     // components managed by viewSets may not be children of component in view
     // pass props to viewSets
-    this._viewSets.forEach(viewSet => viewSet.view(name, props));
+    this._viewSets.forEach(viewSet => viewSet.view(name, { ...props, viewManager: this }));
 
     return this;
   }
