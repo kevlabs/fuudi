@@ -308,7 +308,7 @@ main form.login-form {
 
   .order-status {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     height: 3em;
     width: 100%;
@@ -320,6 +320,12 @@ main form.login-form {
       font-size: 1rem;
       font-weight: bold;
       color: $logo-color;
+    }
+
+    form {
+      width: 70%;
+      display: flex;
+      justify-content: space-around;
     }
   }
 }

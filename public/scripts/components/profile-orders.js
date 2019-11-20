@@ -16,11 +16,13 @@ class ProfileOrders extends ViewComponent {
           <span class="order-status">
             <p id="order-status-${order.id}">${escape(order.status)}</p>
             ${isRestaurant && `
-              <form data-order-id="${order.id}" action="/api/orders/${order.id}" method="POST">
-                <label for="minutes">Wait time (minutes)</label>
-                <input type="text" name ="minutes" value="${restaurant.waitMinutes}">
+              <form data-order-id="${order.id}" id="form-${order.id}" action="/api/orders/${order.id}" method="POST">
+                <span>
+                  <label for="minutes">Wait time (minutes)</label>
+                  <input type="text" name ="minutes" value="${restaurant.waitMinutes}">
+                </span>
                 <button type="submit" name="${order.id}" id="accept-${order.id}" class="btn   btn-success">Accept</button>
-                <button type="button" id="reject-${order.id}" class="btn btn-danger">Reject</button>
+                <button type="submit" id="reject-${order.id}" class="btn btn-danger">Reject</button>
               </form>
 
             ` || ''}
@@ -38,23 +40,98 @@ class ProfileOrders extends ViewComponent {
     try {
       $(".order-status form").submit(async (evt) => {
         evt.preventDefault();
-        let orderId = $(evt.currentTarget).data('orderId');
-        let waitMinutes = evt.currentTarget[0].value;
-        console.log(waitMinutes);
 
-        let data = {
-          status: 'In Progress',
-          waitMinutes
+        // Check which button was clicked
+        let clickedButton = $("button[type=submit][clicked=true]").text();
+
+
+        if (clickedButton === "Accept") {
+
+          // Order accepted
+
+          let orderId = $(evt.currentTarget).data('orderId');
+          let waitMinutes = evt.currentTarget[0].value;
+
+          let data = {
+            status: 'In Progress',
+            waitMinutes: Number(waitMinutes)
+          }
+
+          $(`#form-${orderId}`).empty();
+          $(`#form-${orderId}`).append(
+            `<p id=order-timer-${orderId}>TimeRemaining: ${waitMinutes}</p>`
+          );
+          $(`#form-${orderId}`).append(
+            `<button type="submit" name="${orderId}" id="accept-${orderId}" class="btn   btn-success">Complete Order</button>`
+          );
+
+          //Assigning listener to new button to assign clicked status
+
+          $("form button[type=submit]").click(function () {
+            $("button[type=submit]", $(this).parents("form")).removeAttr("clicked");
+            $(this).attr("clicked", "true");
+          });
+
+          console.log(JSON.stringify(data));
+
+          const { data: order } = await xhr({
+            method: 'PUT',
+            url: `/api/orders/${orderId}`,
+            dataType: "json",
+            data: JSON.stringify(data)
+          });
+
+        } else if (clickedButton === "Reject") {
+
+          // Order rejected
+
+          let orderId = $(evt.currentTarget).data('orderId');
+
+          let data = {
+            status: 'Rejected',
+            waitMinutes: null
+          }
+
+          $(`#form-${orderId}`).remove();
+
+          const { data: order } = await xhr({
+            method: 'PUT',
+            url: `/api/orders/${orderId}`,
+            dataType: "json",
+            data: JSON.stringify(data)
+          });
+
+        } else if (clickedButton === "Complete Order") {
+
+          // Order completed
+
+          let orderId = $(evt.currentTarget).data('orderId');
+
+          let data = {
+            status: 'Completed',
+            waitMinutes: null
+          }
+
+          $(`#form-${orderId}`).remove();
+
+          const { data: order } = await xhr({
+            method: 'PUT',
+            url: `/api/orders/${orderId}`,
+            dataType: "json",
+            data: JSON.stringify(data)
+          });
         }
 
-        const { data: order } = await xhr({
-          method: 'PUT',
-          url: `/api/orders/${orderId}`,
-          data: JSON.stringify(data)
-        }, [403]);
 
       });
+
+      $("form button[type=submit]").click(function () {
+        $("button[type=submit]", $(this).parents("form")).removeAttr("clicked");
+        $(this).attr("clicked", "true");
+      });
+
     } catch (err) {
+      console.log("here");
       this.$element.siblings('#profile-error').text(err.message);
     }
   }
