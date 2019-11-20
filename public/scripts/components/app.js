@@ -21,6 +21,9 @@ class App extends ViewComponent {
         url: `/api/users/login`,
       }, [403]);
 
+      console.log(user);
+
+
       // manager header views
       const header = viewManager.addViewSet($('#app > header'));
       header.addView('init', new Header());
@@ -31,16 +34,17 @@ class App extends ViewComponent {
       const login = new Login();
       main.addView('init', login);
       main.addView('login', login);
+      main.addView('home', new Home());
       main.addView('signup', new Signup());
       main.addView('user-profile', new Profile());
       main.addView('restaurant-profile', new Profile());
       window.main = main;
 
       // display init
-      viewManager.view('init', user);
+      viewManager.view('init', { user });
 
     } catch (err) {
-      console.log('Error in App component');
+      console.log('Error in App component', err);
     }
   }
 }

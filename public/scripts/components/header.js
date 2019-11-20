@@ -6,8 +6,8 @@ class Header extends ViewComponent {
       <nav class="navbar">
         <span class="logo">Fuudi</span>
         <ul class="settings-profile">
-          ${props.isLoggedIn && `
-            ${props.restaurants && props.restaurants[0] && `
+          ${props.user.isLoggedIn && `
+            ${props.user.restaurants && props.user.restaurants[0] && `
               <li id="header-restaurant-profile">
                 <a href="#">
                   <i class="fas fa-utensils"></i>
@@ -49,8 +49,7 @@ class Header extends ViewComponent {
   componentDidMount() {
 
     // grab user info
-    const { username, email, phone, restaurants, isLoggedIn } = this.state;
-    const user = { username, email, phone, restaurants, isLoggedIn };
+    const user = this.state.user;
 
     // remove pointer to props
     this.state = null;
@@ -75,7 +74,6 @@ class Header extends ViewComponent {
       // handle restaurant profile clicks
       if ($(evt.currentTarget).is(this.$element.find('#header-restaurant-profile'))) {
 
-        console.log(restaurants[0]);
 
         const { data } = await xhr({
           method: 'GET',
@@ -86,12 +84,12 @@ class Header extends ViewComponent {
 
         const [restaurantInfo] = data;
 
-        window.main.view('restaurant-profile', { ...user, restaurantInfo });
+        window.main.view('restaurant-profile', { user, restaurantInfo });
       }
 
       // handle profile clicks
       if ($(evt.currentTarget).is(this.$element.find('#header-profile'))) {
-        window.main.view('user-profile', user);
+        window.main.view('user-profile', { user });
       }
 
       // handle sign out clicks
@@ -102,12 +100,10 @@ class Header extends ViewComponent {
           url: '/api/users/logout'
         });
 
-        window.viewManager.view('init', user);
+        window.viewManager.view('init', { user });
       }
 
     });
 
-
-    this.$element.on('click', '#profile', (evt) => alert(this.state.username));
   }
 }
