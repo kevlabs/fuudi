@@ -75,7 +75,6 @@ class Header extends ViewComponent {
       // handle restaurant profile clicks
       if ($(evt.currentTarget).is(this.$element.find('#header-restaurant-profile'))) {
 
-        console.log(restaurants[0]);
 
         const { data } = await xhr({
           method: 'GET',

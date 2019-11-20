@@ -30,3 +30,18 @@ const isUsername = (str) => /^[\w\d!@#$%^&*\-+[\]{}|\\"':;?/,<.>]*$/.test(str);
 
 // convert to date string 'YYYY-MM-DD at HH:MM'
 const toDateString = (date) => `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} at ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+
+const setWaitTime = (waitMinutes, i) => {
+  let waitTime = prompt("Please set estimated wait time in minutes:", waitMinutes);
+
+  $(`#accept-${i}`).replaceWith(`<button type="button" id="complete-${i}" class="btn btn-success" onclick="completeOrder(${i})">Complete Order</button>`)
+  $(`#reject-${i}`).replaceWith(`<p id=order-timer-${i}>Time Remaining: ${waitTime}</p>`);
+  $(`#order-status-${i}`).text("In Progress");
+
+}
+
+const completeOrder = (i) => {
+  $(`#complete-${i}`).remove();
+  $(`#order-timer-${i}`).remove();
+  $(`#order-status-${i}`).text("Completed");
+}
