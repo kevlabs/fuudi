@@ -15,8 +15,8 @@ const app = express();
 const morgan = require('morgan');
 // Init Nexmo
 const nexmo = new Nexmo({
-  apiKey: '7226847a',
-  apiSecret: '1A2Ynv7u2Y0vyRa4'
+  apiKey: process.env.NEXMO_KEY,
+  apiSecret: process.env.NEXMO_SECRET
 }, { debug: true });
 
 // PG database client/connection setup

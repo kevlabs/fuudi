@@ -8,6 +8,7 @@ $(document).ready(function () {
     $cart.push($item);
     if (!cartToHTML[$item]) {
       cartToHTML[$item] = {};
+      cartToHTML[$item].id = $(this).closest(".listing").attr("data-item-id");
       cartToHTML[$item].quantity = 1;
       cartToHTML[$item].price = parseFloat(($(this).closest("#plusminus")).siblings(".menu-price").html().replace('$', ''));
     } else {
@@ -77,10 +78,31 @@ $(document).ready(function () {
     </tr>
     `
     $("tbody").append(totalPriceWithTax);
+    let $buyButton = `<button id="buy" type="button">Click Me!</button>`
+    $("tbody").append($buyButton);
 
-
+    $("#buy").click(function (){
+      let JSONorder = {};
+      let userInfo = JSON.parse(sessionStorage.getItem('user'));
+      console.log(userInfo);
+      if(userInfo.restaurants){
+        JSONorder.restaurantId = userInfo.restaurants[0];
+      }
+      JSONorder.total = calculateTotal(cartToHTML);
+      JSONorder.items = [];
+      for (item of Object.keys(cartToHTML)) {
+        let itemObject = {};
+        itemObject.id = cartToHTML[item].id;
+        itemObject.quantity = cartToHTML[item].quantity;
+        JSONorder.items.push(itemObject);
+      }
+      JSON.stringify(JSONorder);
+      console.log(JSONorder);
+    });
   });
 
+
+  
 
 });
 function calculateTotal(object){
@@ -92,3 +114,25 @@ function calculateTotal(object){
 }
 
 
+/*
+NEW ORDERS - JSON input format:
+{
+  "restaurantId": "1",
+  "total": "1520",
+  "items": [
+    {
+      "id": "1",
+      "quantity": "4"
+    },
+    {
+      "id": "7",
+      "quantity": "1"
+    },
+    {
+      "id": "27",
+      "quantity": "1"
+    }
+  ]
+}
+
+*/

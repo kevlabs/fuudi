@@ -10,15 +10,12 @@
     integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
     crossorigin="anonymous"></script>
   <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
-  <script
-    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
     integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
     crossorigin="anonymous"></script>
 
-  <link rel="stylesheet"
-    href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
-    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
   <!-- Main CSS -->
   <link rel="stylesheet" href="../public/styles/layout.css">
@@ -27,8 +24,7 @@
   <link
     href="https://fonts.googleapis.com/css?family=Bebas+Neue|Righteous|Playfair+Display:400,400i,700,700i&display=swap"
     rel="stylesheet">
-  <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css?ver=5.8.2"
-    rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css?ver=5.8.2" rel="stylesheet">
 
   <title>Fuudi</title>
 </head>
@@ -48,8 +44,11 @@
     </div>
   </header>
   <div class="content main">
-    <div id="splash">
-      <span>Welcome to your premium food ordering app.</span>
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container">
+        <h1 class="display-4">Never waste time.</h1>
+        <p class="lead"> Welcome to your premium food ordering app.</p>
+      </div>
     </div>
     <div id='map'></div>
     <div class="carousel">
@@ -92,13 +91,11 @@
             </div>
           </div>
         </div>
-        <a class="carousel-control-prev" href="#img-carousel" role="button"
-          data-slide="prev">
+        <a class="carousel-control-prev" href="#img-carousel" role="button" data-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           <span class="sr-only">Previous</span>
         </a>
-        <a class="carousel-control-next" href="#img-carousel" role="button"
-          data-slide="next">
+        <a class="carousel-control-next" href="#img-carousel" role="button" data-slide="next">
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="sr-only">Next</span>
         </a>
@@ -146,6 +143,7 @@
 
   </div>
   <script>
+    let key = process.env.GOOGLE_MAPS_API_KEY;
     function initMap() {
       // Map options
       var options = {
@@ -205,8 +203,8 @@
     }
 
   </script>
-  <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGFP7YL8zTW8bMDPuP4UnT_RNOIWNGP08&callback=initMap">
+  <script async defer let link=PROCESS.ENV.GOOGLE_MAPS_API_KEY;
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDz-V_V2C3LgVewJUZ1IpZ3klFnVPEX_hk&callback=initMap">
     </script>
 </body>
 
