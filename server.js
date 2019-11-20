@@ -66,6 +66,19 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+
+// Google geo coord
+const getCoordinates = require('./lib/geo-coordinates');
+app.get('/geo', (req, res) => {
+  getCoordinates('M5H1C4').then(data => res.json(data));
+});
+
+// Yelp coord
+const getYelpData = require('./lib/yelp-data');
+app.get('/yelp', (req, res) => {
+  getYelpData('Paramount', 43.653587, -79.3831154).then(data => res.json(data));
+});
+
 // Index route
 app.get('/smstext', (req, res) => {
   res.render('smsForm');
@@ -101,7 +114,7 @@ app.post('/smstext', (req, res) => {
 });
 
 
-const server = app.listen(PORT, () => 
+const server = app.listen(PORT, () =>
   console.log(`Fuudi app listening on port ${PORT}`));
 
 // Connect to socket.io

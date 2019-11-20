@@ -1,4 +1,6 @@
 const { stringToInteger, stringToDate, isTimestamp, isEmail, isUrl } = require('../lib/utils');
+const getCoordinates = require('../lib/geo-coordinates');
+const getYelpData = require('../lib/yelp-data');
 
 // check if user is owner of given restaurant by Id
 const isRestaurantOwner = (req, restaurantId) => {
@@ -141,11 +143,60 @@ const get = (db, options = {}) => {
   const [whereFilter, params] = setGetFilters(options);
 
   return db.query(`
-    SELECT r.id, r.name, r.description, r.photo_url, r.open_time, r.close_time, r,email, r.phone, r.street_address, r.city, r.post_code, r.latitude, r.longitude, r.wait_minutes, r.rating, m_i.id item_id, m_i.name item_name, m_i.description item_description, m_i.photo_url item_photo_url, m_i.price_cents item_price_cents
+    SELECT r.id, r.name, r.description, r.photo_url, r.open_time, r.close_time, r,email, r.phone, r.street_address, r.city, r.post_code, r.latitude, r.longitude, r.wait_minutes, r.rating, r.rating_expires_at, m_i.id item_id, m_i.name item_name, m_i.description item_description, m_i.photo_url item_photo_url, m_i.price_cents item_price_cents
     FROM restaurants r
     JOIN menu_items m_i ON r.id = m_i.restaurant_id
     ${whereFilter}
   `, params);
+
+};
+
+// update rating - data from yelp
+const updateRating = async (db, data) => {
+  // filter by unique id
+  const [unique, nonUnique] = data.reduce(([unique, nonUnique], row) => {
+    (unique.length && unique[unique.length - 1].id || 0) !== row.id && unique.push(row) || nonUnique.push(row);
+    return [unique, nonUnique];
+  }, [[], []]);
+
+  // update the first record for each row
+  unique.forEach(async (row) => {
+    const { id, name, latitude, longitude, rating, rating_expires_at: ratingExpiry } = row;
+    try {
+      const expiry = new Date(ratingExpiry);
+
+      if (expiry < Date.now()) {
+        let { rating: newRating } = await getYelpData(name, latitude, longitude);
+        newRating = Number(newRating) * 100;
+        const newExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+        const [ { rating: bookedRating, rating_expires_at: bookedExpiry }] = await db.query(`
+          UPDATE restaurants SET rating = $1, rating_expires_at = $2
+          WHERE id = $3
+          RETURNING *
+        `, [newRating, newExpiry, id]);
+
+        row.rating = bookedRating;
+        row.rating_expires_at = bookedExpiry;
+
+      }
+
+    } catch (err) {
+      // set back to original values
+      row.rating = rating;
+      row.rating_expires_at = ratingExpiry;
+    }
+
+  });
+
+  // update non-unique records
+  nonUnique.forEach(row => {
+    const updatedUnique = unique.find(updated => updated.id === row.id);
+    row.rating = updatedUnique.rating;
+    row.rating_expires_at = updatedUnique.rating_expires_at;
+  });
+
+  return data;
 
 };
 
@@ -188,7 +239,8 @@ const parse = (data) => {
 
 const getData = async (db, options = {}) => {
   try {
-    const restaurantData = await get(db, options);
+    let restaurantData = await get(db, options);
+    restaurantData = await updateRating(db, restaurantData);
     return parse(restaurantData);
 
   } catch (err) {
@@ -271,11 +323,11 @@ const validateInput = (restaurant) => {
   }
 
   // number fields
-  ['latitude', 'longitude'].forEach(key => {
-    const value = Number(restaurant[key]);
-    if (!value) throw Error(`${key} is missing or not of type number.`);
-    output[key] = value;
-  });
+  // ['latitude', 'longitude'].forEach(key => {
+  //   const value = Number(restaurant[key]);
+  //   if (!value) throw Error(`${key} is missing or not of type number.`);
+  //   output[key] = value;
+  // });
 
   // Menu items
   if (!restaurant.items || !Array.isArray(restaurant.items) || !restaurant.items.length) throw Error('Restaurant must include one or more menu items.');
@@ -309,18 +361,24 @@ const create = async (db, userId, restaurant) => {
   try {
 
     // temporarily add dummy latitude, longitude and rating
-    restaurant.latitude = 43.6441789;
-    restaurant.longitude = -79.4043927;
-    restaurant.rating = 300;
+    // restaurant.latitude = 43.6441789;
+    // restaurant.longitude = -79.4043927;
+    // restaurant.rating = 300;
 
     const safeOrder = validateInput({ userId, ...restaurant });
-    const restaurantFields = ['ownerId', 'name', 'description', 'tags', 'photoUrl', 'openTime', 'closeTime', 'phone', 'email', 'streetAddress', 'city', 'postCode', 'latitude', 'longitude', 'waitMinutes', 'rating'].map(field => safeOrder[field]);
+
+    // get geo coordinates
+    const { latitude, longitude } = await getCoordinates(safeOrder.postCode);
+    safeOrder.latitude = latitude;
+    safeOrder.longitude = longitude;
+
+    const restaurantFields = ['ownerId', 'name', 'description', 'tags', 'photoUrl', 'openTime', 'closeTime', 'phone', 'email', 'streetAddress', 'city', 'postCode', 'latitude', 'longitude', 'waitMinutes'].map(field => safeOrder[field]);
 
     // don't catch errors in transaction or changes won't be rolled back
     return db.transaction(async (query) => {
       // #1 - create restaurant record
       const bookedRestaurant = await query(`
-        INSERT INTO restaurants (owner_id, name, description, tags, photo_url, open_time, close_time, phone, email, street_address, city, post_code, latitude, longitude, wait_minutes, rating)
+        INSERT INTO restaurants (owner_id, name, description, tags, photo_url, open_time, close_time, phone, email, street_address, city, post_code, latitude, longitude, wait_minutes)
         VALUES (${restaurantFields.map((_, i) => `$${i + 1}`).join(', ')})
         RETURNING id;
       `, restaurantFields);
