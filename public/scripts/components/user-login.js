@@ -33,13 +33,13 @@ class Login extends ViewComponent {
   componentDidMount() {
 
     // register form action
-    const $form = this.$element.siblings('form');
+    const $form = this.$element.find('form');
     $form.on('submit', async (evt) => {
       try {
         evt.preventDefault();
 
         // clear error container
-        this.$element.siblings('#login-error').text('');
+        this.$element.find('#login-error').text('');
 
         if (!$form.find('#login-username').val()) throw Error('Username cannot be blank');
         if (!$form.find('#login-password').val()) throw Error('Password cannot be blank');
@@ -56,7 +56,7 @@ class Login extends ViewComponent {
         window.viewManager.view('init', user);
 
       } catch (err) {
-        this.$element.siblings('#login-error').text(err.message);
+        this.$element.find('#login-error').text(err.message);
       }
     });
   }
