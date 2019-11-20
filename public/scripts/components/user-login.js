@@ -9,22 +9,24 @@ class Login extends ViewComponent {
     }
 
     return $(`
-      <span class="title-container"><h3>Log In</h3></span>
-      <div id="login-error" class="help-block"></div>
-      <form action="/api/users/login" method="POST">
-        <div class="form-group">
-          <label for="login-username">Username</label>
-          <input id="login-username" name="username" type="text" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="login-password">Password</label>
-          <input id="login-password" name="password" type="password" class="form-control">
-        </div>
-        <div class="login-buttons">
-          <input type="submit" value="Sign in" class="btn btn-outline-dark">
-          <input type="reset" value="Clear" class="btn btn-outline-dark">
-        </div>
-      </form>
+      <div class="login-container">
+        <span class="title-container"><h3>Log In</h3></span>
+        <div id="login-error" class="help-block"></div>
+        <form action="/api/users/login" method="POST">
+          <div class="form-group">
+            <label for="login-username">Username</label>
+            <input id="login-username" name="username" type="text"  class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input id="login-password" name="password"  type="password" class="form-control">
+          </div>
+          <div class="login-buttons">
+            <input type="submit" value="Sign in" class="btn   btn-outline-dark">
+            <input type="reset" value="Clear" class="btn  btn-outline-dark">
+          </div>
+        </form>
+      </div>
     `);
   }
 

@@ -339,6 +339,14 @@ main form {
     margin-top: 5em;
   }
 
+  .login-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1.2rem;
+  }
+
   .content.main {
     margin-top: 0;
   }
