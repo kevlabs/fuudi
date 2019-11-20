@@ -330,7 +330,7 @@ main form {
 // Responsive Designs
 
 @media only screen and (min-width: 1024px) {
-  .content {
+  main {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
