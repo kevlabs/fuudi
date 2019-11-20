@@ -9,43 +9,45 @@ class Signup extends ViewComponent {
     }
 
     return $(`
-      <span class="title-container"><h3>Register</h3></span>
-      <div id="signup-error" class="help-block"></div>
-      <form action="/api/users/" method="POST">
-        <div class="form-group">
-          <label for="signup-username">Username</label>
-          <input id="signup-username" name="username" type="text" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="signup-email">Email</label>
-          <input id="signup-email" name="email" type="text" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="signup-phone">Phone number</label>
-          <input id="signup-phone" name="phone" type="text" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="signup-password">Password</label>
-          <input id="signup-password" name="password" type="password" class="form-control">
-        </div>
-        <div class="signup-buttons">
-          <input type="submit" value="Sign up" class="btn btn-outline-dark">
-          <input type="reset" value="Clear" class="btn btn-outline-dark">
-        </div>
-      </form>
+      <div class="login-container">
+        <span class="title-container"><h3>Register</h3></span>
+        <div id="signup-error" class="help-block"></div>
+        <form action="/api/users/" method="POST">
+          <div class="form-group">
+            <label for="signup-username">Username</label>
+            <input id="signup-username" name="username" type="text"   class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="signup-email">Email</label>
+            <input id="signup-email" name="email" type="text"   class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="signup-phone">Phone number</label>
+            <input id="signup-phone" name="phone" type="text"   class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="signup-password">Password</label>
+            <input id="signup-password" name="password"   type="password" class="form-control">
+          </div>
+          <div class="signup-buttons">
+            <input type="submit" value="Sign up" class="btn   btn-outline-dark">
+            <input type="reset" value="Clear" class="btn  btn-outline-dark">
+          </div>
+        </form>
+      </div>
     `);
   }
 
   componentDidMount() {
 
     // register form action
-    const $form = this.$element.siblings('form');
+    const $form = this.$element.find('form');
     $form.on('submit', async (evt) => {
       try {
         evt.preventDefault();
 
         // clear error container
-        this.$element.siblings('#signup-error').text('');
+        this.$element.find('#signup-error').text('');
 
         const username = $form.find('#signup-username').val();
         if (!username) throw Error('Username cannot be blank');
@@ -72,7 +74,7 @@ class Signup extends ViewComponent {
         window.viewManager.view('init', user);
 
       } catch (err) {
-        this.$element.siblings('#signup-error').text(err.message);
+        this.$element.find('#signup-error').text(err.message);
       }
     });
   }
