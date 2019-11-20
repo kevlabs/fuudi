@@ -7,8 +7,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { createOrder, updateOrderStatus, completeOrder, getOrderData } = require('../services/orders');
-const { stringToInteger, resEnum, createResponse, setWaitTime } = require('../lib/utils');
+const { createOrder, updateOrderStatus, completeOrder, getOrderData, updateOrder } = require('../services/orders');
+const { stringToInteger, resEnum, createResponse } = require('../lib/utils');
 const { isAuthenticated, getCurrentUser } = require('../services/users');
 const { isRestaurantOwner } = require('../services/restaurants');
 
@@ -35,32 +35,13 @@ module.exports = (db) => {
         const userId = getCurrentUser(req);
         const orderId = await createOrder(db, userId, req.body);
         const order = await getOrderData(db, userId, {
-          'id': orderId
+          id: orderId
         });
         res.json(order);
 
       } catch (err) {
         res.status(500).json({ error: err.message });
       }
-    });
-
-  router.route('/:id')
-    // get order details by order id
-    .get(async (req, res) => {
-      try {
-        const userId = getCurrentUser(req);
-        const order = await getOrderData(db, userId, {
-          'id': req.params.id
-        });
-        res.json(order);
-
-      } catch (err) {
-        res.status(500).json({ error: err.message });
-      }
-    })
-    // update order (status)
-    .put((req, res) => {
-
     });
 
   // get order by restaurant id - for restaurant owners only
@@ -76,6 +57,39 @@ module.exports = (db) => {
       res.status(500).json({ error: err.message });
     }
   });
+
+  router.route('/:id')
+    // get order details by order id
+    .get(async (req, res) => {
+      try {
+        const userId = getCurrentUser(req);
+        const order = await getOrderData(db, userId, {
+          id: Number(req.params.id)
+        });
+        res.json(order);
+
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    })
+    // update order (status)
+    .put(async (req, res) => {
+      try {
+        const userId = getCurrentUser(req);
+        const orderId = await updateOrder(db, userId, {
+          ...req.body,
+          id: Number(req.params.id)
+        });
+        const order = await getOrderData(db, userId, {
+          id: orderId
+        });
+        res.json(order);
+
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    });
+
 
   return router;
 };
