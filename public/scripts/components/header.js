@@ -57,18 +57,25 @@ class Header extends ViewComponent {
     // store user info
     sessionStorage.setItem('user', JSON.stringify(user));
 
+    // handle logo clicks
+    this.$element.on('click', '.logo', (evt) => {
+      evt.preventDefault();
+      window.viewManager.view('home', { user });
+    });
+
+
     this.$element.on('click', '.settings-profile li', async (evt) => {
       evt.preventDefault();
 
       // handle sign up clicks
       if ($(evt.currentTarget).is(this.$element.find('#header-signup'))) {
         // alert('Clicked signup');
-        window.viewManager.view('signup');
+        window.viewManager.view('signup', { user });
       }
 
       // handle sign in clicks
       if ($(evt.currentTarget).is(this.$element.find('#header-signin'))) {
-        window.viewManager.view('login');
+        window.viewManager.view('login', { user });
       }
 
       // handle restaurant profile clicks
@@ -77,7 +84,7 @@ class Header extends ViewComponent {
 
         const { data } = await xhr({
           method: 'GET',
-          url: `/api/restaurants/${restaurants[0]}`
+          url: `/api/restaurants/${user.restaurants[0]}`
         });
 
         if (!data.length) throw Error('Restaurant not found');

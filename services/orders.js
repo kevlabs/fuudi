@@ -355,7 +355,7 @@ const update = async (db, userId = null, order) => {
       WHERE id = $${orderFieldKeys.length + 1} AND (
         user_id = $${orderFieldKeys.length + 2}
         OR
-        id = (SELECT o_m_i.order_id FROM order_menu_items o_m_i
+        id = (SELECT DISTINCT o_m_i.order_id FROM order_menu_items o_m_i
         JOIN menu_items m_i ON o_m_i.menu_item_id = m_i.id
         JOIN restaurants r ON m_i.restaurant_id = r.id
         WHERE o_m_i.order_id = $${orderFieldKeys.length + 1} AND r.owner_id = $${orderFieldKeys.length + 2})
