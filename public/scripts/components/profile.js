@@ -1,5 +1,3 @@
-// TODO: convert to use render()?
-
 class Profile extends ViewComponent {
   render(props, cancel) {
 
@@ -43,8 +41,13 @@ class Profile extends ViewComponent {
         url: `/api/orders${this.state.restaurantInfo && `/restaurants/${this.state.restaurantInfo.id}` || ''}`
       });
 
+      // Create props for order listing
+
+      const nextProps = { orders };
+      this.state.restaurantInfo && (nextProps.restaurant = this.state.restaurantInfo);
+
       // display orders
-      orderHistory.view('orders', { orders, isRestaurant: Boolean(this.state.restaurantInfo) });
+      orderHistory.view('orders', nextProps);
 
     } catch (err) {
       this.$element.siblings('#profile-error').text(err.message);

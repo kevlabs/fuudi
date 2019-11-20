@@ -6,7 +6,7 @@
  */
 
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
 const { createOrder, updateOrderStatus, completeOrder, getOrderData, updateOrder } = require('../services/orders');
 const { stringToInteger, resEnum, createResponse } = require('../lib/utils');
 const { isAuthenticated, getCurrentUser } = require('../services/users');
