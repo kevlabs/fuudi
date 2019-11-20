@@ -3,8 +3,10 @@ class Login extends ViewComponent {
     this.state = props;
 
     // if user already logged in change view
-    props.isLoggedIn && cancel();
-    props.viewManager.view('user-profile', props);
+    if (props.isLoggedIn) {
+      cancel();
+      return props.viewManager.view('user-profile', props);
+    }
 
     return $(`
       <span class="title-container"><h3>Log In</h3></span>
@@ -47,9 +49,6 @@ class Login extends ViewComponent {
         }, [403]);
 
         if (!user.isLoggedIn) throw Error('Invalid credentials. Please try again!');
-
-        // store user info
-        // sessionStorage.setItem('user', JSON.stringify(user));
 
         // bring init view into display
         window.viewManager.view('init', user);

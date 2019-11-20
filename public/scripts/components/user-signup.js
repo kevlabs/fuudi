@@ -3,8 +3,10 @@ class Signup extends ViewComponent {
     this.state = props;
 
     // if user already logged in change view
-    props.isLoggedIn && cancel();
-    props.viewManager.view('user-profile', props);
+    if (props.isLoggedIn) {
+      cancel();
+      return props.viewManager.view('user-profile', props);
+    }
 
     return $(`
       <span class="title-container"><h3>Register</h3></span>
