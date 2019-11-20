@@ -25,6 +25,8 @@ class ProfileOrders extends ViewComponent {
         </div>
       `;
 
+      i++;
+
     }
 
     return $(list);
