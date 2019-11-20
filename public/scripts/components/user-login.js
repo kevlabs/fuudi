@@ -1,11 +1,9 @@
 class Login extends ViewComponent {
   render(props, cancel) {
-    this.state = props;
-
     // if user already logged in change view
-    if (props.isLoggedIn) {
+    if (props.user.isLoggedIn) {
       cancel();
-      return props.viewManager.view('user-profile', props);
+      return props.viewManager.view('home', { user: props.user });
     }
 
     return $(`
@@ -53,7 +51,7 @@ class Login extends ViewComponent {
         if (!user.isLoggedIn) throw Error('Invalid credentials. Please try again!');
 
         // bring init view into display
-        window.viewManager.view('init', user);
+        window.viewManager.view('init', { user });
 
       } catch (err) {
         this.$element.find('#login-error').text(err.message);
