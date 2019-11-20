@@ -145,7 +145,7 @@ main {
 
 // Login/Signup
 
-main form {
+main form.login-form {
   padding: 2em;
   background-color: white;
   border-radius: 25px;
@@ -308,7 +308,7 @@ main form {
 
   .order-status {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     height: 3em;
     width: 100%;
@@ -321,6 +321,16 @@ main form {
       font-weight: bold;
       color: $logo-color;
     }
+  }
+}
+
+.order-status form {
+  // display: flex;
+  // flex-direction: column;
+  // align-items: center;
+
+  input {
+    width: 50px;
   }
 }
 

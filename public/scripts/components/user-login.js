@@ -12,7 +12,7 @@ class Login extends ViewComponent {
       <div class="login-container">
         <span class="title-container"><h3>Log In</h3></span>
         <div id="login-error" class="help-block"></div>
-        <form action="/api/users/login" method="POST">
+        <form class="login-form" action="/api/users/login" method="POST">
           <div class="form-group">
             <label for="login-username">Username</label>
             <input id="login-username" name="username" type="text"  class="form-control">

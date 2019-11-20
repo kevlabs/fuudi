@@ -12,7 +12,7 @@ class Signup extends ViewComponent {
       <div class="login-container">
         <span class="title-container"><h3>Register</h3></span>
         <div id="signup-error" class="help-block"></div>
-        <form action="/api/users/" method="POST">
+        <form class="login-form" action="/api/users/" method="POST">
           <div class="form-group">
             <label for="signup-username">Username</label>
             <input id="signup-username" name="username" type="text"   class="form-control">
