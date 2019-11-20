@@ -55,19 +55,19 @@ class ViewManager {
     const viewHandler = this._views[name];
 
     // detach component if view has changed
-    this._inView && (viewHandler && this._inView.component !== viewHandler.component || this._inView.alwaysDetach) && this._inView.component.$element.detach() && (this._inView = null);
-
-    // set this._inView
-    !this._inView && viewHandler && (this._inView = viewHandler);
+    this._inView && (viewHandler && this._inView.component !== viewHandler.component || this._inView.alwaysDetach) && this._inView.component.$element && this._inView.component.$element.detach() && (this._inView = null);
 
     // mount component
     // append viewManager to props
     viewHandler && viewHandler.component.mount(this._$element, { ...props, viewManager: this });
 
+    // set this._inView
+    !this._inView && viewHandler && viewHandler.component.$element && (this._inView = viewHandler);
+
     // trickle view down
     // components managed by viewSets may not be children of component in view
     // pass props to viewSets
-    this._viewSets.forEach(viewSet => viewSet.view(name, { ...props, viewManager: this }));
+    this._viewSets.forEach(viewSet => viewSet.view(name, { ...props, viewManager: viewSet }));
 
     return this;
   }

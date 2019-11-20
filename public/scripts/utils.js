@@ -27,3 +27,6 @@ const isEmail = (str) => /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA
 
 // function to validate username
 const isUsername = (str) => /^[\w\d!@#$%^&*\-+[\]{}|\\"':;?/,<.>]*$/.test(str);
+
+// convert to date string 'YYYY-MM-DD at HH:MM'
+const toDateString = (date) => `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} at ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;

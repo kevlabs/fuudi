@@ -16,7 +16,7 @@ $enable-gradients: 'true';
 
 #app {
   background-color: $background-color-thin;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -60,6 +60,19 @@ header {
   .settings-profile {
     position: absolute;
     right: 2em;
+    margin: 0;
+    list-style-type: none;
+    padding: 0;
+
+    li {
+      display: inline-block;
+    }
+
+    #header-restaurant-settings {
+      border-right: 3px solid $text-dark;
+      padding-right: 1em;
+      margin-right: 1em;
+    }
   }
 
   i {
@@ -287,6 +300,8 @@ td {
 .user-img {
   display: flex;
   justify-content: center;
+  width: 200px;
+  height: 200px;
 }
 
 .user-details {
@@ -360,13 +375,21 @@ td {
 // Responsive Designs
 
 @media only screen and (min-width: 1024px) {
-  .content {
+  main {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: flex-start;
     width: 100%;
     margin-top: 5em;
+  }
+
+  .login-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1.2rem;
   }
 
   .content.main {

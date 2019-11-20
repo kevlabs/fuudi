@@ -8,7 +8,7 @@
 const express = require('express');
 const router  = express.Router();
 const { isAuthenticated, getCurrentUser} = require('../services/users');
-const { getRestaurantData, createRestaurant } = require('../services/restaurants');
+const { getRestaurantData, createRestaurant, isRestaurantOwner } = require('../services/restaurants');
 
 
 module.exports = (db) => {
@@ -40,6 +40,24 @@ module.exports = (db) => {
         res.status(500).json({ error: err.message });
       }
     });
+
+  router.route('/:id')
+    // get info for restaurant
+    .get(async (req, res) => {
+      try {
+        const restaurantId = Number(req.params.id);
+        if (!isRestaurantOwner(req, restaurantId)) return res.status(403).json({ error: 'unauthorized access' });
+
+        const restaurant = await getRestaurantData(db, {
+          id: restaurantId
+        });
+
+        res.json(restaurant);
+
+      } catch (err) {
+        res.status(500).json({ error: err.message });
+      }
+    })
 
   return router;
 };
