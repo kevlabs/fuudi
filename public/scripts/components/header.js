@@ -5,23 +5,43 @@ class Header extends ViewComponent {
     return $(`
       <nav class="navbar">
         <span class="logo">Fuudi</span>
-        <div class="settings-profile">
+        <ul class="settings-profile">
           ${props.isLoggedIn && `
-            <a href="#" id="header-profile">
-              <i class="fas fa-user"></i>
-            </a>
-            <a href="#" id="header-signout">
-              <i class="fas fa-sign-out-alt"></i>
-            </a>
+            ${props.restaurants && props.restaurants[0] && `
+              <li id="header-restaurant-profile">
+                <a href="#">
+                  <i class="fas fa-utensils"></i>
+                </a>
+              </li>
+              <li id="header-restaurant-settings">
+                <a href="#">
+                  <i class="fas fa-cog"></i>
+                </a>
+              </li>
+            ` || ''}
+            <li id="header-profile">
+              <a href="#">
+                <i class="fas fa-user"></i>
+              </a>
+            </li>
+            <li id="header-signout">
+              <a href="#">
+                <i class="fas fa-sign-out-alt"></i>
+              </a>
+            </li>
           ` || `
-            <a href="#" id="header-signup">
-              <i class="fas fa-user-plus"></i>
-            </a>
-            <a href="#" id="header-signin">
-              <i class="fas fa-sign-in-alt"></i>
-            </a>
+            <li id="header-signup">
+              <a href="#">
+                <i class="fas fa-user-plus"></i>
+              </a>
+            </li>
+            <li id="header-signin">
+              <a href="#">
+                <i class="fas fa-sign-in-alt"></i>
+              </a>
+            </li>
             `}
-        </div>
+        </ul>
       </nav>
       `);
   }
@@ -32,10 +52,13 @@ class Header extends ViewComponent {
     const { username, email, phone, restaurants, isLoggedIn } = this.state;
     const user = { username, email, phone, restaurants, isLoggedIn };
 
+    // remove pointer to props
+    this.state = null;
+
     // store user info
     sessionStorage.setItem('user', JSON.stringify(user));
 
-    this.$element.on('click', '.settings-profile a', async (evt) => {
+    this.$element.on('click', '.settings-profile li', async (evt) => {
       evt.preventDefault();
 
       // handle sign up clicks
@@ -49,9 +72,26 @@ class Header extends ViewComponent {
         window.viewManager.view('login');
       }
 
+      // handle restaurant profile clicks
+      if ($(evt.currentTarget).is(this.$element.find('#header-restaurant-profile'))) {
+
+        console.log(restaurants[0]);
+
+        const { data } = await xhr({
+          method: 'GET',
+          url: `/api/restaurants/${restaurants[0]}`
+        });
+
+        if (!data.length) throw Error('Restaurant not found');
+
+        const [restaurantInfo] = data;
+
+        window.main.view('restaurant-profile', { ...user, restaurantInfo });
+      }
+
       // handle profile clicks
       if ($(evt.currentTarget).is(this.$element.find('#header-profile'))) {
-        alert('Clicked profile');
+        window.main.view('user-profile', user);
       }
 
       // handle sign out clicks

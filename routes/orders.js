@@ -66,7 +66,7 @@ module.exports = (db) => {
   // get order by restaurant id - for restaurant owners only
   router.get('/restaurants/:id', async (req, res) => {
     try {
-      const restaurantId = req.params.id;
+      const restaurantId = Number(req.params.id);
       if (!isRestaurantOwner(req, restaurantId)) return res.status(403).json({ error: 'unauthorized access' });
 
       const orders = await getOrderData(db, null, { restaurantId });
