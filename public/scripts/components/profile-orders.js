@@ -20,10 +20,10 @@ class ProfileOrders extends ViewComponent {
               ${order.status === 'Pending' && `
                 <span>
                   <label for="minutes">Wait time (minutes)</label>
-                  <input type="text" name ="minutes" value="${order.waitMinutes}">
+                  <input type="text" name ="minutes" value="${order.waitMinutes}" class="shadow-sm rounded">
                 </span>
-                <button type="submit" name="${order.id}" id="accept-${order.id}" class="btn   btn-success">Accept</button>
-                <button type="submit" id="reject-${order.id}" class="btn btn-danger">Reject</button>
+                <button type="submit" name="${order.id}" id="accept-${order.id}" class="btn btn-success shadow-lg rounded">Accept</button>
+                <button type="submit" id="reject-${order.id}" class="btn btn-danger shadow-sm rounded">Reject</button>
               ` || `
                 <p id=order-timer-${order.id}>TimeRemaining: ${order.waitMinutes}</p>
                 <button type="submit" name="${order.id}" id="accept-${order.id}" class="btn   btn-success">Complete Order</button>
@@ -58,12 +58,13 @@ class ProfileOrders extends ViewComponent {
             waitMinutes: Number(waitMinutes)
           };
 
+          $(`#order-status-${orderId}`).text('In Progress');
           $(`#form-${orderId}`).empty();
           $(`#form-${orderId}`).append(
             `<p id=order-timer-${orderId}>TimeRemaining: ${waitMinutes}</p>`
           );
           $(`#form-${orderId}`).append(
-            `<button type="submit" name="${orderId}" id="accept-${orderId}" class="btn   btn-success">Complete Order</button>`
+            `<button type="submit" name="${orderId}" id="accept-${orderId}" class="btn   btn-success shadow-sm rounded">Complete Order</button>`
           );
 
           //Assigning listener to new button to assign clicked status
@@ -84,6 +85,8 @@ class ProfileOrders extends ViewComponent {
           // Order rejected
 
           let orderId = $(evt.currentTarget).data('orderId');
+
+          $(`#order-status-${orderId}`).text('Declined');
 
           let data = {
             status: 'Declined',
@@ -111,6 +114,7 @@ class ProfileOrders extends ViewComponent {
           }
 
           $(`#form-${orderId}`).remove();
+          $(`#order-status-${orderId}`).text('Completed');
 
           const { data: order } = await xhr({
             method: 'PUT',
