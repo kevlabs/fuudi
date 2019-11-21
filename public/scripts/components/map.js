@@ -3,14 +3,14 @@ class RestaurantMap extends ViewComponent {
     this.state = props;
 
     return $(`
-      <div id="map" style="height: 300px; width: 400px;"></div>
+      <div id="map" ></div>
     `);
   }
 
   async componentDidMount() {
     try {
       const restaurants = this.state.restaurants;
-      const { latitude: lat, longitude: lng } = await getGeoCoordinates({latitude: 43.644272, longitude: -79.402242 });
+      const { latitude: lat, longitude: lng } = await getGeoCoordinates({ latitude: 43.644272, longitude: -79.402242 });
 
 
       // GOOGLE MAPS
@@ -20,7 +20,7 @@ class RestaurantMap extends ViewComponent {
         center: { lat, lng }
       });
 
-      const addMarker = function({ coords, content }) {
+      const addMarker = function ({ coords, content }) {
         const marker = new google.maps.Marker({
           position: coords,
           map
@@ -28,10 +28,9 @@ class RestaurantMap extends ViewComponent {
 
         // set infowindow content
         const infoWindow = new google.maps.InfoWindow({ content });
-        console.log(infoWindow);
 
 
-        marker.addListener('click', function() {
+        marker.addListener('click', function () {
           infoWindow.open(map, marker);
         });
       };
