@@ -3,6 +3,12 @@ class Home extends ViewComponent {
     this.state = props;
     return $(`
       <div id="error-container"></div>
+      <div class="jumbotron">
+        <div class="jumbotron-text">
+          <h1 class="display-4">Never waste time.</h1>
+          <p class="lead"> Welcome to your premium food ordering  app.</p>
+        </div>
+      </div>
       <div class="map-container"></div>
       <div class="carousel"></div>
       <div class="listing-container main-container"></div>
