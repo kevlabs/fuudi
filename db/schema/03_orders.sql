@@ -8,7 +8,8 @@ CREATE TABLE orders (
   user_id INTEGER REFERENCES users(id),
   created_at TIMESTAMP DEFAULT NOW(),
   fulfilled_at TIMESTAMP DEFAULT NULL,
+  fulfilled_at_est TIMESTAMP DEFAULT NULL,
   total_cents INTEGER NOT NULL,
   wait_minutes SMALLINT DEFAULT 0,
   status order_progress DEFAULT 'Pending'
-)
+);
