@@ -37,7 +37,7 @@ $(document).ready(function () {
   });
 
   // handle cart -
-  $(".minus").click(function() {
+  $(".minus").click(function () {
 
     let $quantity = $(this).closest("span").find("span").html();
 
@@ -69,7 +69,7 @@ $(document).ready(function () {
   });
 
   // cart display
-  $('.checkout').click(function() {
+  $('.checkout').click(function () {
     console.log(calculateTotal(cartToHTML));
 
     $('.overlay').toggle();
@@ -107,7 +107,7 @@ $(document).ready(function () {
     $("tbody").append(totalPriceWithTax);
 
     // add buy button
-    $('<button id="buy" type="button">Click Me!</button>').appendTo('tbody').click(function() {
+    $('<button id="buy" class="btn btn-success" type="button">Total Price: ${(calculateTotal(cartToHTML) * 1.13).toFixed(2)}. Checkout!</button>').appendTo('tbody').click(function () {
       let JSONorder = {};
       let userInfo = JSON.parse(sessionStorage.getItem('user'));
       console.log(userInfo);

@@ -20,10 +20,10 @@ class ProfileOrders extends ViewComponent {
               ${order.status === 'Pending' && `
                 <span>
                   <label for="minutes">Wait time (minutes)</label>
-                  <input type="text" name ="minutes" value="${order.waitMinutes}">
+                  <input type="text" name ="minutes" value="${order.waitMinutes}" class="shadow-sm rounded">
                 </span>
-                <button type="submit" name="${order.id}" id="accept-${order.id}" class="btn   btn-success">Accept</button>
-                <button type="submit" id="reject-${order.id}" class="btn btn-danger">Reject</button>
+                <button type="submit" name="${order.id}" id="accept-${order.id}" class="btn btn-success shadow-lg rounded">Accept</button>
+                <button type="submit" id="reject-${order.id}" class="btn btn-danger shadow-sm rounded">Reject</button>
               ` || `
                 <p id=order-timer-${order.id}>TimeRemaining: ${order.waitMinutes}</p>
                 <button type="submit" name="${order.id}" id="accept-${order.id}" class="btn   btn-success">Complete Order</button>
@@ -63,7 +63,7 @@ class ProfileOrders extends ViewComponent {
             `<p id=order-timer-${orderId}>TimeRemaining: ${waitMinutes}</p>`
           );
           $(`#form-${orderId}`).append(
-            `<button type="submit" name="${orderId}" id="accept-${orderId}" class="btn   btn-success">Complete Order</button>`
+            `<button type="submit" name="${orderId}" id="accept-${orderId}" class="btn   btn-success shadow-sm rounded">Complete Order</button>`
           );
 
           //Assigning listener to new button to assign clicked status
