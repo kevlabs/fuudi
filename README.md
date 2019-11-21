@@ -1,7 +1,8 @@
 # Introducing Fuudi
 ## A food ordering app made for the Lighthouse Labs Midterm Project 
+## Authors: [James Truong](https://github.com/james-truong), [Kevin Laburte](https://github.com/kevlabs/), [Matthew Wardle](https://github.com/m-wardle)
 
-## Link: [Heroku host](https://)
+## Link: [Heroku host](https://fuudi.herokuapp.com)
 
 ### Features
 - Single Page Application using ViewComponent classes
