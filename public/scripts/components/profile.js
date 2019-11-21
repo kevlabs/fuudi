@@ -1,15 +1,14 @@
 class Profile extends ViewComponent {
   render(props, cancel) {
-
     if (!props.user.isLoggedIn) {
       cancel();
-      return props.viewManager.view('login');
+      return props.viewManager.view('login'), { user: props.user };
     }
 
     this.state = props;
 
     return $(`
-      <div class="profile-info rounded-circle"></div>
+      <div class="profile-info"></div>
       <div id="profile-error" class="help-block"></div>
       <div class="listing-container ${props.isRestaurant && `restaurant` || `user`}-orders"></div>
     `);

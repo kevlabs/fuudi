@@ -21,9 +21,6 @@ class App extends ViewComponent {
         url: `/api/users/login`,
       }, [403]);
 
-      console.log(user);
-
-
       // manager header views
       const header = viewManager.addViewSet($('#app > header')).addView('init', new Header());
       window.header = header;
@@ -41,7 +38,7 @@ class App extends ViewComponent {
       window.main = main;
 
       // display init
-      viewManager.view('init', { user, mainViewManager: main });
+      viewManager.view('init', { user });
 
     } catch (err) {
       console.log('Error in App component', err);

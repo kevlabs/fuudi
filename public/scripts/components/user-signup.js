@@ -7,6 +7,8 @@ class Signup extends ViewComponent {
       return props.viewManager.view('user-profile', { user: props.user });
     }
 
+    this.state = props;
+
     return $(`
       <div class="login-container">
         <span class="title-container"><h3>Register</h3></span>
@@ -66,9 +68,6 @@ class Signup extends ViewComponent {
 
         if (status !== 200) throw Error(user.error);
         if (!user.isLoggedIn) throw Error('Invalid credentials. Please try again!');
-
-        // store user info
-        sessionStorage.setItem('user', JSON.stringify(user));
 
         // bring init view into display
         window.viewManager.view('init', { user });

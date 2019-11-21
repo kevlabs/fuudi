@@ -51,8 +51,7 @@ class Header extends ViewComponent {
 
     // grab user info
     const user = this.state.user;
-    const app = this.state.viewManager;
-    const main = this.state.mainViewManager;
+    const main = window.main;
 
     // remove pointer to props
     this.state = null;
@@ -63,7 +62,7 @@ class Header extends ViewComponent {
     // handle logo clicks
     this.$element.on('click', '.logo > p, .icon', (evt) => {
       evt.preventDefault();
-      app.view('home', { user });
+      main.view('home', { user });
     });
 
     this.$element.on('click', '.settings-profile li', async (evt) => {
@@ -71,13 +70,12 @@ class Header extends ViewComponent {
 
       // handle sign up clicks
       if ($(evt.currentTarget).is(this.$element.find('#header-signup'))) {
-        // alert('Clicked signup');
-        app.view('signup', { user });
+        main.view('signup', { user });
       }
 
       // handle sign in clicks
       if ($(evt.currentTarget).is(this.$element.find('#header-signin'))) {
-        app.view('login', { user });
+        main.view('login', { user });
       }
 
       // handle restaurant profile clicks
@@ -97,7 +95,7 @@ class Header extends ViewComponent {
           method: 'GET',
           url: '/api/users/logout'
         });
-        app.view('init', { user });
+        window.viewManager.view('init', { user });
       }
 
     });

@@ -6,6 +6,8 @@ class Login extends ViewComponent {
       return props.viewManager.view('home', { user: props.user });
     }
 
+    this.state = props;
+
     return $(`
       <div class="login-container">
         <span class="title-container"><h3>Log In</h3></span>

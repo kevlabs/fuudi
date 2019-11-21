@@ -64,6 +64,9 @@ class ViewManager {
     // set this._inView
     !this._inView && viewHandler && viewHandler.component.$element && (this._inView = viewHandler);
 
+    // scroll back to top of page
+    viewHandler && window.scrollTo(0, 0);
+
     // trickle view down
     // components managed by viewSets may not be children of component in view
     // pass props to viewSets

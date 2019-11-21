@@ -1,5 +1,10 @@
 class Menu extends ViewComponent {
-  render(props) {
+  render(props, cancel) {
+    if (!props.user.isLoggedIn) {
+      cancel();
+      return props.viewManager.view('login', { user: props.user });
+    }
+
     this.state = props;
     return $(`
       <div id="error-container"></div>
