@@ -9,9 +9,11 @@ class Menu extends ViewComponent {
     return $(`
       <div id="error-container"></div>
       <div class="checkout">
-        <button type="button" class="btn btn-primary btn-lg">Checkout</button>
+        <button type="button" class="btn btn-primary btn-lg"><span id="cart-menu-button">Checkout</span></button>
       </div>
-      <div class="overlay"></div>
+      <div class="overlay shadow bg-white rounded">
+        <button id="minimize-checkout" class="btn btn-success" type="button"><span id="checkout-button"><p>Minimize Cart</p></span></button>
+      </div>
       <div class="profile-info"></div>
       <div class="listing-container"></div>
     `);
@@ -22,7 +24,7 @@ class Menu extends ViewComponent {
 
       const main = this.state.viewManager;
 
-      // resgister checkout, restaurant profile and menu items viewManagers
+      // register checkout, restaurant profile and menu items viewManagers
       main.addViewSet(this.$element.siblings('.profile-info')).addView('menu-views', new MenuProfile());
       main.addViewSet(this.$element.siblings('.listing-container')).addView('menu-views', new MenuItems());
       main.addViewSet(this.$element.siblings('.overlay')).addView('menu-views', new MenuCheckout());

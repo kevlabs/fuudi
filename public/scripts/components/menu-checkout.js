@@ -2,13 +2,13 @@ class MenuCheckout extends ViewComponent {
   render(props) {
     this.state = props;
     return $(`
-      <table class="table">
+      <table class="table table-striped">
         <thead>
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">Item</th>
-            <th scope="col">Price</th>
-            <th scope="col">Quantity</th>
+            <th scope="col" id="item-number">#</th>
+            <th scope="col" id="item-name">Item</th>
+            <th scope="col" id="item-price">Price</th>
+            <th scope="col" id="item-quantity">Quantity</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -23,8 +23,7 @@ class MenuCheckout extends ViewComponent {
     const restaurant = this.state.restaurant;
 
     const $cart = [];
-    const cartToHTML = {}; //const ?
-    console.log("document loaded");
+    let cartToHTML = {}; //const ?
 
     // handle cart +
     $(".add").click((evt) => {
@@ -50,15 +49,14 @@ class MenuCheckout extends ViewComponent {
       }
 
       // display checkout container
-      $(".checkout").addClass("display");
-      $(".checkout").slideDown();
+      $(".checkout").animate({ bottom: 0 }, 1000)
 
       // get quantity input
       let $quantity = $elem.closest("span").find("span").html();
       $quantity = parseInt($quantity);
       $quantity += 1;
       $elem.closest("span").find("span").html($quantity);
-      console.log(cartToHTML);
+
     });
 
     // handle cart -
@@ -98,9 +96,8 @@ class MenuCheckout extends ViewComponent {
     // cart display
     $('.checkout').click(async (evt) => {
       evt.preventDefault();
-      console.log(calculateTotal(cartToHTML));
 
-      $('.overlay').toggle();
+      $('.overlay').animate({ bottom: 0 }, 500);
       $('tbody').empty();
 
       // render hmlt
@@ -135,9 +132,11 @@ class MenuCheckout extends ViewComponent {
       $("tbody").append(totalPriceWithTax);
 
       // add buy button
-      $('<button id="buy" type="button">Click Me!</button>').appendTo('tbody').click(async (evt) => {
+      $(`<button id="buy" class="btn btn-success" type="button"><span id="checkout-button"><p>Total Price: $${(calculateTotal(cartToHTML) * 1.13).toFixed(2)}.</p><p> Checkout!</p></span></button>`).appendTo('.overlay').click(async (evt) => {
         evt.preventDefault();
         const JSONorder = {};
+        $('#buy').remove();
+
 
         // get restaurant id from state
         JSONorder.restaurantId = restaurant.id;
@@ -174,7 +173,15 @@ class MenuCheckout extends ViewComponent {
       });
     });
 
+    // Minimize Cart
+
+    $('#minimize-checkout').click(async (evt) => {
+      evt.preventDefault();
+
+      $('.overlay').animate({ bottom: '-800px' }, 1000);
+      $('#buy').remove();
 
 
+    })
   }
 }

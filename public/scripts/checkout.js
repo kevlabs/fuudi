@@ -78,14 +78,14 @@ $(document).ready(function () {
     </tr>
     `
     $("tbody").append(totalPriceWithTax);
-    let $buyButton = `<button id="buy" type="button">Click Me!</button>`
+    let $buyButton = `<button id="buy" class="btn btn-success" type="button">Click Me!</button>`
     $("tbody").append($buyButton);
 
-    $("#buy").click(function (){
+    $("#buy").click(function () {
       let JSONorder = {};
       let userInfo = JSON.parse(sessionStorage.getItem('user'));
       console.log(userInfo);
-      if(userInfo.restaurants){
+      if (userInfo.restaurants) {
         JSONorder.restaurantId = userInfo.restaurants[0];
       }
       JSONorder.total = calculateTotal(cartToHTML);
@@ -102,13 +102,13 @@ $(document).ready(function () {
   });
 
 
-  
+
 
 });
-function calculateTotal(object){
+function calculateTotal(object) {
   let total = 0;
   for (item of Object.keys(object)) {
-    total += object[item].price * object[item].quantity; 
+    total += object[item].price * object[item].quantity;
   }
   return total;
 }
