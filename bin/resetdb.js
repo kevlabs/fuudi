@@ -1,5 +1,5 @@
 // load .env data into process.env
-require('dotenv').config();
+// require('dotenv').config({ path: __dirname + '/.env' });
 
 // other dependencies
 const fs = require('fs');
@@ -12,7 +12,7 @@ const connectionString = process.env.DATABASE_URL ||
 const client = new Client();
 
 // Loads the schema files from db/schema
-const runSchemaFiles = function() {
+const runSchemaFiles = function () {
   console.log(chalk.cyan(`-> Loading Schema Files ...`));
   const schemaFilenames = fs.readdirSync('./db/schema');
 
@@ -23,7 +23,7 @@ const runSchemaFiles = function() {
   }
 };
 
-const runSeedFiles = function() {
+const runSeedFiles = function () {
   console.log(chalk.cyan(`-> Loading Seeds ...`));
   const schemaFilenames = fs.readdirSync('./db/seeds');
 
