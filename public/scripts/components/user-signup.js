@@ -46,6 +46,7 @@ class Signup extends ViewComponent {
         evt.preventDefault();
 
         // clear error container
+        this.$element.find('#signup-error').removeAttr('data-error');
         this.$element.find('#signup-error').text('');
 
         const username = $form.find('#signup-username').val();
@@ -73,8 +74,16 @@ class Signup extends ViewComponent {
         window.viewManager.view('init', { user });
 
       } catch (err) {
+        this.$element.find('#signup-error').attr('data-error', err.message);
         this.$element.find('#signup-error').text(err.message);
       }
+    });
+
+    $form.on('reset', (evt) => {
+      // clear error container
+      this.$element.find('#signup-error').removeAttr('data-error');
+      this.$element.find('#signup-error').text('');
+
     });
   }
 }

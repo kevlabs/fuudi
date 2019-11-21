@@ -38,6 +38,7 @@ class App extends ViewComponent {
       main.addView('signup', new Signup());
       main.addView('user-profile', new Profile());
       main.addView('restaurant-profile', new Profile());
+      main.addView('menu', new Menu());
       window.main = main;
 
       // display init

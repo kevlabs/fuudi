@@ -54,3 +54,8 @@ const getGeoCoordinates = (defaultCoords) => {
   });
 
 };
+
+
+// calculate total
+// object format: { 'key' : {price, quantity } }
+const calculateTotal = (object) => Object.values(object).reduce((total, { price, quantity }) => total + price * quantity, 0);

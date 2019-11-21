@@ -26,7 +26,7 @@ class Home extends ViewComponent {
       });
 
       // bring components into view
-      main.view('home-views', { user: this.state.user, restaurants });
+      main.view('home-views', { user: this.state.user, restaurants, mainViewManager: main });
 
       // remove pointer to props
       this.state = null;

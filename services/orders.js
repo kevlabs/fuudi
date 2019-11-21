@@ -71,7 +71,7 @@ const get = (db, userId = null, options = {}) => {
     JOIN menu_items m_i ON o_m_i.menu_item_id = m_i.id
     JOIN restaurants r ON m_i.restaurant_id = r.id
     ${whereFilter}
-    ORDER BY o.created_at
+    ORDER BY o.created_at DESC
   `, params);
 
 };

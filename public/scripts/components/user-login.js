@@ -37,6 +37,7 @@ class Login extends ViewComponent {
         evt.preventDefault();
 
         // clear error container
+        this.$element.find('#login-error').removeAttr('data-error');
         this.$element.find('#login-error').text('');
 
         if (!$form.find('#login-username').val()) throw Error('Username cannot be blank');
@@ -54,8 +55,16 @@ class Login extends ViewComponent {
         window.viewManager.view('init', { user });
 
       } catch (err) {
+        this.$element.find('#login-error').attr('data-error', err.message);
         this.$element.find('#login-error').text(err.message);
       }
+    });
+
+    $form.on('reset', (evt) => {
+      // clear error container
+      this.$element.find('#login-error').removeAttr('data-error');
+      this.$element.find('#login-error').text('');
+
     });
   }
 }

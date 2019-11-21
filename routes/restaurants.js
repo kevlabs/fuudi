@@ -46,7 +46,7 @@ module.exports = (db) => {
     .get(async (req, res) => {
       try {
         const restaurantId = Number(req.params.id);
-        if (!isRestaurantOwner(req, restaurantId)) return res.status(403).json({ error: 'unauthorized access' });
+        // if (!isRestaurantOwner(req, restaurantId)) return res.status(403).json({ error: 'unauthorized access' });
 
         const restaurant = await getRestaurantData(db, {
           id: restaurantId
