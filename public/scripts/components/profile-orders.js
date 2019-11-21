@@ -8,10 +8,12 @@ class ProfileOrders extends ViewComponent {
 
       list += `
         <div class="order listing m-2" data-order-id="${order.id}">
-          <p class="order-date">${toDateString(new Date(order.created))}</p>
-          <p class="order-restaurant">${escape(order.restaurant.name)}</p>
-          <ul class="order-contents">${items}</ul>
-          <span class="order-status">
+          <div class="order-content-container">
+            <p class="order-date">${toDateString(new Date(order.created))}</p>
+            <p class="order-restaurant">${escape(order.restaurant.name)}</p>
+            <ul class="order-contents">${items}</ul>
+          </div>
+          <div class="order-status">
             <p id="order-status-${order.id}">${escape(order.status)}</p>
             ${restaurant && ['Pending', 'In Progress'].includes(order.status) && `
               <form data-order-id="${order.id}" id="form-${order.id}" action="/api/orders/${order.id}" method="POST">
@@ -29,7 +31,7 @@ class ProfileOrders extends ViewComponent {
               </form>
             ` || ''}
             <p class="order-price"> ${(order.totalCents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" })}</p>
-          </span>
+          </div>
         </div>
       `;
 

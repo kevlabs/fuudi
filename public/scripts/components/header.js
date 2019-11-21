@@ -5,43 +5,48 @@ class Header extends ViewComponent {
     return $(`
       <nav class="navbar">
         <span class="logo">Fuudi</span>
-        <ul class="settings-profile">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggler">
+        <ul class="settings-profile navbar-nav">
           ${props.user.isLoggedIn && `
             ${props.user.restaurants && props.user.restaurants[0] && `
-              <li id="header-restaurant-profile">
-                <a href="#">
+              <li id="header-restaurant-profile" class="nav-item">
+                <a href="#" class="nav-link">
                   <i class="fas fa-utensils"></i>
                 </a>
               </li>
-              <li id="header-restaurant-settings">
-                <a href="#">
+              <li id="header-restaurant-settings" class="nav-item">
+                <a href="#" class="nav-link">
                   <i class="fas fa-cog"></i>
                 </a>
               </li>
             ` || ''}
-            <li id="header-profile">
-              <a href="#">
+            <li id="header-profile" class="nav-item">
+              <a href="#" class="nav-link">
                 <i class="fas fa-user"></i>
               </a>
             </li>
-            <li id="header-signout">
-              <a href="#">
+            <li id="header-signout" class="nav-item">
+              <a href="#" class="nav-link">
                 <i class="fas fa-sign-out-alt"></i>
               </a>
             </li>
           ` || `
-            <li id="header-signup">
-              <a href="#">
+            <li id="header-signup" class="nav-item">
+              <a href="#" class="nav-link">
                 <i class="fas fa-user-plus"></i>
               </a>
             </li>
-            <li id="header-signin">
-              <a href="#">
+            <li id="header-signin" class="nav-item">
+              <a href="#" class="nav-link">
                 <i class="fas fa-sign-in-alt"></i>
               </a>
             </li>
             `}
         </ul>
+        </div>
       </nav>
       `);
   }

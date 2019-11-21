@@ -57,9 +57,19 @@ header {
     text-align: center;
   }
 
-  .settings-profile {
+  .navbar-toggler {
     position: absolute;
     right: 2em;
+    background-color: $logo-color;
+  }
+
+  .navbar-collapse {
+    display: flex;
+  }
+
+  .settings-profile {
+    // position: absolute;
+    // right: 2em;
     margin: 0;
     list-style-type: none;
     padding: 0;
@@ -293,9 +303,6 @@ main form.login-form {
 }
 
 .order {
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
 
   .order-date, .order-restaurant {
     width: 30%;
@@ -303,10 +310,19 @@ main form.login-form {
     font-size: 1rem;
     font-weight: bold;
     color: $logo-color;
+    margin: 0;
   }
 
   .order-restaurant {
     text-align: right;
+  }
+
+  .order-content-container {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
 
   .order-contents {
@@ -349,7 +365,7 @@ main form.login-form {
 
 // Responsive Designs
 
-@media only screen and (min-width: 1024px) {
+@media only screen and (min-width: 1050px) {
   main {
     flex-direction: row;
     flex-wrap: wrap;
@@ -438,4 +454,19 @@ main form.login-form {
   text-align: left;
   letter-spacing: 0;
 }
+}
+
+@media only screen and (max-width: 580px) {
+
+  .order .order-status {
+    flex-direction: column;
+    height: 100%;
+
+    form {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+
 }
