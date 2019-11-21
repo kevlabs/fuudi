@@ -8,7 +8,7 @@ $navbar-color: rgb(233, 146, 88);
 $navbar-color-thin: rgba(233, 146, 88, 0.6);
 $logo-font: 'Righteous', 'Bebas Neue', 'Arial', sans-serif;
 $container-color: rgb(191, 189, 193);
-$container-color-thin: rgba(251, 249, 249, 0.75);
+$container-color-thin: rgba(251, 249, 249, 0.8);
 $text-light: #ede9e6;
 $text-dark: #2e2d2c;
 $standard-font: 'Playfair Display', 'Times New Roman', sans-serif;
@@ -16,15 +16,14 @@ $enable-gradients: 'true';
 
 #app {
   background-color: $background-color-thin;
+  margin-top: 104px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   font-family: $standard-font;
 
-  h1 {
-    color: #244751;
-  }
+
 }
 
 header {
@@ -54,9 +53,19 @@ header {
     font-size: 3rem;
     // letter-spacing: 1rem;
     width: 100%;
-    text-align: center;
+    display: flex;
+    justify-content: center;
     visibility: visible;
-  }
+
+      p {
+        width: auto;
+
+      }
+
+      p:hover {
+        cursor: pointer;
+      }
+    }
 
   .icon{
     color: $logo-color;
@@ -65,6 +74,10 @@ header {
     font-size: 3rem;
     visibility: hidden;
     position: absolute;
+  }
+
+  .icon:hover {
+    cursor: pointer;
   }
 
   .settings-profile {
@@ -97,7 +110,7 @@ header {
 }
 
 main {
-  margin-top: 100px;
+  // margin-top: 104px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -240,13 +253,54 @@ main form.login-form {
     height: 100%;
   }
 
+  .main.listing {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+  }
+
   .restaurant-title {
   font-weight: bold;
   color: $logo-color;
   font-size: 20px;
   }
+
+  .restaurant-description {
+    font-style: italic;
+    width: 100%;
+    border-bottom: 1px solid $text-dark;
+  }
+
+  .restaurant-text {
+    width: 80%;
+  }
+
+  .restaurant-img {
+    display: flex;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    margin-right: 1em;
+  }
+
   .jumbotron{
-    background-image: url(../public/imgs/brandless-18lr202tDKY-unsplash.jpg)
+    width: 100%;
+    height: 20em;
+    // margin-top: 104px;
+    margin-bottom: 0;
+    background-image: url('https://i.imgur.com/5S00pLQ.jpg');
+    background-size: cover;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .jumbotron-text {
+    background-color: $container-color-thin;
+
+    .display-4 {
+      color: $logo-color
+    }
   }
 // Menu page
 
@@ -290,7 +344,7 @@ main form.login-form {
 }
 .overlay {
   position:fixed;
-  display:none; 
+  display:none;
 
   /* color with alpha channel */
   background-color: rgba(248, 241, 241, 0.7); /* 0.7 = 70% opacity */
@@ -418,7 +472,7 @@ td {
     justify-content: space-between;
     align-items: flex-start;
     width: 100%;
-    margin-top: 5em;
+    // margin-top: 5em;
   }
 
   .login-container {
@@ -440,6 +494,9 @@ td {
   .profile-info {
     width: 40%;
     margin-left: 1em;
+    padding: 1em;
+    background-color: $navbar-color-thin;
+    border-radius: 25px;
   }
 
   .listing-container {
@@ -485,7 +542,7 @@ td {
     margin-top: 0;
 
     .carousel-item img {
-      height: 30vh;
+      height: 35vh;
     }
   }
 
@@ -497,8 +554,17 @@ td {
 
 @media only screen and (max-width: 650px) {
 .navbar > .logo {
-  text-align: left;
+  justify-content: flex-start;
   letter-spacing: 0;
+}
+
+
+.lead {
+  font-size: 1em;
+}
+
+.display-4 {
+  font-size: 1.5em;
 }
 }
 
@@ -513,6 +579,11 @@ td {
       align-items: center;
     }
   }
+
+  .main.listing {
+    padding-left: .5em;
+    padding-right: .5em;
+  }
 }
 
 @media only screen and (max-width: 400px) {
@@ -526,5 +597,9 @@ td {
     .icon {
       visibility: visible;
     }
+  }
+
+  .jumbotron {
+    height: 10em;
   }
 }
