@@ -12,7 +12,7 @@ const { stringToInteger, resEnum, createResponse } = require('../lib/utils');
 const { isAuthenticated, getCurrentUser } = require('../services/users');
 const { isRestaurantOwner } = require('../services/restaurants');
 
-module.exports = (db) => {
+module.exports = (db, textMessages) => {
   // users should be authenticated to access this route
   router.use(isAuthenticated);
 
@@ -33,7 +33,7 @@ module.exports = (db) => {
     .post(async (req, res) => {
       try {
         const userId = getCurrentUser(req);
-        const orderId = await createOrder(db, userId, req.body);
+        const orderId = await createOrder(db, textMessages, userId, req.body);
         const order = await getOrderData(db, userId, {
           id: orderId
         });
@@ -76,7 +76,7 @@ module.exports = (db) => {
     .put(async (req, res) => {
       try {
         const userId = getCurrentUser(req);
-        const orderId = await updateOrder(db, userId, {
+        const orderId = await updateOrder(db, textMessages, userId, {
           ...req.body,
           id: Number(req.params.id)
         });

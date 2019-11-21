@@ -172,6 +172,34 @@ NEW ORDERS - JSON input format:
 
 */
 
+const notify = async (db, textMessages, orderId) => {
+  try {
+    const contactInfo = await db.query(`
+      SELECT owner.phone owner_phone, u.phone user_phone, o.status, r.name
+      FROM orders o
+      JOIN order_menu_items o_m_i ON o.id = o_m_i.order_id
+      JOIN menu_items m_i ON o_m_i.menu_item_id = m_i.id
+      JOIN restaurants r ON m_i.restaurant_id = r.id
+      JOIN users owner ON r.owner_id = owner.id
+      JOIN users u ON o.user_id = u.id
+      WHERE o.id = $1
+      GROUP BY o.id, owner.phone, u.phone, r.name
+    `, [orderId]);
+
+    if (contactInfo.length !== 1) throw Error('Could not retrieve contact information.');
+
+    const [{ owner_phone: ownerPhone, user_phone: userPhone, status, name }] = contactInfo;
+    const message = `Hey, this is Fuudi. We have an order in progress with super cool restaurant: ${name}. Current order status ${status}. See ya.`;
+
+    await textMessages.send(userPhone, message);
+    await textMessages.send(ownerPhone, message);
+
+  } catch (err) {
+    throw Error(`Could not notify all parties to the order. Error: ${err.message}`);
+
+  }
+};
+
 /**
  * Validate order input - new order and updates.
  * @param {DB} db - Instance of the DB interface.
@@ -266,7 +294,7 @@ const validateInput = (order, isUpdate = false) => {
  * @param {any} order - Order object parsed from JSON - front-end input.
  * @return Promise resolving to the new order's id.
  */
-const create = async (db, userId, order) => {
+const create = async (db, textMessages, userId, order) => {
   try {
     const safeOrder = validateInput(order);
     const itemIds = safeOrder.items.map(item => item.id);
@@ -313,6 +341,9 @@ const create = async (db, userId, order) => {
         RETURNING order_id;
       `, itemParams);
 
+      // notify user and restaurant owner of new order
+      notify(db, textMessages, bookedOrder[0].id);
+
       // return new order id
       return bookedItems[0].order_id;
     });
@@ -322,14 +353,13 @@ const create = async (db, userId, order) => {
   }
 };
 
-
 /**
  * Update existing order
  * @param {DB} db - Instance of the DB interface.
  * @param {any} order - Order object parsed from JSON - front-end input.
  * @return Promise resolving to the new order's id.
  */
-const update = async (db, userId = null, order) => {
+const update = async (db, textMessages, userId = null, order) => {
   try {
     const safeOrder = validateInput(order, true);
 
@@ -365,6 +395,8 @@ const update = async (db, userId = null, order) => {
 
     if (bookedOrder.length !== 1) throw Error('Could not find order.');
 
+    // notify user and restaurant owner of new order
+    notify(db, textMessages, bookedOrder[0].id);
     // return order id
     return bookedOrder[0].id;
 
