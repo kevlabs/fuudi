@@ -17,10 +17,10 @@ class Menu extends ViewComponent {
 
       const main = this.state.viewManager;
 
-      // overlay, profile and listing are viewManagers
-      const profile = main.addViewSet(this.$element.siblings('.profile-info')).addView('menu-views', new MenuProfile());
-      const listing = main.addViewSet(this.$element.siblings('.listing-container')).addView('menu-views', new MenuItems());
-      const overlay = main.addViewSet(this.$element.siblings('.overlay')).addView('menu-views', new MenuCheckout());
+      // resgister checkout, restaurant profile and menu items viewManagers
+      main.addViewSet(this.$element.siblings('.profile-info')).addView('menu-views', new MenuProfile());
+      main.addViewSet(this.$element.siblings('.listing-container')).addView('menu-views', new MenuItems());
+      main.addViewSet(this.$element.siblings('.overlay')).addView('menu-views', new MenuCheckout());
 
       // fetch restaurant
       const { data: restaurant } = await xhr({
