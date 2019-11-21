@@ -8,7 +8,7 @@ $navbar-color: rgb(233, 146, 88);
 $navbar-color-thin: rgba(233, 146, 88, 0.6);
 $logo-font: 'Righteous', 'Bebas Neue', 'Arial', sans-serif;
 $container-color: rgb(191, 189, 193);
-$container-color-thin: rgba(251, 249, 249, 0.75);
+$container-color-thin: rgba(251, 249, 249, 0.8);
 $text-light: #ede9e6;
 $text-dark: #2e2d2c;
 $standard-font: 'Playfair Display', 'Times New Roman', sans-serif;
@@ -23,9 +23,7 @@ $enable-gradients: 'true';
   align-items: center;
   font-family: $standard-font;
 
-  h1 {
-    color: #244751;
-  }
+
 }
 
 header {
@@ -299,6 +297,10 @@ main form.login-form {
 
   .jumbotron-text {
     background-color: $container-color-thin;
+
+    .display-4 {
+      color: $logo-color
+    }
   }
 // Menu page
 
