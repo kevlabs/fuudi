@@ -55,6 +55,16 @@ header {
     // letter-spacing: 1rem;
     width: 100%;
     text-align: center;
+    visibility: visible;
+  }
+
+  .icon{
+    color: $logo-color;
+    font-family: $logo-font;
+    font-weight: bold;
+    font-size: 3rem;
+    visibility: hidden;
+    position: absolute;
   }
 
   .settings-profile {
@@ -293,9 +303,6 @@ main form.login-form {
 }
 
 .order {
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
 
   .order-date, .order-restaurant {
     width: 30%;
@@ -303,10 +310,19 @@ main form.login-form {
     font-size: 1rem;
     font-weight: bold;
     color: $logo-color;
+    margin: 0;
   }
 
   .order-restaurant {
     text-align: right;
+  }
+
+  .order-content-container {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
 
   .order-contents {
@@ -349,7 +365,7 @@ main form.login-form {
 
 // Responsive Designs
 
-@media only screen and (min-width: 1024px) {
+@media only screen and (min-width: 1050px) {
   main {
     flex-direction: row;
     flex-wrap: wrap;
@@ -433,9 +449,36 @@ main form.login-form {
   }
 }
 
-@media only screen and (max-width: 450px) {
+@media only screen and (max-width: 650px) {
 .navbar > .logo {
   text-align: left;
   letter-spacing: 0;
 }
+}
+
+@media only screen and (max-width: 580px) {
+
+  .order .order-status {
+    flex-direction: column;
+    height: 100%;
+
+    form {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .navbar {
+    font-size: 12px;
+
+    .logo {
+      visibility: hidden;
+    }
+
+    .icon {
+      visibility: visible;
+    }
+  }
 }

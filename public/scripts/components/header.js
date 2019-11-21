@@ -4,6 +4,7 @@ class Header extends ViewComponent {
 
     return $(`
       <nav class="navbar">
+        <span class="icon">F</span>
         <span class="logo">Fuudi</span>
         <ul class="settings-profile">
           ${props.user.isLoggedIn && `
