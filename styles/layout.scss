@@ -173,6 +173,11 @@ main form.login-form {
 #login-error, #signup-error {
   font-weight: bold;
   color: $text-dark;
+  margin: 0;
+  margin-bottom: 1rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .login-buttons, .signup-buttons {
