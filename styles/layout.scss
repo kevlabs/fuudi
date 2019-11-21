@@ -330,12 +330,17 @@ main form.login-form {
   font-weight: 400;
   color: $logo-color;
   font-size: 20px;
+  width: 7em;
 }
 
 .menu{
   flex-direction: row;
   flex-wrap:wrap;
   justify-content: space-between;
+}
+
+.menu-description {
+  width: 15em;
 }
 
 #cart-menu-button {
