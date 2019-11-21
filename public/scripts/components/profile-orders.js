@@ -58,6 +58,7 @@ class ProfileOrders extends ViewComponent {
             waitMinutes: Number(waitMinutes)
           };
 
+          $(`#order-status-${orderId}`).text('In Progress');
           $(`#form-${orderId}`).empty();
           $(`#form-${orderId}`).append(
             `<p id=order-timer-${orderId}>TimeRemaining: ${waitMinutes}</p>`
@@ -85,6 +86,8 @@ class ProfileOrders extends ViewComponent {
 
           let orderId = $(evt.currentTarget).data('orderId');
 
+          $(`#order-status-${orderId}`).text('Declined');
+
           let data = {
             status: 'Declined',
             waitMinutes: null
@@ -111,6 +114,7 @@ class ProfileOrders extends ViewComponent {
           }
 
           $(`#form-${orderId}`).remove();
+          $(`#order-status-${orderId}`).text('Completed');
 
           const { data: order } = await xhr({
             method: 'PUT',
