@@ -214,8 +214,15 @@ main form.login-form {
   }
 }
 
-  #map {
+  .map-container {
     margin-bottom: 1em;
+    height:400px;
+    width:100%;
+  }
+
+  #map {
+    width: 100%;
+    height: 100%;
   }
 
   .restaurant-title {
@@ -340,11 +347,6 @@ main form.login-form {
   }
 }
 
-#map{
-  height:400px;
-  width:100%;
-}
-
 // Responsive Designs
 
 @media only screen and (min-width: 1024px) {
@@ -425,10 +427,9 @@ main form.login-form {
     }
   }
 
-  #map{
+  .map-container {
     width: 100%;
     height: 40vh;
-    margin-top: 5em;
   }
 }
 

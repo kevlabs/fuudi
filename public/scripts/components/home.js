@@ -3,7 +3,7 @@ class Home extends ViewComponent {
     this.state = props;
     return $(`
       <div id="error-container"></div>
-      <div class="map-container" style="height: 300px; width: 400px;"></div>
+      <div class="map-container"></div>
       <div class="carousel"></div>
       <div class="listing-container main-container"></div>
     `);
