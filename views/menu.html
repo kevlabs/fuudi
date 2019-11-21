@@ -5,11 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>  <script type="text/javascript" src="../public/scripts/checkout.js"></script>
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet"
-    href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
-    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
   <!-- Main CSS -->
   <link rel="stylesheet" href="../public/styles/layout.css">
@@ -19,8 +21,7 @@
     href="https://fonts.googleapis.com/css?family=Bebas+Neue|Righteous|Playfair+Display:400,400i,700,700i&display=swap"
     rel="stylesheet">
 
-  <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css?ver=5.8.2"
-    rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.8.2/css/all.css?ver=5.8.2" rel="stylesheet">
 
   <title>Fuudi - Menu</title>
 </head>
@@ -38,8 +39,28 @@
         </a>
       </div>
     </div>
-
+    <div class='checkout'>
+        <button type="button" class="btn btn-primary btn-lg"> Checkout </button>
+    </div>
   </header>
+  <div class="overlay">
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Item</th>
+      <th scope="col">Price</th>
+      <th scope="col">Quantity</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  </tbody>
+</table>
+
+  </div>
   <div class="content">
     <div class="profile-info">
       <div>
@@ -67,31 +88,47 @@
     </div>
 
     <div class="listing-container">
-      <div class="menu listing m-2">
+      <div class="menu listing m-2" data-item-id="1">
         <p class="menu-title">Bacon Cheeseburger</p>
         <p class="menu-description">A juicy ground-beef burger topped with bacon
           and sharp cheddar, served on a buttered and toasted brioche bun.
           Topped
           with all the fixins.</p>
         <p class="menu-price">$16.99</p>
+        <span id='plusminus'>
+          <button class='minus'> -</button>
+          <span>0</span>
+          <button class='add'> +</button>
+        </span>
+
       </div>
 
-      <div class="menu listing m-2">
-        <p class="menu-title">Bacon Cheeseburger</p>
+      <div class="menu listing m-2" data-item-id="2">
+        <p class="menu-title">Salad</p>
         <p class="menu-description">A juicy ground-beef burger topped with bacon
           and sharp cheddar, served on a buttered and toasted brioche bun.
           Topped
           with all the fixins.</p>
-        <p class="menu-price">$16.99</p>
+        <p class="menu-price">$9.99</p>
+        <span id='plusminus'>
+            <button class='minus'> -</button>
+            <span>0</span>
+            <button class='add'> +</button>
+          </span>
       </div>
 
-      <div class="menu listing m-2">
-        <p class="menu-title">Bacon Cheeseburger</p>
+      <div class="menu listing m-2" data-item-id="3">
+        <p class="menu-title">Fries</p>
         <p class="menu-description">A juicy ground-beef burger topped with bacon
           and sharp cheddar, served on a buttered and toasted brioche bun.
           Topped
           with all the fixins.</p>
-        <p class="menu-price">$16.99</p>
+        <p class="menu-price">$4.99</p>
+        <span id='plusminus'>
+            <button class='minus'> -</button>
+            <span>0</span>
+            <button class='add'> +</button>
+          </span>
       </div>
 
       <div class="menu listing m-2">

@@ -245,7 +245,9 @@ main form.login-form {
   color: $logo-color;
   font-size: 20px;
   }
-
+  .jumbotron{
+    background-image: url(../public/imgs/brandless-18lr202tDKY-unsplash.jpg)
+  }
 // Menu page
 
 .restaurant-info {
@@ -273,6 +275,45 @@ main form.login-form {
   color: $logo-color;
   font-size: 20px;
 }
+.menu{
+  flex-direction: row;
+  flex-wrap:wrap;
+  justify-content: space-between;
+}
+.checkout{
+  display:none;
+
+  margin-top: 88px;
+  z-index: 5;
+  position:fixed;
+  width: 100%;
+}
+.overlay {
+  position:fixed;
+  display:none; 
+
+  /* color with alpha channel */
+  background-color: rgba(248, 241, 241, 0.7); /* 0.7 = 70% opacity */
+
+  /* stretch to screen edges */
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+table{
+  position:absolute;
+  top: 150px;
+  border: 1px solid #CCC;
+  border-collapse: collapse;
+
+}
+td {
+  border: none;
+}
+
+
 
 // Profile Page
 
