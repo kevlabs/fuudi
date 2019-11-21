@@ -65,13 +65,13 @@ const get = (db, userId = null, options = {}) => {
   const [whereFilter, params] = setGetFilters({ userId, ...options });
 
   return db.query(`
-    SELECT o.id, o.status, o.created_at, o.fulfilled_at, o.wait_minutes, o.total_cents, r.id restaurant_id, r.name restaurant_name, r.wait_minutes restaurant_wait_minutes, m_i.id item_id, m_i.name item_name, o_m_i.price_cents item_price_cents, o_m_i.quantity item_quantity, o_m_i.price_cents * o_m_i.quantity item_total
+    SELECT o.id, o.status, o.created_at, o.fulfilled_at, o.fulfilled_at_est, o.wait_minutes, o.total_cents, r.id restaurant_id, r.name restaurant_name, r.wait_minutes restaurant_wait_minutes, m_i.id item_id, m_i.name item_name, o_m_i.price_cents item_price_cents, o_m_i.quantity item_quantity, o_m_i.price_cents * o_m_i.quantity item_total
     FROM orders o
     JOIN order_menu_items o_m_i ON o.id = o_m_i.order_id
     JOIN menu_items m_i ON o_m_i.menu_item_id = m_i.id
     JOIN restaurants r ON m_i.restaurant_id = r.id
     ${whereFilter}
-    ORDER BY o.created_at DESC
+    ORDER BY o.created_at DESC;
   `, params);
 
 };
@@ -108,13 +108,14 @@ Format:
 */
 const parse = (data) => {
   const [sortedKeys, orders] = data.reduce(([sortedKeys, orders], row) => {
-    sortedKeys[sortedKeys.length && sortedKeys.length - 1 || 0] !== row.id && sortedKeys.push(row.id);
+    !sortedKeys.includes(row.id) && sortedKeys.push(row.id);
 
     orders[row.id] = orders[row.id] || {
       id: row.id,
       status: row.status,
       created: new Date(row.created_at),
       fulfilled: row.fulfilled_at && new Date(row.fulfilled_at) || null,
+      estimatedFulfilled: row.fulfilled_at_est && new Date(row.fulfilled_at_est) || null,
       waitMinutes: row.wait_minutes || row.restaurant_wait_minutes,
       totalCents: row.total_cents,
       restaurant: {
@@ -175,7 +176,7 @@ NEW ORDERS - JSON input format:
 const notify = async (db, textMessages, orderId) => {
   try {
     const contactInfo = await db.query(`
-      SELECT owner.phone owner_phone, u.phone user_phone, o.status, r.name
+      SELECT owner.phone owner_phone, u.phone user_phone, o.status, r.name, o.wait_minutes, o.fulfilled_at_est
       FROM orders o
       JOIN order_menu_items o_m_i ON o.id = o_m_i.order_id
       JOIN menu_items m_i ON o_m_i.menu_item_id = m_i.id
@@ -183,16 +184,18 @@ const notify = async (db, textMessages, orderId) => {
       JOIN users owner ON r.owner_id = owner.id
       JOIN users u ON o.user_id = u.id
       WHERE o.id = $1
-      GROUP BY o.id, owner.phone, u.phone, r.name
+      GROUP BY o.id, owner.phone, u.phone, r.name;
     `, [orderId]);
 
     if (contactInfo.length !== 1) throw Error('Could not retrieve contact information.');
 
-    const [{ owner_phone: ownerPhone, user_phone: userPhone, status, name }] = contactInfo;
-    const message = `Hey, this is Fuudi. We have an order in progress with super cool restaurant: ${name}. Current order status ${status}. See ya.`;
+    const [{ owner_phone: ownerPhone, user_phone: userPhone, status, name, wait_minutes: waitMinutes }] = contactInfo;
 
-    await textMessages.send(userPhone, message);
-    await textMessages.send(ownerPhone, message);
+    const userMessage = `Hey, this is Fuudi. You have an order in progress with ${name} (current status: ${status.toLowerCase()}). It should be ready in ${waitMinutes} minutes. Stay fresh, always.`;
+    const ownerMessage = `To the folks at ${name}. Greetings from Fuudi. An order is in progress. Current status: ${status.toLowerCase()}. Estimated completion time: . Connect to your Fuudi terminal to manage your orders.`;
+
+    // await textMessages.send(userPhone, userMessage);
+    // await textMessages.send(ownerPhone, ownerMessage);
 
   } catch (err) {
     throw Error(`Could not notify all parties to the order. Error: ${err.message}`);
@@ -303,7 +306,7 @@ const create = async (db, textMessages, userId, order) => {
     return db.transaction(async (query) => {
       // #1 - validate menu items and get price
       const validItems = await query(`
-        SELECT m_i.id, m_i.price_cents price
+        SELECT m_i.id, m_i.price_cents price, r.wait_minutes
         FROM restaurants r
         JOIN menu_items m_i ON r.id = m_i.restaurant_id
         WHERE r.id = $1 AND r.is_deleted = FALSE AND r.is_active = TRUE AND m_i.id IN (${itemIds.map((_, i) => `$${i + 2}`).join(', ')}) AND m_i.is_active = TRUE
@@ -322,12 +325,15 @@ const create = async (db, textMessages, userId, order) => {
       // confirm that total matches total agreed to by customer
       if (orderTotal !== safeOrder.total) throw Error('Order total is inconsistent with item prices.');
 
+      const [{ wait_minutes: waitMinutes }] = validItems;
+      const estimatedFulfilledAt = new Date(Date.now() + waitMinutes * 60 * 1000);
+
       // #2 - create order record
       const bookedOrder = await query(`
-        INSERT INTO orders (user_id, total_cents)
-        VALUES ($1, $2)
+        INSERT INTO orders (user_id, total_cents, wait_minutes, fulfilled_at_est)
+        VALUES ($1, $2, $3, $4)
         RETURNING id;
-      `, [userId, orderTotal]);
+      `, [userId, orderTotal, waitMinutes, estimatedFulfilledAt]);
 
       // get order id from newly created order
       const [{ id: orderId }] = bookedOrder;
@@ -376,6 +382,7 @@ const update = async (db, textMessages, userId = null, order) => {
     safeOrder.status && (orderFields.status = safeOrder.status);
     orderFields.status === 'Completed' && (orderFields['fulfilled_at'] = new Date());
     safeOrder.waitMinutes && (orderFields['wait_minutes'] = safeOrder.waitMinutes);
+    orderFields.waitMinutes && (orderFields['fulfilled_at_est'] = new Date(Date.now() + 60 * 1000));
     // set order of iteration
     const orderFieldKeys = Object.keys(orderFields);
 
@@ -417,7 +424,7 @@ const update = async (db, textMessages, userId = null, order) => {
  */
 const updateStatus = (db, id, status) => {
   if (!['Pending', 'In Progress', 'Declined'].includes(status)) throw Error(`Order status ${status} is not valid.`);
-  return db.query('UPDATE orders SET status = $1 WHERE id = $2', [status, id]);
+  return db.query('UPDATE orders SET status = $1 WHERE id = $2;', [status, id]);
 };
 
 /**
@@ -427,7 +434,7 @@ const updateStatus = (db, id, status) => {
  * @return Promise resolving to the updated order record from db.
  */
 const complete = (db, id) => {
-  return db.query(`UPDATE orders SET fulfilled_at = NOW(), status = 'Completed' WHERE id = $1`, [id]);
+  return db.query(`UPDATE orders SET fulfilled_at = NOW(), status = 'Completed' WHERE id = $1;`, [id]);
 };
 
 

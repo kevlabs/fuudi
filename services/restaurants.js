@@ -29,7 +29,7 @@ const getRestaurantsByOwner = (db, userId) => {
   try {
     return db.query(`
     SELECT * FROM restaurants r
-    WHERE r.owner_id = $1
+    WHERE r.owner_id = $1;
     `, [userId]);
 
   } catch (err) {
@@ -146,7 +146,7 @@ const get = (db, options = {}) => {
     SELECT r.id, r.name, r.description, r.photo_url, r.open_time, r.close_time, r,email, r.phone, r.street_address, r.city, r.post_code, r.latitude, r.longitude, r.wait_minutes, r.rating, r.rating_expires_at, m_i.id item_id, m_i.name item_name, m_i.description item_description, m_i.photo_url item_photo_url, m_i.price_cents item_price_cents
     FROM restaurants r
     JOIN menu_items m_i ON r.id = m_i.restaurant_id
-    ${whereFilter}
+    ${whereFilter};
   `, params);
 
 };
@@ -173,7 +173,7 @@ const updateRating = async (db, data) => {
         const [ { rating: bookedRating, rating_expires_at: bookedExpiry }] = await db.query(`
           UPDATE restaurants SET rating = $1, rating_expires_at = $2
           WHERE id = $3
-          RETURNING *
+          RETURNING *;
         `, [newRating, newExpiry, id]);
 
         row.rating = bookedRating;
@@ -202,7 +202,7 @@ const updateRating = async (db, data) => {
 
 const parse = (data) => {
   const [sortedKeys, restaurants] = data.reduce(([sortedKeys, restaurants], row) => {
-    sortedKeys[sortedKeys.length && sortedKeys.length - 1 || 0] !== row.id && sortedKeys.push(row.id);
+    !sortedKeys.includes(row.id) && sortedKeys.push(row.id);
 
     restaurants[row.id] = restaurants[row.id] || {
       id: row.id,
