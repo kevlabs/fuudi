@@ -4,8 +4,8 @@ class Header extends ViewComponent {
 
     return $(`
       <nav class="navbar">
-        <span class="icon">F</span>
-        <span class="logo">Fuudi</span>
+        <span class="icon"><p>F</p></span>
+        <span class="logo"><p>Fuudi</p></span>
         <ul class="settings-profile">
           ${props.user.isLoggedIn && `
             ${props.user.restaurants && props.user.restaurants[0] && `
@@ -59,7 +59,7 @@ class Header extends ViewComponent {
     sessionStorage.setItem('user', JSON.stringify(user));
 
     // handle logo clicks
-    this.$element.on('click', '.logo', (evt) => {
+    this.$element.on('click', '.logo > p, .icon', (evt) => {
       evt.preventDefault();
       window.viewManager.view('home', { user });
     });
