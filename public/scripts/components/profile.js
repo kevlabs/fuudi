@@ -1,7 +1,7 @@
 class Profile extends ViewComponent {
   render(props, cancel) {
 
-    if (!props.isLoggedIn) {
+    if (!props.user.isLoggedIn) {
       cancel();
       return props.viewManager.view('login');
     }
@@ -19,9 +19,9 @@ class Profile extends ViewComponent {
           <p class="user-details">Phone: ${restaurantInfo.phone}</p>
           <p class="user-details">Address: ${restaurantInfo.streetAddress}<br/>${restaurantInfo.city}, ${restaurantInfo.postCode}</p>
         ` || `
-          <p class="profile-name">${props.username}</p>
-          <p class="user-details">Email: ${props.email}</p>
-          <p class="user-details">Phone: ${props.phone}</p>
+          <p class="profile-name">${props.user.username}</p>
+          <p class="user-details">Email: ${props.user.email}</p>
+          <p class="user-details">Phone: ${props.user.phone}</p>
         `}
       </div>
       <div id="profile-error" class="help-block"></div>
@@ -43,7 +43,7 @@ class Profile extends ViewComponent {
 
       // Create props for order listing
 
-      const nextProps = { orders };
+      const nextProps = { user: this.state.user, orders };
       this.state.restaurantInfo && (nextProps.restaurant = this.state.restaurantInfo);
 
       // display orders

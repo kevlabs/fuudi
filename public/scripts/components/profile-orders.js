@@ -1,8 +1,6 @@
 class ProfileOrders extends ViewComponent {
   render({ orders, restaurant }) {
-    let list = ``;
-    const isRestaurant = Boolean(restaurant);
-
+    let list = '';
     !orders.length && (list = '<p>No orders have been made. Time to step up your game 🤩...</p>');
 
     for (let order of orders) {
@@ -15,16 +13,20 @@ class ProfileOrders extends ViewComponent {
           <ul class="order-contents">${items}</ul>
           <span class="order-status">
             <p id="order-status-${order.id}">${escape(order.status)}</p>
-            ${isRestaurant && `
+            ${restaurant && ['Pending', 'In Progress'].includes(order.status) && `
               <form data-order-id="${order.id}" id="form-${order.id}" action="/api/orders/${order.id}" method="POST">
+              ${order.status === 'Pending' && `
                 <span>
                   <label for="minutes">Wait time (minutes)</label>
-                  <input type="text" name ="minutes" value="${restaurant.waitMinutes}">
+                  <input type="text" name ="minutes" value="${order.waitMinutes}">
                 </span>
                 <button type="submit" name="${order.id}" id="accept-${order.id}" class="btn   btn-success">Accept</button>
                 <button type="submit" id="reject-${order.id}" class="btn btn-danger">Reject</button>
+              ` || `
+                <p id=order-timer-${order.id}>TimeRemaining: ${order.waitMinutes}</p>
+                <button type="submit" name="${order.id}" id="accept-${order.id}" class="btn   btn-success">Complete Order</button>
+              `}
               </form>
-
             ` || ''}
             <p class="order-price"> ${(order.totalCents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" })}</p>
           </span>
@@ -55,7 +57,7 @@ class ProfileOrders extends ViewComponent {
           let data = {
             status: 'In Progress',
             waitMinutes: Number(waitMinutes)
-          }
+          };
 
           $(`#form-${orderId}`).empty();
           $(`#form-${orderId}`).append(
@@ -72,13 +74,11 @@ class ProfileOrders extends ViewComponent {
             $(this).attr("clicked", "true");
           });
 
-          console.log(JSON.stringify(data));
-
           const { data: order } = await xhr({
             method: 'PUT',
             url: `/api/orders/${orderId}`,
             dataType: "json",
-            data: JSON.stringify(data)
+            data
           });
 
         } else if (clickedButton === "Reject") {
@@ -88,7 +88,7 @@ class ProfileOrders extends ViewComponent {
           let orderId = $(evt.currentTarget).data('orderId');
 
           let data = {
-            status: 'Rejected',
+            status: 'Declined',
             waitMinutes: null
           }
 
@@ -98,7 +98,7 @@ class ProfileOrders extends ViewComponent {
             method: 'PUT',
             url: `/api/orders/${orderId}`,
             dataType: "json",
-            data: JSON.stringify(data)
+            data
           });
 
         } else if (clickedButton === "Complete Order") {
@@ -118,8 +118,10 @@ class ProfileOrders extends ViewComponent {
             method: 'PUT',
             url: `/api/orders/${orderId}`,
             dataType: "json",
-            data: JSON.stringify(data)
+            data
           });
+
+          console.log(order);
         }
 
 

@@ -3,7 +3,7 @@ class Home extends ViewComponent {
     this.state = props;
     return $(`
       <div id="error-container"></div>
-      <div id="map"></div>
+      <div class="map-container"></div>
       <div class="carousel"></div>
       <div class="listing-container main-container"></div>
     `);
@@ -15,7 +15,7 @@ class Home extends ViewComponent {
       const main = this.state.viewManager;
 
       // map, container and listing are viewManagers
-      const map = main.addViewSet(this.$element.siblings('#map')).addView('home-views', new Map());
+      const map = main.addViewSet(this.$element.siblings('.map-container')).addView('home-views', new RestaurantMap());
       const carousel = main.addViewSet(this.$element.siblings('.carousel')).addView('home-views', new Carousel());
       const listing = main.addViewSet(this.$element.siblings('.listing-container')).addView('home-views', new RestaurantListing());
 

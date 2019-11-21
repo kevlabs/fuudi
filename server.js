@@ -8,16 +8,22 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const sass = require('node-sass-middleware');
-const Nexmo = require('nexmo');
+// const Nexmo = require('nexmo');
 const socketio = require('socket.io');
 const app = express();
 
 const morgan = require('morgan');
 // Init Nexmo
-const nexmo = new Nexmo({
+// const nexmo = new Nexmo({
+//   apiKey: '7226847a',
+//   apiSecret: '1A2Ynv7u2Y0vyRa4'
+// }, { debug: true });
+
+// Nexmo text messages setup
+const textMessages = require('./lib/nexmo-text.js')({
   apiKey: process.env.NEXMO_KEY,
   apiSecret: process.env.NEXMO_SECRET
-}, { debug: true });
+});
 
 // PG database client/connection setup
 const dbParams = require('./lib/db.js');
@@ -58,7 +64,7 @@ const ordersRoutes = require('./routes/orders');
 // Mount all resource routes
 app.use('/api/users', usersRoutes(db));
 app.use('/api/restaurants', restaurantsRoutes(db));
-app.use('/api/orders', ordersRoutes(db));
+app.use('/api/orders', ordersRoutes(db, textMessages));
 
 
 // Home page
@@ -67,17 +73,6 @@ app.get('/', (req, res) => {
 });
 
 
-// Google geo coord
-const getCoordinates = require('./lib/geo-coordinates');
-app.get('/geo', (req, res) => {
-  getCoordinates('M5H1C4').then(data => res.json(data));
-});
-
-// Yelp coord
-const getYelpData = require('./lib/yelp-data');
-app.get('/yelp', (req, res) => {
-  getYelpData('Paramount', 43.653587, -79.3831154).then(data => res.json(data));
-});
 
 // Index route
 app.get('/smstext', (req, res) => {
@@ -85,33 +80,33 @@ app.get('/smstext', (req, res) => {
 });
 
 // Catch form submit
-app.post('/smstext', (req, res) => {
-  // res.send(req.body);
-  // console.log(req.body);
-  const { number, text } = req.body;
+// app.post('/smstext', (req, res) => {
+//   // res.send(req.body);
+//   // console.log(req.body);
+//   const { number, text } = req.body;
 
-  nexmo.message.sendSms(
-    '12506638721', number, text, { type: 'unicode' },
-    (err, responseData) => {
-      if(err) {
-        console.log(err);
-      } else {
-        const { messages } = responseData;
-        const { ['message-id']: id, ['to']: number, ['error-text']: error  } = messages[0];
-        console.dir(responseData);
-        // Get data from response
-        const data = {
-          id,
-          number,
-          error
-        };
+//   nexmo.message.sendSms(
+//     '12506638721', number, text, { type: 'unicode' },
+//     (err, responseData) => {
+//       if(err) {
+//         console.log(err);
+//       } else {
+//         const { messages } = responseData;
+//         const { ['message-id']: id, ['to']: number, ['error-text']: error  } = messages[0];
+//         console.dir(responseData);
+//         // Get data from response
+//         const data = {
+//           id,
+//           number,
+//           error
+//         };
 
-        // Emit to the client
-        io.emit('smsStatus', data);
-      }
-    }
-  );
-});
+//         // Emit to the client
+//         io.emit('smsStatus', data);
+//       }
+//     }
+//   );
+// });
 
 
 const server = app.listen(PORT, () =>

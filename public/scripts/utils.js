@@ -30,3 +30,27 @@ const isUsername = (str) => /^[\w\d!@#$%^&*\-+[\]{}|\\"':;?/,<.>]*$/.test(str);
 
 // convert to date string 'YYYY-MM-DD at HH:MM'
 const toDateString = (date) => `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} at ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+
+// ask user for their geo coordinates
+const getGeoCoordinates = (defaultCoords) => {
+
+  return new Promise((resolve, reject) => {
+
+    if (!navigator.geolocation) return resolve(defaultCoords);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) =>
+        resolve({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        }),
+      (error) => resolve(defaultCoords),
+      {
+        enableHighAccuracy: true,
+        maximumAge: 30000,
+        timeout: 30000
+      }
+    );
+  });
+
+};
