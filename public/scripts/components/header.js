@@ -51,6 +51,8 @@ class Header extends ViewComponent {
 
     // grab user info
     const user = this.state.user;
+    const app = this.state.viewManager;
+    const main = this.state.mainViewManager;
 
     // remove pointer to props
     this.state = null;
@@ -61,9 +63,8 @@ class Header extends ViewComponent {
     // handle logo clicks
     this.$element.on('click', '.logo', (evt) => {
       evt.preventDefault();
-      window.viewManager.view('home', { user });
+      app.view('home', { user });
     });
-
 
     this.$element.on('click', '.settings-profile li', async (evt) => {
       evt.preventDefault();
@@ -71,33 +72,22 @@ class Header extends ViewComponent {
       // handle sign up clicks
       if ($(evt.currentTarget).is(this.$element.find('#header-signup'))) {
         // alert('Clicked signup');
-        window.viewManager.view('signup', { user });
+        app.view('signup', { user });
       }
 
       // handle sign in clicks
       if ($(evt.currentTarget).is(this.$element.find('#header-signin'))) {
-        window.viewManager.view('login', { user });
+        app.view('login', { user });
       }
 
       // handle restaurant profile clicks
       if ($(evt.currentTarget).is(this.$element.find('#header-restaurant-profile'))) {
-
-
-        const { data } = await xhr({
-          method: 'GET',
-          url: `/api/restaurants/${user.restaurants[0]}`
-        });
-
-        if (!data.length) throw Error('Restaurant not found');
-
-        const [restaurantInfo] = data;
-
-        window.main.view('restaurant-profile', { user, restaurantInfo });
+        main.view('restaurant-profile', { user, isRestaurant: true });
       }
 
       // handle profile clicks
       if ($(evt.currentTarget).is(this.$element.find('#header-profile'))) {
-        window.main.view('user-profile', { user });
+        main.view('user-profile', { user, isRestaurant: false });
       }
 
       // handle sign out clicks
@@ -107,8 +97,7 @@ class Header extends ViewComponent {
           method: 'GET',
           url: '/api/users/logout'
         });
-
-        window.viewManager.view('init', { user });
+        app.view('init', { user });
       }
 
     });

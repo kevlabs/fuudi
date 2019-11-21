@@ -7,47 +7,51 @@ class Profile extends ViewComponent {
     }
 
     this.state = props;
-    const restaurantInfo = props.restaurantInfo;
 
     return $(`
-      <div class="profile-info rounded-circle">
-        <div class="user-img rounded-circle" style="background: url(${restaurantInfo && `${restaurantInfo.photoUrl}` || `../../imgs/profile-hex.png`}) 50% 50% no-repeat;">
-        </div>
-        ${restaurantInfo && `
-          <p class="profile-name">${restaurantInfo.name}</p>
-          <p class="user-details">Email: ${restaurantInfo.email}</p>
-          <p class="user-details">Phone: ${restaurantInfo.phone}</p>
-          <p class="user-details">Address: ${restaurantInfo.streetAddress}<br/>${restaurantInfo.city}, ${restaurantInfo.postCode}</p>
-        ` || `
-          <p class="profile-name">${props.user.username}</p>
-          <p class="user-details">Email: ${props.user.email}</p>
-          <p class="user-details">Phone: ${props.user.phone}</p>
-        `}
-      </div>
+      <div class="profile-info rounded-circle"></div>
       <div id="profile-error" class="help-block"></div>
-      <div class="listing-container ${restaurantInfo && `restaurant` || `user`}-orders"></div>
+      <div class="listing-container ${props.isRestaurant && `restaurant` || `user`}-orders"></div>
     `);
   }
 
   async componentDidMount() {
     try {
-      // manager order history for
-      const orderHistory = this.state.viewManager.addViewSet($(`.listing-container.${this.state.restaurantInfo && `restaurant` || `user`}-orders`));
-      orderHistory.addView('orders', new ProfileOrders());
+
+      const main = this.state.viewManager;
+
+      // register view components - header + view history
+      main.addViewSet(this.$element.siblings('.profile-info')).addView('profile-views', new ProfileHeader());
+      main.addViewSet(this.$element.siblings('.listing-container')).addView('profile-views', new ProfileOrders());
+
+      // const user = this.state.user;
+      const isRestaurant = this.state.isRestaurant;
+      let restaurantInfo;
+
+      // restaurant data, if applicable
+      if (isRestaurant) {
+        const { data } = await xhr({
+          method: 'GET',
+          url: `/api/restaurants/${this.state.user.restaurants[0]}`
+        });
+
+        if (!data.length) throw Error('Restaurant not found');
+        restaurantInfo = data[0];
+      }
 
       // fetch orders for user
       const { data: orders } = await xhr({
         method: 'GET',
-        url: `/api/orders${this.state.restaurantInfo && `/restaurants/${this.state.restaurantInfo.id}` || ''}`
+        url: `/api/orders${isRestaurant && `/restaurants/${restaurantInfo.id}` || ''}`
       });
 
       // Create props for order listing
 
-      const nextProps = { user: this.state.user, orders };
-      this.state.restaurantInfo && (nextProps.restaurant = this.state.restaurantInfo);
+      const nextProps = { user: this.state.user, orders, isRestaurant };
+      isRestaurant && (nextProps.restaurant = restaurantInfo);
 
       // display orders
-      orderHistory.view('orders', nextProps);
+      main.view('profile-views', nextProps);
 
     } catch (err) {
       this.$element.siblings('#profile-error').text(err.message);

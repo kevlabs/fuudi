@@ -48,11 +48,8 @@ class ProfileOrders extends ViewComponent {
         // Check which button was clicked
         let clickedButton = $("button[type=submit][clicked=true]").text();
 
-
         if (clickedButton === "Accept") {
-
           // Order accepted
-
           let orderId = $(evt.currentTarget).data('orderId');
           let waitMinutes = evt.currentTarget[0].value;
 
@@ -70,7 +67,6 @@ class ProfileOrders extends ViewComponent {
           );
 
           //Assigning listener to new button to assign clicked status
-
           $("form button[type=submit]").click(function () {
             $("button[type=submit]", $(this).parents("form")).removeAttr("clicked");
             $(this).attr("clicked", "true");
@@ -123,7 +119,6 @@ class ProfileOrders extends ViewComponent {
             data
           });
 
-          console.log(order);
         }
 
 
@@ -135,7 +130,6 @@ class ProfileOrders extends ViewComponent {
       });
 
     } catch (err) {
-      console.log("here");
       this.$element.siblings('#profile-error').text(err.message);
     }
   }

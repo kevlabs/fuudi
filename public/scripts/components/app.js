@@ -25,8 +25,7 @@ class App extends ViewComponent {
 
 
       // manager header views
-      const header = viewManager.addViewSet($('#app > header'));
-      header.addView('init', new Header());
+      const header = viewManager.addViewSet($('#app > header')).addView('init', new Header());
       window.header = header;
 
       // manager main views
@@ -42,7 +41,7 @@ class App extends ViewComponent {
       window.main = main;
 
       // display init
-      viewManager.view('init', { user });
+      viewManager.view('init', { user, mainViewManager: main });
 
     } catch (err) {
       console.log('Error in App component', err);

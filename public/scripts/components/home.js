@@ -14,10 +14,10 @@ class Home extends ViewComponent {
 
       const main = this.state.viewManager;
 
-      // map, container and listing are viewManagers
-      const map = main.addViewSet(this.$element.siblings('.map-container')).addView('home-views', new RestaurantMap());
-      const carousel = main.addViewSet(this.$element.siblings('.carousel')).addView('home-views', new Carousel());
-      const listing = main.addViewSet(this.$element.siblings('.listing-container')).addView('home-views', new RestaurantListing());
+      // register viewManagers for map, container and listing
+      main.addViewSet(this.$element.siblings('.map-container')).addView('home-views', new RestaurantMap());
+      main.addViewSet(this.$element.siblings('.carousel')).addView('home-views', new Carousel());
+      main.addViewSet(this.$element.siblings('.listing-container')).addView('home-views', new RestaurantListing());
 
       // fetch restaurants
       const { data: restaurants } = await xhr({
@@ -32,8 +32,6 @@ class Home extends ViewComponent {
       this.state = null;
 
     } catch (err) {
-      console.log(err);
-
       this.$element.siblings('.error-container').text(err.message);
     }
   }
