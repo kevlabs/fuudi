@@ -10,7 +10,7 @@ class Profile extends ViewComponent {
     const restaurantInfo = props.restaurantInfo;
 
     return $(`
-      <div class="profile-info rounded-circle">
+      <div class="profile-info">
         <div class="user-img rounded-circle" style="background: url(${restaurantInfo && `${restaurantInfo.photoUrl}` || `../../imgs/profile-hex.png`}) 50% 50% no-repeat;">
         </div>
         ${restaurantInfo && `
