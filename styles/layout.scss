@@ -55,21 +55,21 @@ header {
     // letter-spacing: 1rem;
     width: 100%;
     text-align: center;
+    visibility: visible;
   }
 
-  .navbar-toggler {
+  .icon{
+    color: $logo-color;
+    font-family: $logo-font;
+    font-weight: bold;
+    font-size: 3rem;
+    visibility: hidden;
     position: absolute;
-    right: 2em;
-    background-color: $logo-color;
-  }
-
-  .navbar-collapse {
-    display: flex;
   }
 
   .settings-profile {
-    // position: absolute;
-    // right: 2em;
+    position: absolute;
+    right: 2em;
     margin: 0;
     list-style-type: none;
     padding: 0;
@@ -449,7 +449,7 @@ main form.login-form {
   }
 }
 
-@media only screen and (max-width: 450px) {
+@media only screen and (max-width: 650px) {
 .navbar > .logo {
   text-align: left;
   letter-spacing: 0;
@@ -467,6 +467,18 @@ main form.login-form {
       align-items: center;
     }
   }
+}
 
+@media only screen and (max-width: 400px) {
+  .navbar {
+    font-size: 12px;
 
+    .logo {
+      visibility: hidden;
+    }
+
+    .icon {
+      visibility: visible;
+    }
+  }
 }
