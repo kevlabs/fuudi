@@ -96,9 +96,9 @@ class MenuCheckout extends ViewComponent {
     // cart display
     $('.checkout').click(async (evt) => {
       evt.preventDefault();
-
-      $('.overlay').animate({ bottom: 0 }, 500);
       $('tbody').empty();
+      $('.overlay').animate({ bottom: 0 }, 500);
+
 
       // render hmlt
       let i = 1;
