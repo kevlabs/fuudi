@@ -16,7 +16,8 @@ const app = express();
 // Nexmo text messages setup
 const textMessages = require('./lib/nexmo-text.js')({
   apiKey: process.env.NEXMO_KEY,
-  apiSecret: process.env.NEXMO_SECRET
+  apiSecret: process.env.NEXMO_SECRET,
+  fromNumber: process.env.NEXMO_FROM_NUMBER
 });
 
 // PG database client/connection setup
