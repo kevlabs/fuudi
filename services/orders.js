@@ -1,4 +1,4 @@
-const { stringToInteger, stringToDate } = require('../lib/utils');
+const { stringToInteger, stringToDate, toTimeString } = require('../lib/utils');
 
 /*
 Should be able to get orders by:
@@ -189,10 +189,10 @@ const notify = async (db, textMessages, orderId) => {
 
     if (contactInfo.length !== 1) throw Error('Could not retrieve contact information.');
 
-    const [{ owner_phone: ownerPhone, user_phone: userPhone, status, name, wait_minutes: waitMinutes }] = contactInfo;
+    const [{ owner_phone: ownerPhone, user_phone: userPhone, status, name, wait_minutes: fulfilled_at_est, estimatedFulfilled }] = contactInfo;
 
-    const userMessage = `Hey, this is Fuudi. You have an order in progress with ${name} (current status: ${status.toLowerCase()}). It should be ready in ${waitMinutes} minutes. Stay fresh, always.`;
-    const ownerMessage = `To the folks at ${name}. Greetings from Fuudi. An order is in progress. Current status: ${status.toLowerCase()}. Estimated completion time: . Connect to your Fuudi terminal to manage your orders.`;
+    const userMessage = `Hey, this is Fuudi. You have an order in progress with ${name} (current status: ${status.toLowerCase()}). It should be ready in about ${waitMinutes} minutes (${toTimeString(estimatedFulfilled)}). Stay fresh, always.`;
+    const ownerMessage = `To the folks at ${name}. Greetings from Fuudi. An order is in progress. Current status: ${status.toLowerCase()}. Estimated completion time: ${toTimeString(estimatedFulfilled)}. Connect to your Fuudi terminal to manage your orders.`;
 
     // await textMessages.send(userPhone, userMessage);
     // await textMessages.send(ownerPhone, ownerMessage);

@@ -143,7 +143,7 @@ const get = (db, options = {}) => {
   const [whereFilter, params] = setGetFilters(options);
 
   return db.query(`
-    SELECT r.id, r.name, r.description, r.photo_url, r.open_time, r.close_time, r,email, r.phone, r.street_address, r.city, r.post_code, r.latitude, r.longitude, r.wait_minutes, r.rating, r.rating_expires_at, m_i.id item_id, m_i.name item_name, m_i.description item_description, m_i.photo_url item_photo_url, m_i.price_cents item_price_cents
+    SELECT r.id, r.name, r.description, r.photo_url, r.open_time, r.close_time, r,email, r.phone, r.street_address, r.city, r.post_code, r.latitude, r.longitude, r.wait_minutes, r.rating, r.rating_expires_at, r.rating_url, m_i.id item_id, m_i.name item_name, m_i.description item_description, m_i.photo_url item_photo_url, m_i.price_cents item_price_cents
     FROM restaurants r
     JOIN menu_items m_i ON r.id = m_i.restaurant_id
     ${whereFilter};

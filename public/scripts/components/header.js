@@ -4,14 +4,14 @@ class Header extends ViewComponent {
 
     return $(`
       <nav class="navbar">
-        <span class="icon"><p>F</p></span>
-        <span class="logo"><p>Fuudi</p></span>
+        <span class="icon" title="Go to Fuudi's home" aria-label="Fuudi"><p>F</p></span>
+        <span class="logo"title="Go to Fuudi's home" aria-label="Fuudi"><p>Fuudi</p></span>
         <ul class="settings-profile">
           ${props.user.isLoggedIn && `
             ${props.user.restaurants && props.user.restaurants[0] && `
               <li id="header-restaurant-profile">
                 <a href="#">
-                  <i class="fas fa-utensils"></i>
+                  <i class="fas fa-utensils" title="My restaurant" aria-label="My restaurant"></i>
                 </a>
               </li>
               <li id="header-restaurant-settings">
@@ -22,23 +22,23 @@ class Header extends ViewComponent {
             ` || ''}
             <li id="header-profile">
               <a href="#">
-                <i class="fas fa-user"></i>
+                <i class="fas fa-user" title="My profile" aria-label="My profile"></i>
               </a>
             </li>
             <li id="header-signout">
               <a href="#">
-                <i class="fas fa-sign-out-alt"></i>
+                <i class="fas fa-sign-out-alt" title="Sign me out" aria-label="Sign me out"></i>
               </a>
             </li>
           ` || `
             <li id="header-signup">
               <a href="#">
-                <i class="fas fa-user-plus"></i>
+                <i class="fas fa-user-plus" title="Register" aria-label="Register"></i>
               </a>
             </li>
             <li id="header-signin">
               <a href="#">
-                <i class="fas fa-sign-in-alt"></i>
+                <i class="fas fa-sign-in-alt" title="Sign me in" aria-label="Sign me in"></i>
               </a>
             </li>
             `}
