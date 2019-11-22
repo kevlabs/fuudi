@@ -382,7 +382,7 @@ const update = async (db, textMessages, userId = null, order) => {
     safeOrder.status && (orderFields.status = safeOrder.status);
     orderFields.status === 'Completed' && (orderFields['fulfilled_at'] = new Date());
     safeOrder.waitMinutes && (orderFields['wait_minutes'] = safeOrder.waitMinutes);
-    orderFields.waitMinutes && (orderFields['fulfilled_at_est'] = new Date(Date.now() + 60 * 1000));
+    orderFields.waitMinutes && (orderFields['fulfilled_at_est'] = new Date(Date.now() + safeOrder.waitMinutes * 60 * 1000));
     // set order of iteration
     const orderFieldKeys = Object.keys(orderFields);
 
