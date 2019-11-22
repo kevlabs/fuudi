@@ -194,8 +194,8 @@ const notify = async (db, textMessages, orderId) => {
     const userMessage = `Hey, this is Fuudi. You have an order in progress with ${name} (current status: ${status.toLowerCase()}). It should be ready in about ${waitMinutes} minutes (${toTimeString(estimatedFulfilled)}). Stay fresh, always.`;
     const ownerMessage = `To the folks at ${name}. Greetings from Fuudi. An order is in progress. Current status: ${status.toLowerCase()}. Estimated completion time: ${toTimeString(estimatedFulfilled)}. Connect to your Fuudi terminal to manage your orders.`;
 
-    // await textMessages.send(userPhone, userMessage);
-    // await textMessages.send(ownerPhone, ownerMessage);
+    await textMessages.send(userPhone, userMessage);
+    await textMessages.send(ownerPhone, ownerMessage);
 
   } catch (err) {
     throw Error(`Could not notify all parties to the order. Error: ${err.message}`);
