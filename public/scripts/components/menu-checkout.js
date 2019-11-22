@@ -99,6 +99,7 @@ class MenuCheckout extends ViewComponent {
 
       $('.overlay').animate({ bottom: 0 }, 500);
       $('tbody').empty();
+      $('#buy').remove();
 
       // render hmlt
       let i = 1;
@@ -132,16 +133,22 @@ class MenuCheckout extends ViewComponent {
       $("tbody").append(totalPriceWithTax);
 
       // add buy button
-      $(`<button id="buy" class="btn btn-success" type="button"><span id="checkout-button"><p>Total Price: $${(calculateTotal(cartToHTML) * 1.13).toFixed(2)}.</p><p> Checkout!</p></span></button>`).appendTo('.overlay').click(async (evt) => {
+      $(`
+        <button id="buy" class="btn btn-success" type="button">
+          <span id="checkout-button">
+            <p>Total Price: $${(calculateTotal(cartToHTML) * 1.13).toFixed(2)}.</p>
+            <p> Checkout!</p>
+          </span>
+        </button>
+      `).appendTo('.overlay').click(async (evt) => {
         evt.preventDefault();
-        const JSONorder = {};
-        $('#buy').remove();
 
+        const JSONorder = {};
 
         // get restaurant id from state
         JSONorder.restaurantId = restaurant.id;
 
-        JSONorder.total = calculateTotal(cartToHTML) * 100;
+        JSONorder.total = (calculateTotal(cartToHTML) * 100).toFixed();
         JSONorder.items = [];
         for (const item of Object.values(cartToHTML)) {
           const itemObject = {};
@@ -165,8 +172,6 @@ class MenuCheckout extends ViewComponent {
           main.view('user-profile', { user: this.state.user });
 
         } catch (err) {
-          console.log(err);
-
           this.$element.siblings('.error-container').text(err.message);
         }
 
@@ -175,13 +180,11 @@ class MenuCheckout extends ViewComponent {
 
     // Minimize Cart
 
-    $('#minimize-checkout').click(async (evt) => {
+    $('#minimize-checkout').click((evt) => {
       evt.preventDefault();
 
       $('.overlay').animate({ bottom: '-800px' }, 1000);
       $('#buy').remove();
-
-
-    })
+    });
   }
 }

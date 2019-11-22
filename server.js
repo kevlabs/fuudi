@@ -8,7 +8,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const sass = require('node-sass-middleware');
-const socketio = require('socket.io');
 const morgan = require('morgan');
 
 // instantiate express
