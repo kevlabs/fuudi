@@ -107,7 +107,12 @@ header {
   i:hover {
     color: $navbar-color-hover;
   }
+  a:hover{
+    text-decoration: underline;
+
+  }
 }
+
 
 main {
   // margin-top: 104px;
@@ -259,6 +264,10 @@ main form.login-form {
     flex-direction: row;
     align-items: center;
 
+  }
+
+  .main.listing:hover{
+    cursor:pointer;
   }
 
   .restaurant-title {
