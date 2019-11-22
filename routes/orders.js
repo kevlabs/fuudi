@@ -80,8 +80,9 @@ module.exports = (db, textMessages) => {
           ...req.body,
           id: Number(req.params.id)
         });
-        const order = await getOrderData(db, userId, {
-          id: orderId
+        const order = await getOrderData(db, null, {
+          id: orderId,
+          ownerId: userId
         });
 
         res.json(order);

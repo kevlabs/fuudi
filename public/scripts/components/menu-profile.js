@@ -12,7 +12,9 @@ class MenuProfile extends ViewComponent {
           ${restaurant.description}</p>
         <p class="restaurant-hours">${restaurant.openTime}</p>
         <p class="restaurant-hours">${restaurant.closeTime}</p>
-        <p class="restaurant-ratings">Yelp Rating: <a href="${restaurant.ratingUrl}" target="_blank" title="Check out the restaurant's Yelp profile">${restaurant.rating / 10}/5</a></p>
+        ${restaurant.ratingUrl && `
+          <p class="restaurant-ratings">Yelp Rating: <a href="${restaurant.ratingUrl}" target="_blank" title="Check out the restaurant's Yelp profile">${restaurant.rating / 10}/5</a></p>
+        ` || ''}
       </div>
     `);
   }

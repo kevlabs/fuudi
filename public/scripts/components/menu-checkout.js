@@ -49,7 +49,7 @@ class MenuCheckout extends ViewComponent {
       }
 
       // display checkout container
-      $(".checkout").animate({ bottom: 0 }, 1000)
+      $(".checkout").animate({ bottom: 0 }, 1000);
 
       // get quantity input
       let $quantity = $elem.closest("span").find("span").html();
@@ -86,9 +86,7 @@ class MenuCheckout extends ViewComponent {
 
         // if no items left in cart, remove checkout button
         if (Object.keys(cartToHTML).length === 0) {
-          $(".checkout").removeClass("display");
-          $(".checkout").slideToggle();
-
+          $(".checkout").animate({ bottom: '-50px' }, 1000);
         }
       }
     });

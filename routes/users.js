@@ -14,8 +14,6 @@ module.exports = (db) => {
     .post(async (req, res) => {
       try {
         const userId = await createUser(db, req.body);
-        console.log('usr data', userId);
-
         const userData = await login(db, req, null, null, userId);
         res.json({ ...userData, isLoggedIn: true });
 
