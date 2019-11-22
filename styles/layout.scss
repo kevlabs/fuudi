@@ -424,6 +424,7 @@ td {
 }
   .listing-container {
     width: 100%;
+    margin-bottom: 3em;
   }
 
 .order-header {
@@ -617,6 +618,19 @@ td {
   .main.listing {
     padding-left: .5em;
     padding-right: .5em;
+  }
+
+  #img-carousel {
+    width: 100%;
+  }
+
+  .listing-container {
+    width: 100%;
+
+    .listing {
+      border-radius: 0;
+      width: 100%;
+    }
   }
 }
 
