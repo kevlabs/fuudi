@@ -2,7 +2,7 @@ class ProfileHeader extends ViewComponent {
   render(props) {
     const restaurant = props.restaurant;
     return $(`
-      <div class="user-img rounded-circle" style="background: url(${restaurant && `${restaurant.photoUrl}` || `../../imgs/profile-hex.png`}) 50% 50% no-repeat;">
+      <div class="user-img rounded-circle" style="background: url(${restaurant && `${restaurant.photoUrl}` || `../../imgs/duck.jpg`}) 50% 50% no-repeat;">
       </div>
       ${restaurant && `
         <p class="profile-name">${restaurant.name}</p>
