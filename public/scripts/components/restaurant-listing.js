@@ -28,7 +28,6 @@ class RestaurantListing extends ViewComponent {
       evt.preventDefault();
 
       const restaurantId = $(evt.currentTarget).data('restaurantId');
-      console.log('Restaurant Id', restaurantId);
 
       // switch to menu view
       main.view('menu', { user: this.state.user, restaurantId });
