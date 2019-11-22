@@ -14,10 +14,17 @@ const morgan = require('morgan');
 const app = express();
 
 // Nexmo text messages setup
-const textMessages = require('./lib/nexmo-text.js')({
-  apiKey: process.env.NEXMO_KEY,
-  apiSecret: process.env.NEXMO_SECRET,
-  fromNumber: process.env.NEXMO_FROM_NUMBER
+// const textMessages = require('./lib/nexmo-text.js')({
+//   apiKey: process.env.NEXMO_KEY,
+//   apiSecret: process.env.NEXMO_SECRET,
+//   fromNumber: process.env.NEXMO_FROM_NUMBER
+// });
+
+// Twilio text messages setup
+const textMessages = require('./lib/twilio-text.js')({
+  accountSid: process.env.TWILIO_ACCOUNT_SID,
+  authToken: process.env.TWILIO_TOKEN,
+  fromNumber: process.env.TWILIO_FROM_NUMBER
 });
 
 // PG database client/connection setup
