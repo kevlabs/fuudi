@@ -1,7 +1,5 @@
 class MenuProfile extends ViewComponent {
   render(props) {
-    console.log(props);
-
     const restaurant = props.restaurant;
 
     return $(`

@@ -70,38 +70,6 @@ class DB {
     })();
   }
 
-  /*
-  transaction(queryPairs) {
-    return (async () => {
-      const client = await this.pool.connect();
-      try {
-        // start transaction
-        let lastQuery = (await client.query('BEGIN')).rows;
-
-        // loop through queries
-        for (let [text, params = []] of queryPairs) {
-          params = params instanceof Function && (params(lastQuery) || []) || params;
-          lastQuery = (await client.query(text, params)).rows;
-        }
-
-        // commit if no errors
-        await client.query('COMMIT');
-
-        return lastQuery;
-
-      } catch (err) {
-        // if error, rollback all changes to db
-        await client.query('ROLLBACK');
-        throw err;
-
-      } finally {
-        // in all instances, release the client to the pool
-        client.release();
-      }
-    })();
-  }
-  */
-
 }
 
 // Static property
