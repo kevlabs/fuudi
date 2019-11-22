@@ -83,7 +83,6 @@ module.exports = (db, textMessages) => {
         const order = await getOrderData(db, userId, {
           id: orderId
         });
-        console.log(orderId);
 
         res.json(order);
 

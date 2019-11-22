@@ -19,6 +19,7 @@ CREATE TABLE restaurants (
   wait_minutes SMALLINT NOT NULL,
   rating SMALLINT DEFAULT 0,
   rating_expires_at TIMESTAMP DEFAULT NOW(),
+  rating_url VARCHAR(255) DEFAULT '',
   is_active BOOLEAN DEFAULT TRUE,
   is_deleted BOOLEAN DEFAULT FALSE
 );

@@ -143,7 +143,7 @@ const get = (db, options = {}) => {
   const [whereFilter, params] = setGetFilters(options);
 
   return db.query(`
-    SELECT r.id, r.name, r.description, r.photo_url, r.open_time, r.close_time, r,email, r.phone, r.street_address, r.city, r.post_code, r.latitude, r.longitude, r.wait_minutes, r.rating, r.rating_expires_at, m_i.id item_id, m_i.name item_name, m_i.description item_description, m_i.photo_url item_photo_url, m_i.price_cents item_price_cents
+    SELECT r.id, r.name, r.description, r.photo_url, r.open_time, r.close_time, r,email, r.phone, r.street_address, r.city, r.post_code, r.latitude, r.longitude, r.wait_minutes, r.rating, r.rating_expires_at, r.rating_url, m_i.id item_id, m_i.name item_name, m_i.description item_description, m_i.photo_url item_photo_url, m_i.price_cents item_price_cents
     FROM restaurants r
     JOIN menu_items m_i ON r.id = m_i.restaurant_id
     ${whereFilter};
@@ -161,30 +161,32 @@ const updateRating = async (db, data) => {
 
   // update the first record for each row
   unique.forEach(async (row) => {
-    const { id, name, latitude, longitude, rating, rating_expires_at: ratingExpiry } = row;
+    const { id, name, street_address: streetAddress, post_code: postCode, city, latitude, longitude, rating, rating_expires_at: ratingExpiry, rating_url: ratingUrl } = row;
     try {
       const expiry = new Date(ratingExpiry);
 
       if (expiry < Date.now()) {
-        let { rating: newRating } = await getYelpData(name, latitude, longitude);
-        newRating = Number(newRating) * 100;
+        let { rating: newRating, url } = await getYelpData(name, latitude, longitude);
+        newRating = Number(newRating) * 10;
         const newExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-        const [ { rating: bookedRating, rating_expires_at: bookedExpiry }] = await db.query(`
-          UPDATE restaurants SET rating = $1, rating_expires_at = $2
-          WHERE id = $3
+        const [ { rating: bookedRating, rating_expires_at: bookedExpiry, rating_url: bookedUrl }] = await db.query(`
+          UPDATE restaurants SET rating = $1, rating_expires_at = $2, rating_url = $3
+          WHERE id = $4
           RETURNING *;
-        `, [newRating, newExpiry, id]);
+        `, [newRating, newExpiry, url, id]);
 
         row.rating = bookedRating;
-        row.rating_expires_at = bookedExpiry;
+        row['rating_expires_at'] = bookedExpiry;
+        row['rating_url'] = bookedUrl;
 
       }
 
     } catch (err) {
       // set back to original values
       row.rating = rating;
-      row.rating_expires_at = ratingExpiry;
+      row['rating_expires_at'] = ratingExpiry;
+      row['rating_url'] = ratingUrl;
     }
 
   });
@@ -193,7 +195,8 @@ const updateRating = async (db, data) => {
   nonUnique.forEach(row => {
     const updatedUnique = unique.find(updated => updated.id === row.id);
     row.rating = updatedUnique.rating;
-    row.rating_expires_at = updatedUnique.rating_expires_at;
+    row['rating_expires_at'] = updatedUnique['rating_expires_at'];
+    row['rating_url'] = updatedUnique['rating_url'];
   });
 
   return data;
@@ -220,6 +223,7 @@ const parse = (data) => {
       longitude: row.longitude,
       waitMinutes: row.wait_minutes,
       rating: row.rating,
+      ratingUrl: row.rating_url,
       items: []
     };
 

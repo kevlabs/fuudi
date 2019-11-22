@@ -49,7 +49,9 @@ class ProfileOrders extends ViewComponent {
         let clickedButton = $("button[type=submit][clicked=true]").text();
 
         if (clickedButton === "Accept") {
+
           // Order accepted
+
           let orderId = $(evt.currentTarget).data('orderId');
           let waitMinutes = evt.currentTarget[0].value;
 
@@ -58,10 +60,21 @@ class ProfileOrders extends ViewComponent {
             waitMinutes: Number(waitMinutes)
           };
 
+          const { data: order } = await xhr({
+            method: 'PUT',
+            url: `/api/orders/${orderId}`,
+            dataType: "json",
+            data
+          });
+
+          let estFinish = new Date(order[0].estimatedFulfilled);
+
+          estFinish = estFinish.toLocaleTimeString()
+
           $(`#order-status-${orderId}`).text('In Progress');
           $(`#form-${orderId}`).empty();
           $(`#form-${orderId}`).append(
-            `<p id=order-timer-${orderId}>TimeRemaining: ${waitMinutes}</p>`
+            `<p id=order-timer-${orderId}>Order complete at : ${estFinish}</p>`
           );
           $(`#form-${orderId}`).append(
             `<button type="submit" name="${orderId}" id="accept-${orderId}" class="btn   btn-success shadow-sm rounded">Complete Order</button>`
@@ -71,13 +84,6 @@ class ProfileOrders extends ViewComponent {
           $("form button[type=submit]").click(function () {
             $("button[type=submit]", $(this).parents("form")).removeAttr("clicked");
             $(this).attr("clicked", "true");
-          });
-
-          const { data: order } = await xhr({
-            method: 'PUT',
-            url: `/api/orders/${orderId}`,
-            dataType: "json",
-            data
           });
 
         } else if (clickedButton === "Reject") {

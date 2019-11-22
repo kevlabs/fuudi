@@ -1,5 +1,7 @@
 class Carousel extends ViewComponent {
   render(props) {
+    this.state = props;
+
     let carousel = `
       <div id="img-carousel" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
@@ -13,7 +15,7 @@ class Carousel extends ViewComponent {
 
     for (let i = 0; i < Math.min(3, props.restaurants.length); i++) {
       carousel += `
-        <div class="carousel-item${!i && ' active' || ''}" data-restaurant-id="${props.restaurants[i].id}">
+        <div class="carousel-item${!i && ' active' || ''}" data-restaurant-id="${props.restaurants[i].id}" title="${props.restaurants[i].name}">
           <img src="${props.restaurants[i].photoUrl}" class="d-block w-100" alt="${props.restaurants[i].name}">
           <div class="carousel-caption">
             <h5>${props.restaurants[i].name}</h5>
@@ -38,5 +40,18 @@ class Carousel extends ViewComponent {
     `;
 
     return $(carousel);
+  }
+
+  componentDidMount() {
+    const main = this.state.mainViewManager;
+    this.$element.parent().one('click', '.carousel-item', evt => {
+      evt.preventDefault();
+
+      const restaurantId = $(evt.currentTarget).data('restaurantId');
+
+      // switch to menu view
+      main.view('menu', { user: this.state.user, restaurantId });
+    });
+
   }
 }
