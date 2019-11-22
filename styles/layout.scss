@@ -293,6 +293,7 @@ main form.login-form {
     width: 100px;
     height: 100px;
     margin-right: 1em;
+    background-size: cover !important;
   }
 
   .jumbotron{
@@ -351,6 +352,15 @@ main form.login-form {
 
 .menu-description {
   width: 15em;
+}
+
+.menu-item-img {
+  display: flex;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    margin-right: 1em;
+    background-size: cover !important;
 }
 
 #cart-menu-button {
