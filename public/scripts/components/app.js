@@ -18,8 +18,18 @@ class App extends ViewComponent {
 
       const { data: user } = await xhr({
         method: 'GET',
-        url: `/api/users/login`,
+        url: '/api/users/login',
       }, [403]);
+
+      // settings dummy page
+      const settings = new ViewComponent(
+        $(`
+        <div class="login-container">
+          <span class="title-container"><h3>Privacy Settings</h3></span>
+          <p>Coming soon...</p>
+        </div>
+        `)
+      );
 
       // manager header views
       const header = viewManager.addViewSet($('#app > header')).addView('init', new Header());
@@ -34,6 +44,7 @@ class App extends ViewComponent {
       main.addView('signup', new Signup());
       main.addView('user-profile', new Profile());
       main.addView('restaurant-profile', new Profile());
+      main.addView('settings', settings);
       main.addView('menu', new Menu());
       window.main = main;
 

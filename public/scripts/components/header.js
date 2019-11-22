@@ -14,7 +14,7 @@ class Header extends ViewComponent {
                   <i class="fas fa-utensils" title="My restaurant" aria-label="My restaurant"></i>
                 </a>
               </li>
-              <li id="header-restaurant-settings">
+              <li id="header-restaurant-settings" title="Settings" aria-label="Settings">
                 <a href="#">
                   <i class="fas fa-cog"></i>
                 </a>
@@ -81,6 +81,11 @@ class Header extends ViewComponent {
       // handle restaurant profile clicks
       if ($(evt.currentTarget).is(this.$element.find('#header-restaurant-profile'))) {
         main.view('restaurant-profile', { user, isRestaurant: true });
+      }
+
+      // handle settings clicks -TODO
+      if ($(evt.currentTarget).is(this.$element.find('#header-restaurant-settings'))) {
+        main.view('settings', { user });
       }
 
       // handle profile clicks
